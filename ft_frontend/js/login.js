@@ -2,6 +2,25 @@ const form = document.getElementById("loginForm");
 const loginView = document.getElementById("loginView");
 const signupView = document.getElementById("signupView");
 const dashboardView = document.getElementById("dashboardView");
+const forgotPasswordView = document.getElementById("forgotPasswordView");
+const secretView = document.getElementById("secretView");
+
+document.getElementById("goToForgotPassword").onclick = () => {
+	loginView.style.display = "none";
+	forgotPasswordView.style.display = "block"
+};
+
+document.getElementById("continueToLogin").onclick = () => {
+	secretView.style.display = "none";
+	loginView.style.display = "block";
+
+};
+document.getElementById("backtoLogin").onclick = () => {
+	forgotPasswordView.style.display = "none";
+	loginView.style.display = "block";
+
+};
+
 
 document.getElementById("goToSignup").onclick = () => {
 	loginView.style.display = "none";
@@ -64,23 +83,55 @@ document.getElementById("signupForm").addEventListener("submit", async (event) =
 		const data = await response.json();
 		if (data.success)
 		{
-			let countdown = 3;
-			messageDivsignUp.textContent = `User registered successfully! Redirecting in ${countdown} seconds...`;
-			const timing = setInterval(() =>{
-				countdown--;
-				if (countdown > 0)
-					messageDivsignUp.textContent = `User registered successfully! Redirecting in ${countdown} seconds...`;
-				else
-				{
-					clearInterval(timing);
-					signupView.style.display = "none";
-      				loginView.style.display = "block";
-				}
-			}, 1000);
+			document.getElementById("signupView").style.display = "none";
+			document.getElementById("secretMessage").textContent = data.message;
+			document.getElementById("secretNote").textContent = data.importantNote;
+			document.getElementById("secretPhrase").textContent = data.secret;
+			document.getElementById("secretView").style.display = "block";	
+			
+			// let countdown = 3;
+			// messageDivsignUp.textContent = `User registered successfully! Redirecting in ${countdown} seconds...`;
+			// const timing = setInterval(() =>{
+			// 	countdown--;
+			// 	if (countdown > 0)
+			// 		messageDivsignUp.textContent = `User registered successfully! Redirecting in ${countdown} seconds...`;
+			// 	else
+			// 	{
+			// 		clearInterval(timing);
+			// 		signupView.style.display = "none";
+      		// 		loginView.style.display = "block";
+			// 	}
+			// }, 1000);
 		}
 		else
 			messageDivsignUp.textContent = data.message;
 	} catch (error) {
 		messageDivsignUp.textContent = "An error occurred. Please try again.";
+	}
+});
+
+
+document.getElementById("forgotPasswordForm").addEventListener("submit", async (event) => {
+	event.preventDefault();
+
+	const messageDiv = document.getElementById("forgotMessage");
+	const email = document.getElementById("forgotEmail").value;
+	const secretKey = document.getElementById("secretKey").value;
+	const newpassword = document.getElementById("newPassword").value;
+
+	try {
+		const response = await fetch("/check-forgot", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({ email, secretKey, newpassword })
+		});
+
+		const data = await response.json();
+		messageDiv.textContent = data.message;
+
+	} catch (error) {
+		messageDiv.textContent = "An error occurred. Please try again.";
 	}
 });

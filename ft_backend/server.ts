@@ -6,7 +6,7 @@
 /*   By: mokariou <mokariou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/06/07 12:59:01 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/06/11 18:01:31 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,15 +89,14 @@ server.post("/check", async (request, reply) =>{
 		}
 		else
 		{
-			return reply.status(400).send({ success: false, message: "login Succefully" });
+			return reply.status(400).send({ success: false, message: "You have Succefully logged In" });
+
 		}
 	}
 	catch (err) {
 		console.error("Database error:", err);
 		return reply.status(500).send({ success: false, message: "Internal server error." });
 	}
-	return reply.send({ success: true, message: "Validation successful." });
-	
 });
 
 
@@ -121,11 +120,12 @@ server.post("/check-signup", async (request, reply) => {
 			  });	
 		}
 	
-	try {
+	let hashedPassword = ""; // Define hashedPassword outside the try block
 
+	try {
 		const bcrypt = require("bcrypt");
 		const saltrounds = 10;
-		const hashedPassword = await bcrypt.hash(signupPassword, saltrounds);
+		hashedPassword = await bcrypt.hash(signupPassword, saltrounds);
 		console.log(hashedPassword);
 
 		// Check if the email already exists in the database biG man
@@ -156,14 +156,54 @@ server.post("/check-signup", async (request, reply) => {
 				}
 			);
 		});
-		return reply.send({ success: true, message: "User registered successfully!" });
+		return reply.send({ success: true, message: `User registered successfully!\n\n *import !!! this is your secret phrase incase you trying to change your password we will ask for it ${hashedPassword}` });
 	} catch (err) {
-		console.error("Database error:", err);
-		return reply.status(500).send({ success: false, message: "Failed to register user." });
+		return reply.status(500).send({ 
+			success: false, 
+			message: "Failed to register user.",   
+			importantNote: "*Important!!! This is your secret phrase. In case you're trying to change your password, we will ask for it:",
+			secret: `${hashedPassword}`,
+			});
 	}
 });
-	
 
+
+server.post("/check-forgot", async (request, reply) => {
+	const { email, secretKey, newpassword } = request.body as { email: string; secretKey: string; newpassword: string };
+
+	try {
+		const user = await new Promise<any>((resolve, reject) => {
+			db.get("SELECT * FROM users WHERE email = ?", [email], (err, row) => {
+				if (err) return reject(err);
+				resolve(row);
+			});
+		});
+
+		if (!user) {
+			return reply.status(400).send({ success: false, message: "Couldn't find matching email in the server!" });
+		}
+
+		if (user.password === secretKey) {
+			const bcrypt = require("bcrypt");
+			const saltrounds = 10;
+			const hashedPassword = await bcrypt.hash(newpassword, saltrounds);
+
+			await new Promise<void>((resolve, reject) => {
+				db.run("UPDATE users SET password = ? WHERE email = ?", [hashedPassword, email], (err) => {
+					if (err) return reject(err);
+					resolve();
+				});
+			});
+
+			return reply.status(200).send({ success: true, message: "Password has been updated!" });
+		} else {
+			return reply.status(400).send({ success: false, message: "Secret Key is wrong!" });
+		}
+	} catch (err) {
+		console.error("Database error:", err);
+		return reply.status(500).send({ success: false, message: "Internal server error." });
+	}
+});
 //here I create a port where we can access the server
 server.listen({ port: 3000 }, (err) => {
 	if (err) {
