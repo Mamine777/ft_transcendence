@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.ts                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mokariou <mokariou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/06/14 13:39:28 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/06/14 17:49:22 by armitite         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,18 @@ import fastifyCookie from "@fastify/cookie";
 import fastifySession from "@fastify/session";
 import { request } from 'http';
 import { register } from 'module';
-import sqlite3 from "sqlite3";
+import db from './db/db'
 import { error } from "console";
 import bcrypt from "bcrypt";
 import { REPLServer } from "repl";
 
+
+interface user {
+	id: number;
+	username: string;
+	email: string;
+	password: string;
+}
 
 // here I create the server
 const server = fastify();
@@ -43,23 +50,6 @@ server.register(fastifySession, {
 
 // here i created the dabase if it doesnt exist and also I added the tables that conain the pas user...
 //big man ting
-sqlite3.verbose();
-
-const db = new sqlite3.Database("db/database.db", (err) =>{
-	if (err)
-		console.log("couldn't connect to the databse", err);
-	else
-		console.log("Succefully connected to dabase sqLite")
-});
-
-db.run(`
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		username TEXT NOT NULL,
-		email TEXT UNIQUE NOT NULL,
-		password TEXT NOT NULL
-	)
-`);
 
 // here I register the path where the frontend is
 server.register(fastifyStatic, {
@@ -69,7 +59,7 @@ server.register(fastifyStatic, {
 
 server.register(fastifyFormbody);
 
-server.post("/check", async (request, reply) =>{
+server.post("/check", async (request, reply) => {
 	const {email, password} = request.body as {email : string, password : string};
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
@@ -86,19 +76,16 @@ server.post("/check", async (request, reply) =>{
 			message: "Password must be at least 8 characters long, include 1 capital letter, and 1 special character.",
 		  });	
 	}
-	try
-	{
-		const user =  await new Promise<any>((resolve, reject) =>{
-			db.get("SELECT * FROM users WHERE email = ?", [email], (err, row) => {
-				if (err) return reject(err);
-				resolve(row);
-			});
-		});
+	
+		const sql_stmt_user = db.prepare('SELECT * FROM users WHERE email = ?');
+		const user = sql_stmt_user.get(email) as user;
+		console.log(user);
+		
 		if (!user)
 		{
-			return reply.status(400).send({ success: false, message: "credential doesnt match!" });
+			return reply.status(400).send({ success: false, message: "User not found!" });
 		}
-		const bcrypt = require("bcrypt");
+		//const bcrypt = require("bcrypt");
 		const passwordMatch = await bcrypt.compare(password, user.password);
 		if (!passwordMatch)
 		{
@@ -110,12 +97,7 @@ server.post("/check", async (request, reply) =>{
 			return reply.status(200).send({ success: false, message: "You have Succefully logged In", switch: true});
 
 		}
-	}
-	catch (err) {
-		console.error("Database error:", err);
-		return reply.status(500).send({ success: false, message: "Internal server error." });
-	}
-});
+	});
 
 server.get("/me", async (request, reply) =>{
 	if (request.session.user)
@@ -123,12 +105,14 @@ server.get("/me", async (request, reply) =>{
 	else
 		return reply.send({ loggedIn: false });	
 });
+
 server.post("/logout", async (request, reply) => {
 	request.session.destroy(err => {
 		if (err) return reply.status(500).send({ success: false, message: "Logout failed" });
 		reply.send({ success: true, message: "Logged out" });
 	});
 });
+
 server.post("/check-signup", async (request, reply) => {
 	const { signupEmail, signupPassword, username } = request.body as {
 		signupEmail: string;
@@ -151,19 +135,14 @@ server.post("/check-signup", async (request, reply) => {
 	
 	let hashedPassword = "";
 
-	try {
 		const bcrypt = require("bcrypt");
 		const saltrounds = 10;
 		hashedPassword = await bcrypt.hash(signupPassword, saltrounds);
 		console.log(hashedPassword);
 
 		// Check if the email already exists in the database biG man
-		const existingUser = await new Promise<any>((resolve, reject) => {
-			db.get("SELECT * FROM users WHERE email = ? OR username = ?", [signupEmail, username], (err, row) => {
-				if (err) return reject(err);
-				resolve(row);
-			});
-		});
+		const sql_stmt_user = db.prepare('SELECT * FROM users WHERE email = ? OR username = ?');
+		const existingUser = sql_stmt_user.get(signupEmail, username) as user;
 
 		if (existingUser) {
 			if (existingUser.email === signupEmail) {
@@ -175,26 +154,10 @@ server.post("/check-signup", async (request, reply) => {
 		}
 
 		// Insert the new user into the database
-		await new Promise<void>((resolve, reject) => {
-			db.run(
-				"INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-				[username, signupEmail, hashedPassword],
-				(err) => {
-					if (err) return reject(err);
-					resolve();
-				}
-			);
-		});
+		const stmt = db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+		stmt.run(username, signupEmail, hashedPassword);
 		return reply.send({ success: true, message: `User registered successfully!\n\n *import !!! this is your secret phrase incase you trying to change your password we will ask for it ${hashedPassword}` });
-	} catch (err) {
-		return reply.status(500).send({ 
-			success: false, 
-			message: "Failed to register user.",   
-			importantNote: "*Important!!! This is your secret phrase. In case you're trying to change your password, we will ask for it:",
-			secret: `${hashedPassword}`,
-			});
-	}
-});
+	});
 
 
 server.post("/check-forgot", async (request, reply) => {
@@ -203,13 +166,8 @@ server.post("/check-forgot", async (request, reply) => {
 	if (!email || !secretKey || !newpassword) {
 		return reply.status(400).send({ success: false, message: "Missing required fields" });
 	  }		  
-	try {
-		const user = await new Promise<any>((resolve, reject) => {
-			db.get("SELECT * FROM users WHERE email = ?", [email], (err, row) => {
-				if (err) return reject(err);
-				resolve(row);
-			});
-		});
+		const sql_stmt_user = db.prepare('SELECT * FROM users WHERE email = ?');
+		const user = sql_stmt_user.get(email) as user;
 
 		if (!user) {
 			return reply.status(400).send({ success: false, message: "Couldn't find matching email in the server!" });
@@ -220,22 +178,14 @@ server.post("/check-forgot", async (request, reply) => {
 			const saltrounds = 10;
 			const hashedPassword = await bcrypt.hash(newpassword, saltrounds);
 
-			await new Promise<void>((resolve, reject) => {
-				db.run("UPDATE users SET password = ? WHERE email = ?", [hashedPassword, email], (err) => {
-					if (err) return reject(err);
-					resolve();
-				});
-			});
+			const stmt = db.prepare("UPDATE users SET password = ? WHERE email = ?");
+			stmt.run(hashedPassword, email);
 
 			return reply.status(200).send({ success: true, message: "Password has been updated!" });
 		} else {
 			return reply.status(400).send({ success: false, message: "Secret Key is wrong!" });
 		}
-	} catch (err) {
-		console.error("Database error:", err);
-		return reply.status(500).send({ success: false, message: "Internal server error." });
-	}
-});
+	});
 //here I create a port where we can access the server
 server.listen({ port: 3000 }, (err) => {
 	if (err) {
