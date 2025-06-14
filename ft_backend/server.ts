@@ -6,7 +6,7 @@
 /*   By: mokariou <mokariou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/06/11 18:01:31 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/06/14 12:09:05 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,32 @@ import fastify from "fastify";
 import path from 'path'
 import fastifyFormbody from '@fastify/formbody';
 import fastifyStatic from '@fastify/static';
+import fastifyCookie from "@fastify/cookie";
+import fastifySession from "@fastify/session";
 import { request } from 'http';
 import { register } from 'module';
 import sqlite3 from "sqlite3";
 import { error } from "console";
 import bcrypt from "bcrypt";
+import { REPLServer } from "repl";
 
 
 // here I create the server
 const server = fastify();
+
+
+declare module "@fastify/session" {
+  interface FastifySessionObject {
+    user?: { id: number; email: string };
+  }
+}
+
+server.register(fastifyCookie);
+server.register(fastifySession, {
+  secret: 'a-very-secret-key-must-be-32-characters',
+  cookie: { secure: false }, // set to true if using HTTPS
+  saveUninitialized: false,
+});
 
 // here i created the dabase if it doesnt exist and also I added the tables that conain the pas user...
 //big man ting
@@ -89,7 +106,8 @@ server.post("/check", async (request, reply) =>{
 		}
 		else
 		{
-			return reply.status(400).send({ success: false, message: "You have Succefully logged In" });
+			request.session.user = { id: user.id, email: user.email };
+			return reply.status(200).send({ success: false, message: "You have Succefully logged In", switch: true});
 
 		}
 	}
@@ -99,7 +117,18 @@ server.post("/check", async (request, reply) =>{
 	}
 });
 
-
+server.get("/me", async (request, reply) =>{
+	if (request.session.user)
+		return reply.send({ loggedIn: true, user: request.session.user });
+	else
+		return reply.send({ loggedIn: false });	
+});
+server.post("/logout", async (request, reply) => {
+	request.session.destroy(err => {
+		if (err) return reply.status(500).send({ success: false, message: "Logout failed" });
+		reply.send({ success: true, message: "Logged out" });
+	});
+});
 server.post("/check-signup", async (request, reply) => {
 	const { signupEmail, signupPassword, username } = request.body as {
 		signupEmail: string;
@@ -120,7 +149,7 @@ server.post("/check-signup", async (request, reply) => {
 			  });	
 		}
 	
-	let hashedPassword = ""; // Define hashedPassword outside the try block
+	let hashedPassword = "";
 
 	try {
 		const bcrypt = require("bcrypt");
@@ -171,6 +200,9 @@ server.post("/check-signup", async (request, reply) => {
 server.post("/check-forgot", async (request, reply) => {
 	const { email, secretKey, newpassword } = request.body as { email: string; secretKey: string; newpassword: string };
 
+	if (!email || !secretKey || !newpassword) {
+		return reply.status(400).send({ success: false, message: "Missing required fields" });
+	  }		  
 	try {
 		const user = await new Promise<any>((resolve, reject) => {
 			db.get("SELECT * FROM users WHERE email = ?", [email], (err, row) => {
@@ -182,7 +214,7 @@ server.post("/check-forgot", async (request, reply) => {
 		if (!user) {
 			return reply.status(400).send({ success: false, message: "Couldn't find matching email in the server!" });
 		}
-
+		console.log(` this the original ${user.password} the new one ${secretKey}`)
 		if (user.password === secretKey) {
 			const bcrypt = require("bcrypt");
 			const saltrounds = 10;
@@ -213,5 +245,8 @@ server.listen({ port: 3000 }, (err) => {
 	console.log("server is running 🚀");
 });
 
+server.post("/dashboard", async (request, reply) =>{
+	
+});
 
 // to compile use command "npm install " && then "npx ts-node server.ts"

@@ -5,6 +5,25 @@ const dashboardView = document.getElementById("dashboardView");
 const forgotPasswordView = document.getElementById("forgotPasswordView");
 const secretView = document.getElementById("secretView");
 
+
+const profileBtn = document.getElementById('profileBtn');
+const profileMenu = document.getElementById('profileMenu');
+const logoutBtnDropdown = document.getElementById('logoutBtnDropdown');
+
+profileBtn.addEventListener('click', () => {
+    profileMenu.classList.toggle('hidden');
+  });
+
+  logoutBtnDropdown.addEventListener('click', () => {
+    logoutBtn.click();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
+      profileMenu.classList.add('hidden');
+    }
+  });
+
 document.getElementById("goToForgotPassword").onclick = () => {
 	loginView.style.display = "none";
 	forgotPasswordView.style.display = "block"
@@ -37,6 +56,8 @@ document.getElementById("goToLogin").onclick = () => {
 	loginView.style.display = "block";
   };
 
+
+
 document.getElementById("loginForm").addEventListener("submit", async (event) => {
 	event.preventDefault();
   
@@ -50,16 +71,52 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
 		headers: {
 		  "Content-Type": "application/json"
 		},
+		credentials: "include",
 		body: JSON.stringify({ email, password })
 	  });
   
 	  const data = await response.json(); 
 	  messageDiv.textContent = data.message;
+	  if (data.switch && data.switch === true)
+	  {
+		loginView.style.display = "none";
+		dashboardView.style.display = "block";
+	  }
   
 	} catch (error) {
 	  messageDiv.textContent = "An error occurred. Please try again.";
 	}
   });
+
+//cookies session logic
+window.addEventListener("DOMContentLoaded", async () => {
+	try {
+		const res = await fetch("/me", {
+		  method: "GET",
+		  credentials: "include",
+		});
+	
+		const data = await res.json();
+		if (data.loggedIn) {
+			loginView.style.display = "none";
+			dashboardView.style.display = "block";
+		}
+		else
+		{
+			loginView.style.display = "block";
+			dashboardView.style.display = "none";
+		}
+	}
+	catch (err) {
+		console.error("Session check failed", err);
+		loginView.style.display = "block";
+		dashboardView.style.display = "none";
+	}
+	finally {
+		document.body.classList.remove("initializing");
+	}
+});
+
 
 document.getElementById("signupForm").addEventListener("submit", async (event) => {
 	event.preventDefault();
@@ -67,7 +124,7 @@ document.getElementById("signupForm").addEventListener("submit", async (event) =
 	const email = document.getElementById("signupEmail").value;
 	const password = document.getElementById("signupPassword").value;
 	const username = document.getElementById("username").value;
-	const messageDivsignUp = document.getElementById("signupMessage");
+	const messageDivsignUp = document.getElementById("redirect");
 
 
 	try {
@@ -88,20 +145,20 @@ document.getElementById("signupForm").addEventListener("submit", async (event) =
 			document.getElementById("secretNote").textContent = data.importantNote;
 			document.getElementById("secretPhrase").textContent = data.secret;
 			document.getElementById("secretView").style.display = "block";	
+			let countdown = 120;
+			messageDivsignUp.textContent = `User registered successfully! Redirecting in ${countdown} seconds...`;
+			const timing = setInterval(() =>{
+				countdown--;
+				if (countdown > 0)
+					messageDivsignUp.textContent = `User registered successfully! Redirecting in ${countdown} seconds...`;
+				else
+				{
+					clearInterval(timing);
+					secretView.style.display = "none";
+					loginView.style.display = "block";
+				}
+			}, 1000);
 			
-			// let countdown = 3;
-			// messageDivsignUp.textContent = `User registered successfully! Redirecting in ${countdown} seconds...`;
-			// const timing = setInterval(() =>{
-			// 	countdown--;
-			// 	if (countdown > 0)
-			// 		messageDivsignUp.textContent = `User registered successfully! Redirecting in ${countdown} seconds...`;
-			// 	else
-			// 	{
-			// 		clearInterval(timing);
-			// 		signupView.style.display = "none";
-      		// 		loginView.style.display = "block";
-			// 	}
-			// }, 1000);
 		}
 		else
 			messageDivsignUp.textContent = data.message;
@@ -130,6 +187,7 @@ document.getElementById("forgotPasswordForm").addEventListener("submit", async (
 
 		const data = await response.json();
 		messageDiv.textContent = data.message;
+
 
 	} catch (error) {
 		messageDiv.textContent = "An error occurred. Please try again.";

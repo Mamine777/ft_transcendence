@@ -48,12 +48,41 @@
     </p>
   </div>
 
-  <!-- Dashboard View -->
-  <div id="dashboardView" class="view hidden bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm text-center text-gray-800">
-    <h2 class="text-2xl font-bold mb-4">Welcome to your Dashboard!</h2>
-    <p class="mb-6">You are now logged in.</p>
-    <button id="logoutBtn" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition">Logout</button>
+<!-- Dashboard View -->
+<div id="dashboardView" class="view hidden bg-[#0A2647] p-8 rounded-xl shadow-2xl w-full h-screen text-black relative">
+
+  <!-- Profile Dropdown (Top Right) -->
+  <div class="absolute top-6 right-6 z-50">
+    <div class="relative">
+      <button id="profileBtn" class="bg-gray-300 py-2 px-6 rounded shadow-md hover:bg-gray-400 transition">
+        Profile
+      </button>
+      <div id="profileMenu" class="hidden absolute right-0 mt-2 w-40 bg-white rounded shadow-md text-gray-800">
+        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100">Settings</button>
+        <button id="logoutBtnDropdown" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-100">Logout</button>
+      </div>
+    </div>
   </div>
+
+  <!-- Centered Main Buttons -->
+  <div class="flex flex-col items-center justify-center h-full space-y-8">
+    <h1 class="text-white text-4xl font-bold mb-6">ft_transcendence</h1>
+    <p class="text-white text-lg mb-8">The Ultimate Ping Pong Showdown</p>
+    <div class="flex space-x-6">
+      <button class="bg-gray-300 px-10 py-4 w-[250px] text-lg rounded shadow hover:bg-gray-400 transition">Play</button>
+      <button class="bg-gray-300 px-10 py-4 w-[250px] text-lg rounded shadow hover:bg-gray-400 transition">Tournament</button>
+      <button class="bg-gray-300 px-10 py-4 w-[250px] text-lg rounded shadow hover:bg-gray-400 transition">Friends</button>
+    </div>
+  </div>
+
+  <!-- Chat Button -->
+  <button class="absolute bottom-6 right-6 bg-gray-300 py-2 px-6 rounded shadow-md hover:bg-gray-400 transition">Chat</button>
+
+  <!-- Logout Button (for fallback, optional) -->
+  <button id="logoutBtn" class="absolute bottom-6 left-6 bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition">
+    Logout
+  </button>
+</div>
 
 <!-- Forgot Password View -->
 <div id="forgotPasswordView" class="view hidden bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm text-gray-800">
@@ -81,6 +110,7 @@
 
   <p id="secretNote" class="text-red-600 font-semibold mb-3">
     *Important! You'll need this phrase to reset your password.
+
   </p>
 
   <pre id="secretPhrase" class="bg-gray-100 border border-dashed border-red-400 p-6 rounded-xl font-mono text-lg text-gray-800 mb-8 break-words whitespace-pre-wrap text-center mx-auto max-w-full overflow-auto"></pre>
@@ -88,6 +118,7 @@
   <button id="continueToLogin" class="bg-red-600 text-white text-lg py-3 px-6 rounded-xl hover:bg-red-700 transition-all">
     Continue To Login
   </button>
+  <p id="redirect" class="message text-sm text-red-500 text-center mt-2"></p>
   
 </div>
 
