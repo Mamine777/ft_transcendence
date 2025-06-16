@@ -4,7 +4,7 @@ const signupView = document.getElementById("signupView");
 const dashboardView = document.getElementById("dashboardView");
 const forgotPasswordView = document.getElementById("forgotPasswordView");
 const secretView = document.getElementById("secretView");
-
+const playView = document.getElementById("playView");
 
 const profileBtn = document.getElementById('profileBtn');
 const profileMenu = document.getElementById('profileMenu');
@@ -21,8 +21,6 @@ profileBtn.addEventListener('click', () => {
 		  method: "POST",
 		  credentials: "include"
 		});
-		if (!res)
-			console.log("ksksklakl")
 		const data = await res.json();
 		if (data.success) {
 			dashboardView.style.display = "none";
@@ -54,6 +52,11 @@ document.getElementById("goToForgotPassword").onclick = () => {
 	forgotPasswordView.style.display = "block"
 };
 
+document.getElementById("playBtn").onclick = () =>{
+	dashboardView.style.display = "none";
+	playView.style.display = "block";
+	
+}
 document.getElementById("continueToLogin").onclick = () => {
 	secretView.style.display = "none";
 	loginView.style.display = "block";
