@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.ts                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/06/14 17:49:22 by armitite         ###   ########.fr       */
+/*   Updated: 2025/06/16 14:38:19 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ import db from './db/db'
 import { error } from "console";
 import bcrypt from "bcrypt";
 import { REPLServer } from "repl";
-import { LoginRoutes } from './LoginModule/Login'; // This is the 'Module' that I made
+import { LoginRoutes } from './Login/Login'; // This is the 'Module' that I made
 // How it works, is just you put export before a function, 
 // so you do a function that takes the server as parameter,
 // Then put all the routes inside so the function handles all the routes and then
@@ -45,10 +45,7 @@ server.register(fastifySession, {
   saveUninitialized: false,
 });
 
-// here i created the dabase if it doesnt exist and also I added the tables that conain the pas user...
-//big man ting
 
-// here I register the path where the frontend is
 server.register(fastifyStatic, {
 	root: path.join(__dirname, "../ft_frontend"),
 	prefix: "/",
@@ -56,11 +53,7 @@ server.register(fastifyStatic, {
 
 server.register(fastifyFormbody);
 
-//Here is a function that has all the routes of the login part, I kept all the
-// server functions and we use it as a 'Module'
-
 LoginRoutes(server);
-//here I create a port where we can access the server
 server.listen({ port: 3000 }, (err) => {
 	if (err) {
 		console.error(err);
@@ -68,9 +61,3 @@ server.listen({ port: 3000 }, (err) => {
 	}
 	console.log("server is running 🚀");
 });
-
-// server.post("/dashboard", async (request, reply) =>{
-	
-// });
-
-// to compile use command "npm install " && then "npx ts-node server.ts"

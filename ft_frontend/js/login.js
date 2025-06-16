@@ -1,53 +1,12 @@
 const form = document.getElementById("loginForm");
 const loginView = document.getElementById("loginView");
 const signupView = document.getElementById("signupView");
-const dashboardView = document.getElementById("dashboardView");
+
 const forgotPasswordView = document.getElementById("forgotPasswordView");
 const secretView = document.getElementById("secretView");
 
 
-const profileBtn = document.getElementById('profileBtn');
-const profileMenu = document.getElementById('profileMenu');
-const logoutBtnDropdown = document.getElementById('logoutBtnDropdown');
 
-
-profileBtn.addEventListener('click', () => {
-    profileMenu.classList.toggle('hidden');
-  });
-
-  logoutBtnDropdown.addEventListener('click', async () => {
-	try {
-		const res = await fetch("/logout", {
-		  method: "POST",
-		  credentials: "include"
-		});
-		if (!res)
-			console.log("ksksklakl")
-		const data = await res.json();
-		if (data.success) {
-			dashboardView.style.display = "none";
-			loginView.style.display = "block";
-			const emailInput = document.getElementById("email");
-			const passwordInput = document.getElementById("password");
-			const loginMessage = document.getElementById("loginMessage");
-
-			if (emailInput) emailInput.value = "";
-			if (passwordInput) passwordInput.value = "";
-			if (loginMessage) loginMessage.textContent = "";
-		} else {
-			alert("Logout failed. Please try again.");
-		}
-	  } catch (err) {
-		console.error("Logout error:", err);
-		alert("An error occurred during logout.");
-	  }
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
-      profileMenu.classList.add('hidden');
-    }
-  });
 
 document.getElementById("goToForgotPassword").onclick = () => {
 	loginView.style.display = "none";
@@ -117,14 +76,21 @@ window.addEventListener("DOMContentLoaded", async () => {
 		const data = await res.json();
 		if (data.loggedIn) {
 			loginView.style.display = "none";
-			dashboardView.style.display = "block";
+			if (window.location.hash === "#play") {
+				playView.style.display = "block";
+				dashboardView.style.display = "none";
+			} else {
+				dashboardView.style.display = "block";
+				playView.style.display = "none";
+			}	
 		}
-		else
-		{
+		else {
 			loginView.style.display = "block";
 			dashboardView.style.display = "none";
+			playView.style.display = "none";
 		}
 	}
+
 	catch (err) {
 		console.error("Session check failed", err);
 		loginView.style.display = "block";
