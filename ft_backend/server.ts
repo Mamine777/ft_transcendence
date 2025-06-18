@@ -6,7 +6,7 @@
 /*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/06/16 14:38:19 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/06/17 15:58:30 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,8 @@ import { error } from "console";
 import bcrypt from "bcrypt";
 import { REPLServer } from "repl";
 import { LoginRoutes } from './Login/Login'; // This is the 'Module' that I made
-// How it works, is just you put export before a function, 
-// so you do a function that takes the server as parameter,
-// Then put all the routes inside so the function handles all the routes and then
-// You can export it as a module, but this can be done only if we use
+import { DashboardRoutes } from './Dashboard/Dashboard'; // Import DashboardRoutes
+
 
 // here I create the server
 const server = fastify();
@@ -54,6 +52,7 @@ server.register(fastifyStatic, {
 server.register(fastifyFormbody);
 
 LoginRoutes(server);
+DashboardRoutes(server);
 server.listen({ port: 3000 }, (err) => {
 	if (err) {
 		console.error(err);

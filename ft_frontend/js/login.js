@@ -56,6 +56,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
 	  messageDiv.textContent = data.message;
 	  if (data.switch && data.switch === true)
 	  {
+		window.location.hash = "#dashboard";
 		loginView.style.display = "none";
 		dashboardView.style.display = "block";
 	  }
@@ -65,41 +66,6 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
 	}
   });
 
-//cookies session logic
-window.addEventListener("DOMContentLoaded", async () => {
-	try {
-		const res = await fetch("/me", {
-		  method: "GET",
-		  credentials: "include",
-		});
-	
-		const data = await res.json();
-		if (data.loggedIn) {
-			loginView.style.display = "none";
-			if (window.location.hash === "#play") {
-				playView.style.display = "block";
-				dashboardView.style.display = "none";
-			} else {
-				dashboardView.style.display = "block";
-				playView.style.display = "none";
-			}	
-		}
-		else {
-			loginView.style.display = "block";
-			dashboardView.style.display = "none";
-			playView.style.display = "none";
-		}
-	}
-
-	catch (err) {
-		console.error("Session check failed", err);
-		loginView.style.display = "block";
-		dashboardView.style.display = "none";
-	}
-	finally {
-		document.body.classList.remove("initializing");
-	}
-});
 
 
 document.getElementById("signupForm").addEventListener("submit", async (event) => {
