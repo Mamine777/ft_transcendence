@@ -53,11 +53,12 @@
   <!-- Profile Dropdown (Top Right) -->
   <div class="absolute top-6 right-6 z-50">
     <div class="relative">
-      <button id="profileBtn" class="bg-gray-300 py-2 px-6 rounded shadow-md hover:bg-gray-400 transition text-gray-900">
-        Profile
+      <button id="profileBtn" class="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center shadow-md hover:bg-gray-400 transition focus:outline-none overflow-hidden">
+        <!-- Pixel Animal Avatar -->
+        <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=cat" alt="Profile Avatar" class="w-12 h-12 object-cover rounded-full" />
       </button>
       <div id="profileMenu" class="hidden absolute right-0 mt-2 w-40 bg-white rounded shadow-md text-gray-800">
-        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100">Settings</button>
+        <button id="settingsBtn" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Settings</button>
         <button id="logoutBtnDropdown" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-100">Logout</button>
       </div>
     </div>
@@ -99,6 +100,7 @@
 
 
 
+
 <!-- Forgot Password View -->
 <div id="forgotPasswordView" class="view hidden bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm text-gray-800">
   <h2 class="text-2xl font-bold mb-4 text-center">Forgot Password</h2>
@@ -136,6 +138,38 @@
   <p id="redirect" class="message text-sm text-red-500 text-center mt-2"></p>
   
 </div>
+
+<div id="SettingsView" class="view hidden bg-white p-8 rounded-xl shadow-2xl w-full max-w-md text-gray-800 mx-auto">
+  <button id="backFromSettings" type="button" class="mb-4 bg-gray-300 text-gray-900 py-1 px-4 rounded shadow hover:bg-gray-400 transition">
+    ← Back
+  </button>
+  <h2 class="text-3xl font-bold mb-6 text-center">Settings</h2>
+  <form id="settingsForm" class="flex flex-col gap-6">
+    <div>
+      <label for="newUsername" class="block font-semibold mb-1">Change Username</label>
+      <input type="text" id="newUsername" name="newUsername" placeholder="New Username" class="w-full p-2 border rounded" />
+    </div>
+    <div>
+      <label for="newEmail" class="block font-semibold mb-1">Change Email</label>
+      <input type="email" id="newEmail" name="newEmail" placeholder="New Email" class="w-full p-2 border rounded" />
+    </div>
+    <div>
+      <label for="newPassword" class="block font-semibold mb-1">Change Password</label>
+      <input type="password" id="newPassword" name="newPassword" placeholder="New Password" class="w-full p-2 border rounded" />
+    </div>
+    <div>
+      <label for="avatarSeed" class="block font-semibold mb-1">Change Avatar (Pixel Animal)</label>
+      <div class="flex items-center gap-4">
+        <input type="text" id="avatarSeed" name="avatarSeed" placeholder="Avatar Seed (e.g. cat, dog, fox)" class="p-2 border rounded flex-1" />
+        <img id="avatarPreview" src="https://api.dicebear.com/7.x/pixel-art/svg?seed=cat" alt="Avatar Preview" class="w-12 h-12 rounded-full border" />
+      </div>
+      <button type="button" id="randomAvatarBtn" class="mt-2 bg-gray-300 text-gray-900 py-1 px-4 rounded shadow hover:bg-gray-400 transition">Random</button>
+    </div>
+    <button type="submit" class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Save Changes</button>
+    <p id="settingsMessage" class="message text-sm text-red-500 text-center mt-2"></p>
+  </form>
+</div>
+
 
   <script type="module" src="js/login.js"></script>
   <script type="module" src="js/dashboard.js"></script>

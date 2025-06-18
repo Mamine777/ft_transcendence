@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 
 // This interface is because typescript need a typer of user
-interface user {
+export interface user {
   id: number;
   username: string;
   email: string;
@@ -89,7 +89,7 @@ server.post("/check-signup", async (request, reply) => {
 		}
 	
 	let hashedPassword = "";
-
+		
 		const bcrypt = require("bcrypt");
 		const saltrounds = 10;
 		hashedPassword = await bcrypt.hash(signupPassword, saltrounds);
