@@ -58,7 +58,9 @@
         <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=cat" alt="Profile Avatar" class="w-12 h-12 object-cover rounded-full" />
       </button>
       <div id="profileMenu" class="hidden absolute right-0 mt-2 w-40 bg-white rounded shadow-md text-gray-800">
+        <button id="profileBtnScroll" class="block w-full text-left px-4 py-2 hover:bg-gray-100">profile</button>
         <button id="settingsBtn" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Settings</button>
+
         <button id="logoutBtnDropdown" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-100">Logout</button>
       </div>
     </div>
@@ -144,7 +146,7 @@
     ← Back
   </button>
   <h2 class="text-3xl font-bold mb-6 text-center">Settings</h2>
-  <form id="settingsForm" class="flex flex-col gap-6">
+  <form id="settingsForm" method="post" class="flex flex-col gap-6">
     <div>
       <label for="newUsername" class="block font-semibold mb-1">Change Username</label>
       <input type="text" id="newUsername" name="newUsername" placeholder="New Username" class="w-full p-2 border rounded" />
@@ -168,6 +170,39 @@
     <button type="submit" class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Save Changes</button>
     <p id="settingsMessage" class="message text-sm text-red-500 text-center mt-2"></p>
   </form>
+</div>
+
+<!-- Profile View -->
+<div id="profileView" class="view hidden bg-white text-gray-800 p-8 rounded-xl shadow-2xl w-full h-screen relative overflow-auto">
+  <!-- Back Button -->
+  <button id="backToDashboardFromProfile" class="absolute top-6 left-6 bg-gray-300 py-2 px-6 rounded shadow hover:bg-gray-400 transition">
+    ← Back
+  </button>
+
+  <div class="flex flex-col items-center justify-center h-full px-4">
+    <h2 class="text-4xl font-bold text-center mb-6">👤 My Profile</h2>
+
+    <div class="w-full max-w-md bg-gray-100 rounded-2xl shadow-lg p-6">
+      <div class="flex flex-col items-center space-y-4">
+        <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=User" alt="avatar" class="w-24 h-24 rounded-full shadow-md" />
+        <div class="text-center">
+          <h3 id="profileUsername" class="text-2xl font-semibold"></h3>
+          <p id="profileEmail" class="text-gray-600"></p>
+        </div>
+        <div class="w-full mt-4">
+          <p class="font-medium text-lg">Stats:</p>
+          <ul class="mt-2 space-y-1 text-gray-700">
+            <li>🏆 Wins: <span id="profileWins">0</span></li>
+            <li>❌ Losses: <span id="profileLosses">0</span></li>
+            <li>🔥 Rank: <span id="profileRank">Bronze</span></li>
+          </ul>
+        </div>
+        <button id="logoutBtnProfile" class="mt-6 bg-red-600 text-white py-2 px-6 rounded hover:bg-red-700 transition">
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 

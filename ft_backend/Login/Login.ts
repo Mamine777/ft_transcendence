@@ -47,9 +47,8 @@ export function LoginRoutes(server: FastifyInstance) {
 		}
 		else
 		{
-			request.session.user = { id: user.id, email: user.email };
+			request.session.user = { id: user.id, email: user.email, username: user.username } as { id: number; email: string; username: string };
 			return reply.status(200).send({ success: false, message: "You have Succefully logged In", switch: true});
-
 		}
 	});
 
@@ -141,4 +140,5 @@ server.post("/check-forgot", async (request, reply) => {
 			return reply.status(400).send({ success: false, message: "Secret Key is wrong!" });
 		}
 	});
+
 }

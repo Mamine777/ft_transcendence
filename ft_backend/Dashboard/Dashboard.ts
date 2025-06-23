@@ -2,6 +2,18 @@ import { FastifyInstance } from "fastify";
 import db from '../db/db';
 import bcrypt from "bcrypt";
 import { user } from '../Login/Login'; 
+import { request } from "http";
+import '@fastify/session';
+
+declare module '@fastify/session' {
+  interface Session {
+    user?: {
+      id: number;
+      email: string;
+      username: string;
+    };
+  }
+}
 
 export function DashboardRoutes(server: FastifyInstance) {
  server.post("/check-settings", async (request, reply) => {
@@ -14,13 +26,11 @@ export function DashboardRoutes(server: FastifyInstance) {
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 
-	// Get current user ID
 	const userId = request.session.user?.id;
 	if (!userId) {
 		return reply.status(400).send({ success: false, message: "User not logged in" });
 	}
 
-	// Basic validation
 	if (newEmail && !emailRegex.test(newEmail)) {
 		return reply.status(400).send({ success: false, message: "Invalid email format" });
 	}
@@ -75,4 +85,15 @@ export function DashboardRoutes(server: FastifyInstance) {
 	return reply.status(200).send({ success: true, message: "Settings updated successfully", switch: true });
 
 	});
+	server.get('/user', (request, response) =>{
+		if (!request.session.user) {
+			return response.send({ loggedIn: false });
+		  }
+		  const user = request.session.user;
+		  return response.send({
+			loggedIn: true,
+			//username: user.username,
+			email: user.email,
+		  });
+	})
 }

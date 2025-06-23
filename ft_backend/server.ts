@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.ts                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
+/*   By: mokariou <mokariou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/06/17 15:58:30 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/06/20 11:00:42 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ import { error } from "console";
 import bcrypt from "bcrypt";
 import { REPLServer } from "repl";
 import { LoginRoutes } from './Login/Login'; // This is the 'Module' that I made
-import { DashboardRoutes } from './Dashboard/Dashboard'; // Import DashboardRoutes
+import { DashboardRoutes } from './Dashboard/Dashboard';
 
 
 // here I create the server
