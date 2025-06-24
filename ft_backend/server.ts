@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.ts                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mokariou <mokariou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/06/20 11:00:42 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/06/24 17:40:24 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@ import db from './db/db'
 import { error } from "console";
 import bcrypt from "bcrypt";
 import { REPLServer } from "repl";
-import { LoginRoutes } from './Login/Login'; // This is the 'Module' that I made
+import { LoginRoutes } from './Login/Login';
 import { DashboardRoutes } from './Dashboard/Dashboard';
+import loginPlugin from './Login/Login';
 
 
 // here I create the server
@@ -43,16 +44,18 @@ server.register(fastifySession, {
   saveUninitialized: false,
 });
 
-
 server.register(fastifyStatic, {
 	root: path.join(__dirname, "../ft_frontend"),
 	prefix: "/",
 });
 
 server.register(fastifyFormbody);
+server.register(loginPlugin);
 
 LoginRoutes(server);
 DashboardRoutes(server);
+
+
 server.listen({ port: 3000 }, (err) => {
 	if (err) {
 		console.error(err);

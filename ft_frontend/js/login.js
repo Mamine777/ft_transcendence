@@ -143,3 +143,7 @@ document.getElementById("forgotPasswordForm").addEventListener("submit", async (
 		messageDiv.textContent = "An error occurred. Please try again.";
 	}
 });
+
+document.getElementById("42LoginBtn").addEventListener("click", () => {
+  window.location.href = "/auth/42"; // Redirects to backend 42 login
+});
