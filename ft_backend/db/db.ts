@@ -12,6 +12,12 @@ db.exec(`
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS friends (
+  user_id INTEGER NOT NULL,
+  friend TEXT NOT NULL,
+  status TEXT NOT NULL
+  )
 `);
 
 export default db;

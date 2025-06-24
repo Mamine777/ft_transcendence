@@ -232,7 +232,6 @@ document.getElementById("settingsForm").addEventListener("submit", async functio
 async function loadProfile() {
   const username = document.getElementById("profileUsername");
   const email = document.getElementById("profileEmail");
-  console.log("lokakak");
   try {
     const response = await fetch("/user", {
       method: "GET",
