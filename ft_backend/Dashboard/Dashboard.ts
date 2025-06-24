@@ -92,7 +92,7 @@ export function DashboardRoutes(server: FastifyInstance) {
 		  const user = request.session.user;
 		  return response.send({
 			loggedIn: true,
-			//username: user.username,
+			username: (user as { username?: string }).username ?? null,
 			email: user.email,
 		  });
 	})

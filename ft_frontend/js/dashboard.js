@@ -189,6 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.hash = "#profile";
     dashboardView.style.display = "none";
     profileView.style.display = "block";
+    loadProfile();
   }
   document.getElementById("backToDashboardFromProfile").onclick = () =>{
     window.location.hash = "#dashboard";
@@ -227,3 +228,22 @@ document.getElementById("settingsForm").addEventListener("submit", async functio
       settingsMessage.textContent = "An error occurred. Please try again.";
     }
 });
+
+async function loadProfile() {
+  const username = document.getElementById("profileUsername");
+  const email = document.getElementById("profileEmail");
+  console.log("lokakak");
+  try {
+    const response = await fetch("/user", {
+      method: "GET",
+      credentials: "include"
+    });
+    const data = await response.json();
+    if (data.loggedIn) {
+      username.textContent = data.username;
+      email.textContent = data.email;
+    }
+  } catch (error) {
+    console.error("Error loading profile:", error);
+  }
+}
