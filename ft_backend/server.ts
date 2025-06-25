@@ -6,7 +6,7 @@
 /*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/06/24 17:40:24 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/06/25 16:45:28 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@ import { REPLServer } from "repl";
 import { LoginRoutes } from './Login/Login';
 import { DashboardRoutes } from './Dashboard/Dashboard';
 import loginPlugin from './Login/Login';
+import crypto from 'crypto';
+import { FriendsRoutes } from "./Friends/friends";
+
 
 
 // here I create the server
@@ -51,6 +54,7 @@ server.register(fastifyStatic, {
 
 server.register(fastifyFormbody);
 server.register(loginPlugin);
+FriendsRoutes(server);
 
 LoginRoutes(server);
 DashboardRoutes(server);
