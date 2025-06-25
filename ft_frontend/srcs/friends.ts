@@ -15,11 +15,36 @@ export class Friends {
 			</div>
 			`;
 	}
+	renderAddFriend(): string {
+		return `
+		<div class="flex items-start justify-center h-screen w-full">
+			<button id="backToFriens" class="absolute top-15 left-6 bg-gray-300 text-gray-900 py-2 px-6 rounded shadow hover:bg-gray-400 transition">  ← Back </button>
+			<div class="view active bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm text-gray-800 mt-10">
+				<h2 class="text-2xl font-bold mb-4 text-center">Add Friends</h2>
+				<form id="Friendname" method="POST" class="flex flex-col gap-3">
+					<input type="user" id="user" placeholder="Friends Name" required class="p-2 border rounded" />
+					<button type="submit" class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Add</button>
+				</form>
+			</div>
+		</div>
+		`;
+	}
+	renderListFriends(): string {
+		return `
+			<div class="flex items-start justify-center h-screen w-full">
+				<button id="backToFriens" class="absolute top-15 left-6 bg-gray-300 text-gray-900 py-2 px-6 rounded shadow hover:bg-gray-400 transition">  ← Back </button>
+				<div class="view active bg-white w-[32rem] h-[32rem] p-8 rounded-xl shadow-2xl text-gray-800 flex flex-col justify-start">
+					<h2 class="text-2xl font-bold mb-4 m-0 text-center">List friends</h2>
+				</div>
+			</div>
+		`;
+	}
 	attachEvents() {
 		const addfriendBtn = document.getElementById("addfriendBtn");
 		const listBtn = document.getElementById("ListBtn");
 		const removeBtn = document.getElementById("RemoveBtn");
 		const backToDashboard = document.getElementById("backToDashboard");
+		const backToFriends = document.getElementById("backToFriens");
 
 		if (listBtn) {
 			listBtn.addEventListener("click", () => {
@@ -39,6 +64,11 @@ export class Friends {
 		if (backToDashboard) {
 			backToDashboard.addEventListener("click", () => {
 				window.location.hash = "#dashboard";
+			});
+		}
+		if (backToFriends) {
+			backToFriends.addEventListener("click", () => {
+				window.location.hash = "#friends";
 			});
 		}
 	}

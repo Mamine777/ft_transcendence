@@ -179,6 +179,7 @@ function render(): string{
 function updateView() {
     const main = document.getElementById("main-content");
     if (!main) return;
+	main.innerHTML = render();
     switch (window.location.hash) {
         case "#dashboard":
             const dashboard = new Dashboard();
@@ -195,8 +196,19 @@ function updateView() {
 			main.innerHTML = friends.render();
 			friends.attachEvents();
 			break;
-        default:
-            main.innerHTML = render();
+		case "#addfriends":
+			const addfriends = new Friends();
+			main.innerHTML = addfriends.renderAddFriend();
+			addfriends.attachEvents();
+			break;
+		case "#listfriends":
+			const listfriends = new Friends();
+			main.innerHTML = listfriends.renderListFriends();
+			listfriends.attachEvents();
+			break;
+		case "#removefriends":
+			const removefriends = new Friends();
+			main.innerHTML = removefriends.renderRemoveFriends();	
     }
 }
 
@@ -206,8 +218,8 @@ document.addEventListener("DOMContentLoaded", () => {
     updateView();
 });
 
-// Mise à jour à chaque changement de hash
 window.addEventListener("hashchange", updateView);
+// Mise à jour à chaque changement de hash
 
 // document.addEventListener("DOMContentLoaded", () => {
 //     init();
