@@ -188,4 +188,40 @@ export default fp(async (fastify) => {
 	} as { id: number; email: string; username: string | null };
 	return reply.redirect('/#dashboard');
 	});
+	 fastify.register(fastifyOauth2, {
+        name: 'googleOAuth2',
+        scope: ['profile', 'email'],
+        credentials: {
+            client: {
+                id: process.env.GOOGLE_CLIENT_ID as string,
+                secret: process.env.GOOGLE_CLIENT_SECRET as string
+            },
+            auth: fastifyOauth2.GOOGLE_CONFIGURATION
+        },
+        startRedirectPath: '/auth/google',
+        callbackUri: 'http://localhost:3000/auth/google/callback'
+    });
+
+    fastify.get('/auth/google/callback', async (request, reply) => {
+        const token = await (fastify as any).googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
+        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+            headers: {
+                'Authorization': `Bearer ${token.token.access_token}`
+            }
+        });
+        const userInfo = await userInfoRes.json();
+        let user = db.prepare('SELECT * FROM users WHERE email = ?').get(userInfo.email);
+
+        if (!user) {
+            const stmt = db.prepare('INSERT INTO users (username, email, password) VALUES (?, ?, ?)');
+            stmt.run(userInfo.name || userInfo.email, userInfo.email, 'google-oauth');
+            user = db.prepare('SELECT * FROM users WHERE email = ?').get(userInfo.email);
+        }
+        request.session.user = {
+			id: userInfo.id,
+			email: userInfo.email,
+			username: userInfo.login ?? userInfo.username ?? null,
+		} as { id: number; email: string; username: string | null };
+        return reply.redirect('/#dashboard');
+    });
 });
