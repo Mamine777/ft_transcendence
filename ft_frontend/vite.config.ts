@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(({ mode }) => ({
   server: mode === 'development' ? {
-    port: 3000,
+    port: 5173,
     host: true,
     allowedHosts: true,
     watch: {

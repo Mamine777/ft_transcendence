@@ -22,5 +22,5 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["js"]
+  "include": ["srcs"]
 }

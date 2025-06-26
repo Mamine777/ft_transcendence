@@ -1,9 +1,12 @@
 import { FastifyInstance } from "fastify";
 import db from '../db/db';
 import bcrypt from "bcrypt";
+import fp from 'fastify-plugin';
+import 'dotenv/config';
+import fastifyOauth2, { OAuth2Namespace } from '@fastify/oauth2';
+import { request } from "https";
 
 
-// This interface is because typescript need a typer of user
 export interface user {
   id: number;
   username: string;
@@ -11,7 +14,6 @@ export interface user {
   password: string;
 }
 
-// Here I export the function and you can use it in server.ts as 'LoginRoutes'
 export function LoginRoutes(server: FastifyInstance) {
 	server.post("/check", async (request, reply) => {
 	const {email, password} = request.body as {email : string, password : string};
@@ -39,7 +41,6 @@ export function LoginRoutes(server: FastifyInstance) {
 		{
 			return reply.status(400).send({ success: false, message: "User not found!" });
 		}
-		//const bcrypt = require("bcrypt");
 		const passwordMatch = await bcrypt.compare(password, user.password);
 		if (!passwordMatch)
 		{
@@ -142,3 +143,42 @@ server.post("/check-forgot", async (request, reply) => {
 	});
 
 }
+
+
+// export default fp(async (fastify) => {
+// 	const FORTYTWO_CONFIGURATION = {
+// 		authorizeHost: 'https://api.intra.42.fr',
+// 		authorizePath: '/oauth/authorize',
+// 		tokenHost: 'https://api.intra.42.fr',
+// 		tokenPath: '/oauth/token'
+// 	};
+
+// 	fastify.register(fastifyOauth2, {
+// 		name: 'fortytwoOAuth2',
+// 		scope: ['public'],
+// 		credentials: {
+// 			client: {
+// 				id: process.env.FT_CLIENT_ID as string,
+// 				secret: process.env.FT_CLIENT_SECRET as string
+// 			},
+// 			auth: FORTYTWO_CONFIGURATION
+// 		},
+// 		startRedirectPath: '/auth/42',
+// 		callbackUri: 'http://localhost:3000/auth/42/callback'
+// 	});
+// 	fastify.get('/auth/42/callback', async (request, reply) => {
+// 	const token = await (fastify as any).fortytwoOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
+// 	const userInfoRes = await fetch('https://api.intra.42.fr/v2/me', {
+// 		headers: {
+// 			'Authorization': `Bearer ${token.token.access_token}`
+// 		}
+// 	});
+// 	const userInfo = await userInfoRes.json();
+// 	request.session.user = {
+// 		id: userInfo.id,
+// 		email: userInfo.email,
+// 		username: (user as { username?: string }).username ?? null,
+// 	};
+// 	return reply.send({ userInfo });
+// 	});
+// });

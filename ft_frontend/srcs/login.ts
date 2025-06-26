@@ -206,9 +206,9 @@ function updateView() {
 			main.innerHTML = listfriends.renderListFriends();
 			listfriends.attachEvents();
 			break;
-		case "#removefriends":
-			const removefriends = new Friends();
-			main.innerHTML = removefriends.renderRemoveFriends();	
+		// case "#removefriends":
+		// 	const removefriends = new Friends();
+		// 	main.innerHTML = removefriends.renderRemoveFriends();	
     }
 }
 
@@ -216,7 +216,115 @@ function updateView() {
 document.addEventListener("DOMContentLoaded", () => {
     init();
     updateView();
+    const loginForm = document.getElementById("loginForm") as HTMLFormElement | null;
+    const loginView = document.getElementById("loginView") as HTMLElement | null;
+    const dashboardView = document.getElementById("dashboardView") as HTMLElement | null;
+    if (loginForm && loginView) {
+        loginForm.addEventListener("submit", async (event: Event) => {
+            event.preventDefault();
+            const emailInput = document.getElementById("email") as HTMLInputElement | null;
+            const passwordInput = document.getElementById("password") as HTMLInputElement | null;
+            const messageDiv = document.getElementById("loginMessage") as HTMLElement | null;
+            if (!emailInput || !passwordInput || !messageDiv) return;
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            try {
+                const response = await fetch("http://localhost:3000/check", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                messageDiv.textContent = data.message;
+                if (data.switch && data.switch === true && dashboardView) {
+                    window.location.hash = "#dashboard";
+                    loginView.style.display = "none";
+                    dashboardView.style.display = "block";
+                }
+            } catch (error) {
+                messageDiv.textContent = "An error occurred. Please try again.";
+            }
+        });
+    }
+
+    // Signup form
+    const signupForm = document.getElementById("signupForm") as HTMLFormElement | null;
+    if (signupForm) {
+        signupForm.addEventListener("submit", async (event: Event) => {
+            event.preventDefault();
+            const emailInput = document.getElementById("signupEmail") as HTMLInputElement | null;
+            const passwordInput = document.getElementById("signupPassword") as HTMLInputElement | null;
+            const usernameInput = document.getElementById("username") as HTMLInputElement | null;
+            const messageDivsignUp = document.getElementById("redirect") as HTMLElement | null;
+            const signupView = document.getElementById("signupView") as HTMLElement | null;
+            const secretView = document.getElementById("secretView") as HTMLElement | null;
+            if (!emailInput || !passwordInput || !usernameInput || !messageDivsignUp || !signupView || !secretView) return;
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            const username = usernameInput.value;
+            try {
+                const response = await fetch("/check-signup", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ signupEmail: email, signupPassword: password, username })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    signupView.style.display = "none";
+                    (document.getElementById("secretMessage") as HTMLElement).textContent = data.message;
+                    (document.getElementById("secretNote") as HTMLElement).textContent = data.importantNote;
+                    (document.getElementById("secretPhrase") as HTMLElement).textContent = data.secret;
+                    secretView.style.display = "block";
+                    let countdown = 120;
+                    messageDivsignUp.textContent = `User registered successfully! Redirecting in ${countdown} seconds...`;
+                    const timing = setInterval(() => {
+                        countdown--;
+                        if (countdown > 0)
+                            messageDivsignUp.textContent = `User registered successfully! Redirecting in ${countdown} seconds...`;
+                        else {
+                            clearInterval(timing);
+                            secretView.style.display = "none";
+                            loginView.style.display = "block";
+                        }
+                    }, 1000);
+                } else {
+                    messageDivsignUp.textContent = data.message;
+                }
+            } catch (error) {
+                messageDivsignUp.textContent = "An error occurred. Please try again.";
+            }
+        });
+    }
+
+    // Forgot password form
+    const forgotPasswordForm = document.getElementById("forgotPasswordForm") as HTMLFormElement | null;
+    if (forgotPasswordForm) {
+        forgotPasswordForm.addEventListener("submit", async (event: Event) => {
+            event.preventDefault();
+            const messageDiv = document.getElementById("forgotMessage") as HTMLElement | null;
+            const emailInput = document.getElementById("forgotEmail") as HTMLInputElement | null;
+            const secretKeyInput = document.getElementById("secretKey") as HTMLInputElement | null;
+            const newPasswordInput = document.getElementById("newPassword") as HTMLInputElement | null;
+            if (!messageDiv || !emailInput || !secretKeyInput || !newPasswordInput) return;
+            const email = emailInput.value;
+            const secretKey = secretKeyInput.value;
+            const newpassword = newPasswordInput.value;
+            try {
+                const response = await fetch("/check-forgot", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, secretKey, newpassword })
+                });
+                const data = await response.json();
+                messageDiv.textContent = data.message;
+            } catch (error) {
+                messageDiv.textContent = "An error occurred. Please try again.";
+            }
+        });
+    }
 });
+
 
 window.addEventListener("hashchange", updateView);
 // Mise à jour à chaque changement de hash
@@ -228,6 +336,116 @@ window.addEventListener("hashchange", updateView);
 //     main.innerHTML = render();
 
 //     const loginForm = document.getElementById("loginForm") as HTMLFormElement | null;
+//     const loginView = document.getElementById("loginView") as HTMLElement | null;
+//     const dashboardView = document.getElementById("dashboardView") as HTMLElement | null;
+//     if (loginForm && loginView) {
+//         loginForm.addEventListener("submit", async (event: Event) => {
+//             event.preventDefault();
+//             const emailInput = document.getElementById("email") as HTMLInputElement | null;
+//             const passwordInput = document.getElementById("password") as HTMLInputElement | null;
+//             const messageDiv = document.getElementById("loginMessage") as HTMLElement | null;
+//             if (!emailInput || !passwordInput || !messageDiv) return;
+//             const email = emailInput.value;
+//             const password = passwordInput.value;
+//             try {
+//                 const response = await fetch("/check", {
+//                     method: "POST",
+//                     headers: { "Content-Type": "application/json" },
+//                     credentials: "include",
+//                     body: JSON.stringify({ email, password })
+//                 });
+//                 const data = await response.json();
+//                 messageDiv.textContent = data.message;
+//                 if (data.switch && data.switch === true && dashboardView) {
+//                     window.location.hash = "#dashboard";
+//                     loginView.style.display = "none";
+//                     dashboardView.style.display = "block";
+//                 }
+//             } catch (error) {
+//                 messageDiv.textContent = "An error occurred. Please try again.";
+//             }
+//         });
+//     }
+
+//     // Signup form
+//     const signupForm = document.getElementById("signupForm") as HTMLFormElement | null;
+//     if (signupForm) {
+//         signupForm.addEventListener("submit", async (event: Event) => {
+//             event.preventDefault();
+//             const emailInput = document.getElementById("signupEmail") as HTMLInputElement | null;
+//             const passwordInput = document.getElementById("signupPassword") as HTMLInputElement | null;
+//             const usernameInput = document.getElementById("username") as HTMLInputElement | null;
+//             const messageDivsignUp = document.getElementById("redirect") as HTMLElement | null;
+//             const signupView = document.getElementById("signupView") as HTMLElement | null;
+//             const secretView = document.getElementById("secretView") as HTMLElement | null;
+//             if (!emailInput || !passwordInput || !usernameInput || !messageDivsignUp || !signupView || !secretView) return;
+//             const email = emailInput.value;
+//             const password = passwordInput.value;
+//             const username = usernameInput.value;
+//             try {
+//                 const response = await fetch("/check-signup", {
+//                     method: "POST",
+//                     headers: { "Content-Type": "application/json" },
+//                     body: JSON.stringify({ signupEmail: email, signupPassword: password, username })
+//                 });
+//                 const data = await response.json();
+//                 if (data.success) {
+//                     signupView.style.display = "none";
+//                     (document.getElementById("secretMessage") as HTMLElement).textContent = data.message;
+//                     (document.getElementById("secretNote") as HTMLElement).textContent = data.importantNote;
+//                     (document.getElementById("secretPhrase") as HTMLElement).textContent = data.secret;
+//                     secretView.style.display = "block";
+//                     let countdown = 120;
+//                     messageDivsignUp.textContent = `User registered successfully! Redirecting in ${countdown} seconds...`;
+//                     const timing = setInterval(() => {
+//                         countdown--;
+//                         if (countdown > 0)
+//                             messageDivsignUp.textContent = `User registered successfully! Redirecting in ${countdown} seconds...`;
+//                         else {
+//                             clearInterval(timing);
+//                             secretView.style.display = "none";
+//                             loginView.style.display = "block";
+//                         }
+//                     }, 1000);
+//                 } else {
+//                     messageDivsignUp.textContent = data.message;
+//                 }
+//             } catch (error) {
+//                 messageDivsignUp.textContent = "An error occurred. Please try again.";
+//             }
+//         });
+//     }
+
+//     // Forgot password form
+//     const forgotPasswordForm = document.getElementById("forgotPasswordForm") as HTMLFormElement | null;
+//     if (forgotPasswordForm) {
+//         forgotPasswordForm.addEventListener("submit", async (event: Event) => {
+//             event.preventDefault();
+//             const messageDiv = document.getElementById("forgotMessage") as HTMLElement | null;
+//             const emailInput = document.getElementById("forgotEmail") as HTMLInputElement | null;
+//             const secretKeyInput = document.getElementById("secretKey") as HTMLInputElement | null;
+//             const newPasswordInput = document.getElementById("newPassword") as HTMLInputElement | null;
+//             if (!messageDiv || !emailInput || !secretKeyInput || !newPasswordInput) return;
+//             const email = emailInput.value;
+//             const secretKey = secretKeyInput.value;
+//             const newpassword = newPasswordInput.value;
+//             try {
+//                 const response = await fetch("/check-forgot", {
+//                     method: "POST",
+//                     headers: { "Content-Type": "application/json" },
+//                     body: JSON.stringify({ email, secretKey, newpassword })
+//                 });
+//                 const data = await response.json();
+//                 messageDiv.textContent = data.message;
+//             } catch (error) {
+//                 messageDiv.textContent = "An error occurred. Please try again.";
+//             }
+//         });
+//     }
+// });
+// 
+// 
+// const loginForm = document.getElementById("loginForm") as HTMLFormElement | null;
 //     const loginView = document.getElementById("loginView") as HTMLElement | null;
 //     const dashboardView = document.getElementById("dashboardView") as HTMLElement | null;
 //     if (loginForm && loginView) {
