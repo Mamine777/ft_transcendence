@@ -6,7 +6,7 @@
 /*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/06/26 15:32:15 by armitite         ###   ########.fr       */
+/*   Updated: 2025/06/26 16:04:56 by armitite         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,13 @@ import db from './db/db'
 import { error } from "console";
 import bcrypt from "bcrypt";
 import { REPLServer } from "repl";
-import { LoginRoutes } from './Login/Login'; // This is the 'Module' that I made
+import fastifyCors from '@fastify/cors';
+import { LoginRoutes } from './Login/Login';
 import { DashboardRoutes } from './Dashboard/Dashboard';
-import fastifyCors from "@fastify/cors";
+import loginPlugin from './Login/Login';
+import crypto from 'crypto';
+import { FriendsRoutes } from "./Friends/friends";
+
 
 
 // here I create the server
@@ -44,9 +48,8 @@ server.register(fastifySession, {
   saveUninitialized: false,
 });
 
-
 server.register(fastifyStatic, {
-	root: path.join(__dirname, "../ft_frontend/dist"),
+	root: path.join(__dirname, "../ft_frontend"),
 	prefix: "/",
 });
 
@@ -56,9 +59,13 @@ server.register(fastifyCors, {
 });
 
 server.register(fastifyFormbody);
+server.register(loginPlugin);
+FriendsRoutes(server);
 
 LoginRoutes(server);
 DashboardRoutes(server);
+
+
 server.listen({ port: 3000 }, (err) => {
 	if (err) {
 		console.error(err);
