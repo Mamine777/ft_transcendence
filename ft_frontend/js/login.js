@@ -4,6 +4,7 @@ const signupView = document.getElementById("signupView");
 
 const forgotPasswordView = document.getElementById("forgotPasswordView");
 const secretView = document.getElementById("secretView");
+const	verify2faContianer =  document.getElementById("verify-2fa-container");
 
 
 
@@ -56,9 +57,9 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
 	  messageDiv.textContent = data.message;
 	  if (data.switch && data.switch === true)
 	  {
-		window.location.hash = "#dashboard";
+		window.location.hash = "#2fa";
 		loginView.style.display = "none";
-		dashboardView.style.display = "block";
+		verify2faContianer.style.display = "block";
 	  }
   
 	} catch (error) {
@@ -142,8 +143,4 @@ document.getElementById("forgotPasswordForm").addEventListener("submit", async (
 	} catch (error) {
 		messageDiv.textContent = "An error occurred. Please try again.";
 	}
-});
-
-document.getElementById("42LoginBtn").addEventListener("click", () => {
-  window.location.href = "/auth/42"; // Redirects to backend 42 login
 });

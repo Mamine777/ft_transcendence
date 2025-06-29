@@ -28,12 +28,11 @@
   <!-- 42 Login Button -->
   <div class="text-center mt-4">
     <p class="text-gray-600 mb-2">or</p>
-    <a href="/auth/42" class="inline-block bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition">
+    <a href="http://localhost:3000/auth/42" class="inline-block bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition">
       Login with 42 Account
     </a><br>
-    <a href="/auth/google" class="inline-flex items-center bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-100 transition shadow">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" class="w-5 h-5 mr-2" />
-    Login with Google
+    <a href="http://localhost:3000/auth/google" class="inline-flex items-center bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-100 transition shadow">
+<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5 mr-2" />   Login with Google
   </a>
   </div>
 
@@ -46,6 +45,21 @@
     <button id="goToForgotPassword" class="text-blue-600 hover:underline">Forgot Password</button>
   </p>
 </div>
+
+ <!-- Signup View -->
+  <div id="signupView" class="view hidden bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm text-gray-800">
+    <h2 class="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+    <form id="signupForm" method="POST" class="flex flex-col gap-3">
+      <input type="text" id="username" placeholder="Username" required class="p-2 border rounded" />
+      <input type="email" id="signupEmail" placeholder="Email" required class="p-2 border rounded" />
+      <input type="password" id="signupPassword" placeholder="Password" required class="p-2 border rounded" />
+      <button type="submit" class="bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">Register</button>
+    </form>
+    <p id="signupMessage" class="message text-sm text-red-500 text-center mt-2"></p>
+    <p class="text-center mt-4">Already have an account?
+      <button id="goToLogin" class="text-blue-600 hover:underline">Log In</button>
+    </p>
+  </div>
 
 <!-- Dashboard View -->
 <div id="dashboardView" class="view hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-8 rounded-xl shadow-2xl w-full h-screen text-white relative">
@@ -203,8 +217,46 @@
     </div>
   </div>
 </div>
+<div id="verify-2fa-container" class="max-w-sm mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+  <h2 class="text-2xl font-semibold mb-4 text-center">Verify Your 2FA Code</h2>
+  
+  <div class="mb-4 text-green-700 bg-green-100 border border-green-300 rounded px-3 py-2 text-center">
+    A verification code was sent to your email. It will expire in 5 minutes.
+  </div>
 
+  <form id="verify-2fa-form" class="flex flex-col gap-4">
+    <div>
+      <label for="email2fa" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+      <input 
+        type="email" 
+        id="email2fa" 
+        placeholder="Enter your email" 
+        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      >
+    </div>
 
+    <div>
+      <label for="code2fa" class="block text-sm font-medium text-gray-700 mb-1">6-digit Code</label>
+      <input 
+        type="text" 
+        id="code2fa" 
+        maxlength="6" 
+        placeholder="Enter your code" 
+        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      >
+    </div>
+    
+    <button type="submit"
+      id="verify-button"
+      class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+    >
+      Verify
+    </button>
+    <div id="verify-message" class="mt-4 text-center text-sm font-medium"></div>
+  </form>
+</div>
   <script type="module" src="js/login.js"></script>
   <script type="module" src="js/dashboard.js"></script>
 </body>

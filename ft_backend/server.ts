@@ -6,7 +6,7 @@
 /*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/06/25 16:45:28 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/06/26 17:08:22 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ import { DashboardRoutes } from './Dashboard/Dashboard';
 import loginPlugin from './Login/Login';
 import crypto from 'crypto';
 import { FriendsRoutes } from "./Friends/friends";
+import { twoStepVerificationRoutes } from "./routes/twoFactor";
 
 
 
@@ -58,6 +59,8 @@ FriendsRoutes(server);
 
 LoginRoutes(server);
 DashboardRoutes(server);
+
+twoStepVerificationRoutes(server);
 
 
 server.listen({ port: 3000 }, (err) => {

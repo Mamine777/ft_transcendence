@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const SettingsView = document.getElementById("SettingsView");
     const profileView = document.getElementById("profileView");
     const logoutBtnProfile = document.getElementById("logoutBtnProfile");
+    const	verify2faContianer =  document.getElementById("verify-2fa-container");
 
     window.addEventListener("DOMContentLoaded", async () => {
     try {
@@ -40,6 +41,15 @@ document.addEventListener("DOMContentLoaded", () => {
           SettingsView.style.display = "none";
           loginView.style.display = "none";
         }
+        else if (window.location.hash === "#2fa")
+        {
+          verify2faContianer.style.display = "block"
+          profileView.style.display = "none";
+          dashboardView.style.display = "none";
+          SettingsView.style.display = "none";
+          loginView.style.display = "none";
+
+        }
         else {
           dashboardView.style.display = "block";
           playView.style.display = "none";
@@ -50,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
         loginView.style.display = "block";
         dashboardView.style.display = "none";
         playView.style.display = "none";
+        verify2faContianer.style.display = "none";
       }
     }
 
@@ -178,8 +189,17 @@ document.addEventListener("DOMContentLoaded", () => {
       SettingsView.style.display = "none";
       loginView.style.display = "none";
     }
+    else if (window.location.hash === "#2fa")
+    {
+      verify2faContianer.style.display = "block"
+      profileView.style.display = "none";
+      dashboardView.style.display = "none";
+      SettingsView.style.display = "none";
+      loginView.style.display = "none";
+    }
     else {
-        dashboardView.style.display = "block";
+      loginView.style.display = "block";
+        dashboardView.style.display = "none";
         playView.style.display = "none";
         SettingsView.style.display = "none";
         profileView.style.display = "none";
@@ -199,7 +219,8 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("hashchange", showViewFromHash);
 });
 
-document.getElementById("settingsForm").addEventListener("submit", async function (event) {
+
+document.getElementById("verify-2fa-form").addEventListener("submit", async function (event) {
     event.preventDefault();
     const settingsMessage = document.getElementById("settingsMessage");
 
@@ -208,7 +229,7 @@ document.getElementById("settingsForm").addEventListener("submit", async functio
     const newPassword = document.getElementById("newPassword").value;
     try 
     {
-      const response = await fetch("/check-settings", {
+      const response = await fetch("/verify-2fa", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -232,7 +253,6 @@ document.getElementById("settingsForm").addEventListener("submit", async functio
 async function loadProfile() {
   const username = document.getElementById("profileUsername");
   const email = document.getElementById("profileEmail");
-  console.log("lokakak");
   try {
     const response = await fetch("/user", {
       method: "GET",

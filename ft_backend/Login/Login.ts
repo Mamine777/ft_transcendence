@@ -5,7 +5,8 @@ import fp from 'fastify-plugin';
 import 'dotenv/config';
 import fastifyOauth2, { OAuth2Namespace } from '@fastify/oauth2';
 import { request } from "https";
-
+import { codeStore, generateCode } from '../routes/twoFactor';  
+import { send2FACode } from "../emailService";
 
 export interface user {
   id: number;
@@ -44,13 +45,22 @@ export function LoginRoutes(server: FastifyInstance) {
 		const passwordMatch = await bcrypt.compare(password, user.password);
 		if (!passwordMatch)
 		{
-			return reply.status(400).send({ success: false, message: "credential doesnt match!" });
+			return reply.status(400).send({ success: false, message: "credential doesnt match!"});
 		}
-		else
-		{
+		const code = generateCode();
+        codeStore.set(email, {
+            code,
+            expiresAt: Date.now() + 5 * 60 * 100
+		});
+		try {
+            await send2FACode(email, code);
+			console.log(`2FA code sent to ${email}: ${code}`);
 			request.session.user = { id: user.id, email: user.email, username: user.username } as { id: number; email: string; username: string };
-			return reply.status(200).send({ success: false, message: "You have Succefully logged In", switch: true});
-		}
+            return reply.status(200).send({success: false, message: "You have Succefully logged In", switch: true, twoFA: true });
+        } catch (error) {
+			console.error("2FA email error:", error);
+            return reply.status(500).send({ success: false, message: "Failed to send 2FA code" });
+        }
 	});
 
 server.get("/me", async (request, reply) =>{
