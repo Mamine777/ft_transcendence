@@ -10,6 +10,7 @@ export class Friends {
 					<button id="ListBtn" class="bg-gray-300 text-gray-900 px-10 py-4 w-full text-lg rounded-xl shadow hover:bg-gray-400 transition"> Liste </button>
 					<button id="addfriendBtn" class="bg-gray-300 text-gray-900 px-10 py-4 w-full text-lg rounded-xl shadow hover:bg-gray-400 transition"> Add friend </button>
 					<button id="RemoveBtn" class="bg-gray-300 text-gray-900 px-10 py-4 w-full text-lg rounded-xl shadow hover:bg-gray-400 transition"> Remove friend </button>
+					<button id="requestBtn" class="bg-gray-300 text-gray-900 px-10 py-4 w-full text-lg rounded-xl shadow hover:bg-gray-400 transition"> Request </button>
 				</div>
 			</div>
 			</div>
@@ -39,13 +40,38 @@ export class Friends {
 			</div>
 		`;
 	}
+	renderRemoveFriends(): string {
+		return `
+			<div class="flex items-start justify-center h-screen w-full">
+				<button id="backToFriens" class="absolute top-15 left-6 bg-gray-300 text-gray-900 py-2 px-6 rounded shadow hover:bg-gray-400 transition">  ← Back </button>
+				<div class="view active bg-white w-[32rem] h-[32rem] p-8 rounded-xl shadow-2xl text-gray-800 flex flex-col justify-start">
+					<h2 class="text-2xl font-bold mb-4 m-0 text-center">Remove</h2>
+				</div>
+			</div>
+			`;
+	}
+	renderRequest(): string {
+		return `
+			<div class="flex items-start justify-center h-screen w-full">
+				<button id="backToFriens" class="absolute top-15 left-6 bg-gray-300 text-gray-900 py-2 px-6 rounded shadow hover:bg-gray-400 transition">  ← Back </button>
+				<div class="view active bg-white w-[32rem] h-[32rem] p-8 rounded-xl shadow-2xl text-gray-800 flex flex-col justify-start">
+					<h2 class="text-2xl font-bold mb-4 m-0 text-center">Request</h2>
+				</div>
+			</div>
+		`;
+	}
 	attachEvents() {
 		const addfriendBtn = document.getElementById("addfriendBtn");
 		const listBtn = document.getElementById("ListBtn");
 		const removeBtn = document.getElementById("RemoveBtn");
 		const backToDashboard = document.getElementById("backToDashboard");
 		const backToFriends = document.getElementById("backToFriens");
-
+		const requestBtn = document.getElementById("requestBtn");
+		if (requestBtn) {
+			requestBtn.addEventListener("click", () => {
+				window.location.hash = "#request";
+			});
+		}
 		if (listBtn) {
 			listBtn.addEventListener("click", () => {
 				window.location.hash = "#listfriends";

@@ -17,6 +17,7 @@ export class Dashboard {
     return `
       <!-- Centered Main Buttons -->
       <div class="flex flex-col items-center justify-center h-full space-y-8">
+      <button id="profileBtn" class="absolute top-10 right-6 bg-gray-300 text-gray-900 py-2 px-6 rounded shadow-md hover:bg-gray-400 transition">Profile</button>
         <h1 class="text-white text-4xl font-bold mb-6 drop-shadow-lg">ft_transcendence</h1>
         <p class="text-white text-lg mb-8">The Ultimate Ping Pong Showdown</p>
         <div class="flex flex-col gap-6 w-full max-w-md">
@@ -33,6 +34,7 @@ export class Dashboard {
   attachEvents() {
     const playBtn = document.getElementById("play");
     const friendBtn = document.getElementById("friendBtn");
+    const profileBtn = document.getElementById("profileBtn");
     if (playBtn) {
       playBtn.addEventListener("click", () => {
         window.location.hash = "#play";
@@ -41,6 +43,11 @@ export class Dashboard {
     if (friendBtn) {
       friendBtn.addEventListener("click", () => {
         window.location.hash = "#friends";
+      });
+    }
+      if (profileBtn) {
+        profileBtn.addEventListener("click", () => {
+        window.location.hash = "#profile";
       });
     }
   }
