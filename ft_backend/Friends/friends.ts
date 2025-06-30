@@ -93,21 +93,35 @@ export function FriendsRoutes(server: FastifyInstance) {
 		console.log("User : ", user);
 		console.log("User id : ", user?.id);
 
+		console.log("ici");
+		
+		type FriendRow = { friend: string };
+		type UsernameRow = { username: string };
+		type IdRow = { id: number };
+
 		const sql_stmt_username_request = db.prepare('SELECT friend FROM friends WHERE user_id = ? AND status = ? AND friend = ?');
-		const sender_username = sql_stmt_username_request.get(user?.id, 'pending', message);
+		const sender_username = sql_stmt_username_request.get(user?.id, 'pending', message) as FriendRow;
 
 		const sql_stmt_username = db.prepare('SELECT username FROM users WHERE id = ?');
-		const username = sql_stmt_username.get(user?.id);
+		const username = sql_stmt_username.get(user?.id)  as UsernameRow;
 
 		const sql_stmt_id = db.prepare('SELECT id FROM users WHERE username = ?');
-		const accepted_id = sql_stmt_id.get(message);
+		const accepted_id = sql_stmt_id.get(message) as IdRow;
 		
 		console.log("La personne qui va etre add : ", sender_username);
 		console.log("Son id : ", accepted_id);
+		console.log("type de user.id :", typeof user?.id);
+		console.log("type de sender_username :", typeof sender_username);
 
-		const sql_stmt_create_friend = db.prepare('INSERT INTO friends (user_id, friend, status) VALUES (?, ?, ?)');
-		sql_stmt_create_friend.run(user?.id, sender_username, 'friend');
-		sql_stmt_create_friend.run(accepted_id, username, 'friend');
+
+		try {
+			const sql_stmt_create_friend = db.prepare('INSERT INTO friends (user_id, friend, status) VALUES (?, ?, ?)');
+			sql_stmt_create_friend.run(user?.id, sender_username?.friend, 'friend');
+			sql_stmt_create_friend.run(accepted_id?.id, username?.username, 'friend');
+		}
+		catch (error) {
+			console.log("Error during insert friend");
+		}
 		// const sql_stmt_user = db.prepare('SELECT id FROM users WHERE username = ?');
 		// const id_recv = sql_stmt_user.get(message) as user;
 		// console.log("Le id :", id_recv);
