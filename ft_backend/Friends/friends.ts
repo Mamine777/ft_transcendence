@@ -75,6 +75,24 @@ export function FriendsRoutes(server: FastifyInstance) {
 		return reply.send({ succes: true, received: sender_username});
 	})
 
+	server.get("/FriendList", async (request, reply) => {
+
+		const cookies = request.cookies;
+		const user = request.session.user;
+
+		if (!user)
+			return reply.status(400).send({ success: false, error: "User disconnected" });
+
+		console.log("Cookies : ", cookies);
+		console.log("User : ", user);
+		console.log("User id : ", user?.id);
+
+		const sql_stmt_username = db.prepare('SELECT friend FROM friends WHERE user_id = ? AND status = ?');
+		const sender_username = sql_stmt_username.all(user?.id, 'friend');
+		
+		return reply.send({ succes: true, received: sender_username});
+	})
+
 	server.post("/AcceptRequest", async (request, reply) => {
 
 		const cookies = request.cookies;
@@ -118,20 +136,17 @@ export function FriendsRoutes(server: FastifyInstance) {
 			const sql_stmt_create_friend = db.prepare('INSERT INTO friends (user_id, friend, status) VALUES (?, ?, ?)');
 			sql_stmt_create_friend.run(user?.id, sender_username?.friend, 'friend');
 			sql_stmt_create_friend.run(accepted_id?.id, username?.username, 'friend');
+
+			const sql_stmt_delete_pending = db.prepare('DELETE FROM friends WHERE user_id = ? AND friend = ? AND status = ?');
+			sql_stmt_delete_pending.run(user?.id, sender_username?.friend, 'pending');
+
+			console.log("id user : ", user?.id);
+			console.log("sender username friend: ", sender_username?.friend);
 		}
 		catch (error) {
 			console.log("Error during insert friend");
 		}
-		// const sql_stmt_user = db.prepare('SELECT id FROM users WHERE username = ?');
-		// const id_recv = sql_stmt_user.get(message) as user;
-		// console.log("Le id :", id_recv);
-		// if (!id_recv)
-		// 	return reply.status(400).send({ success: false, error: "User does not exists" });
 
-		// const stmt = db.prepare("INSERT INTO friends (user_id, friend, status) VALUES (?, ?, ?)");
-		// stmt.run(id_recv.id, sender_username.username, "pending");
-	
-		// console.log("Msg recu :", message);
 		return reply.send({ succes: true, received: sender_username});
 	})
 }
