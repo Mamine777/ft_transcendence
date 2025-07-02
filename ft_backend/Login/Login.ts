@@ -5,8 +5,24 @@ import fp from 'fastify-plugin';
 import 'dotenv/config';
 import fastifyOauth2, { OAuth2Namespace } from '@fastify/oauth2';
 import { request } from "https";
-import { codeStore, generateCode } from '../routes/twoFactor';  
+import {generateCode } from '../routes/twoFactor';  
 import { send2FACode } from "../emailService";
+
+declare module "fastify" {
+  interface Session {
+	pending2FA?: {
+	  email: string;
+	  code: string;
+	  expiresAt: number;
+	};
+	user?: {
+	  id: number;
+	  email: string;
+	  username: string;
+	};
+  }
+}
+
 
 export interface user {
   id: number;
@@ -48,14 +64,14 @@ export function LoginRoutes(server: FastifyInstance) {
 			return reply.status(400).send({ success: false, message: "credential doesnt match!"});
 		}
 		const code = generateCode();
-        codeStore.set(email, {
-            code,
-            expiresAt: Date.now() + 5 * 60 * 100
-		});
+        request.session.pending2FA = {
+		email,
+		code,
+		expiresAt: Date.now() + 5 * 60 * 1000,
+    	};
 		try {
             await send2FACode(email, code);
 			console.log(`2FA code sent to ${email}: ${code}`);
-			request.session.user = { id: user.id, email: user.email, username: user.username } as { id: number; email: string; username: string };
             return reply.status(200).send({success: false, message: "You have Succefully logged In", switch: true, twoFA: true });
         } catch (error) {
 			console.error("2FA email error:", error);
@@ -105,7 +121,6 @@ server.post("/check-signup", async (request, reply) => {
 		hashedPassword = await bcrypt.hash(signupPassword, saltrounds);
 		console.log(hashedPassword);
 
-		// Check if the email already exists in the database biG man
 		const sql_stmt_user = db.prepare('SELECT * FROM users WHERE email = ? OR username = ?');
 		const existingUser = sql_stmt_user.get(signupEmail, username) as user;
 
@@ -118,7 +133,6 @@ server.post("/check-signup", async (request, reply) => {
 			}
 		}
 
-		// Insert the new user into the database
 		const stmt = db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
 		stmt.run(username, signupEmail, hashedPassword);
 		return reply.send({ success: true, message: `User registered successfully!\n\n *import !!! this is your secret phrase incase you trying to change your password we will ask for it ${hashedPassword}` });

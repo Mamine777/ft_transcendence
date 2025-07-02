@@ -5,13 +5,18 @@ import { user } from '../Login/Login';
 import { request } from "http";
 import '@fastify/session';
 
-declare module '@fastify/session' {
-  interface Session {
-    user?: {
-      id: number;
-      email: string;
-      username: string;
-    };
+declare module "@fastify/session" {
+  interface SessionData {
+	pending2FA?: {
+	  email: string;
+	  code: string;
+	  expiresAt: number;
+	};
+	user?: {
+	  id: number;
+	  email: string;
+	  username: string;
+	};
   }
 }
 

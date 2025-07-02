@@ -219,35 +219,36 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("hashchange", showViewFromHash);
 });
 
-
 document.getElementById("verify-2fa-form").addEventListener("submit", async function (event) {
-    event.preventDefault();
-    const settingsMessage = document.getElementById("settingsMessage");
+  event.preventDefault();
+  const verifyMessage = document.getElementById("verify-message");
 
-    const newUsername = document.getElementById("newUsername").value;
-    const newEmail = document.getElementById("newEmail").value;
-    const newPassword = document.getElementById("newPassword").value;
-    try 
-    {
-      const response = await fetch("/verify-2fa", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          newEmail: newEmail,
-          newPassword: newPassword,
-          newUsername: newUsername
-        })
-      });
-      const data = await response.json();
-      if (data.success)
-      {
-        settingsMessage.textContent = data.message;
-      }
+  // Get the code from the input
+  const code2fa = document.getElementById("code2fa").value;
+
+  try {
+    const response = await fetch('/verify-2fa', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code2fa })
+    });
+    const data = await response.json();
+    if (data.success) {
+      verifyMessage.textContent = data.message;
+      verifyMessage.classList.remove("text-red-500");
+      verifyMessage.classList.add("text-green-600");
+      // Optionally redirect or update UI here
+    } else {
+      verifyMessage.textContent = data.message;
+      verifyMessage.classList.remove("text-green-600");
+      verifyMessage.classList.add("text-red-500");
     }
-    catch (error) {
-      console.error("Error during signup check:", error);
-      settingsMessage.textContent = "An error occurred. Please try again.";
-    }
+  } catch (error) {
+    console.error("Error during 2FA verification:", error);
+    verifyMessage.textContent = "An error occurred. Please  0try again.";
+    verifyMessage.classList.remove("text-green-600");
+    verifyMessage.classList.add("text-red-500");
+  }
 });
 
 async function loadProfile() {
