@@ -6,7 +6,7 @@
 /*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/07/03 17:14:39 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/07/03 17:16:02 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ import fastifyJwt from '@fastify/jwt';
 
 const server = fastify();
 // add this line to .env
-// BREVO_API_KEY=xsmtpsib-b71e5e88a64f1c1230881809e9d1336548d96b0ad15d1df6be0b4487e7df4b77-n71aTmcOd8rAsCSk
+// xsmtpsib-b71e5e88a64f1c1230881809e9d1336548d96b0ad15d1df6be0b4487e7df4b77-n71aTmcOd8rAsCSk
 
 declare module "@fastify/session" {
   interface FastifySessionObject {
