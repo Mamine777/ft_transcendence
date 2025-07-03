@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.ts                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
+/*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/07/03 17:16:47 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/07/03 17:49:07 by armitite         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ import fastifyJwt from '@fastify/jwt';
 
 const server = fastify();
 
+server.register(fastifyCookie);
 
 declare module "@fastify/session" {
   interface FastifySessionObject {
@@ -57,7 +58,6 @@ server.register(loginPlugin);
 FriendsRoutes(server);
 LoginRoutes(server);
 DashboardRoutes(server);
- db.exec(`ALTER TABLE users ADD COLUMN avatar TEXT`);
 twoStepVerificationRoutes(server);
 server.register(fastifyMultipart);
 
