@@ -6,7 +6,7 @@
 /*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/06/26 17:08:22 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/07/03 17:14:39 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,20 @@ import loginPlugin from './Login/Login';
 import crypto from 'crypto';
 import { FriendsRoutes } from "./Friends/friends";
 import { twoStepVerificationRoutes } from "./routes/twoFactor";
+import fastifyMultipart from '@fastify/multipart';
+import fastifyJwt from '@fastify/jwt';
 
 
-
-// here I create the server
 const server = fastify();
-
+// add this line to .env
+// BREVO_API_KEY=xsmtpsib-b71e5e88a64f1c1230881809e9d1336548d96b0ad15d1df6be0b4487e7df4b77-n71aTmcOd8rAsCSk
 
 declare module "@fastify/session" {
   interface FastifySessionObject {
     user?: { id: number; email: string };
   }
 }
-
-server.register(fastifyCookie);
+server.register(fastifyJwt, { secret: 'Black-White' });
 server.register(fastifySession, {
   secret: 'a-very-secret-key-must-be-32-characters',
   cookie: { secure: false }, // set to true if using HTTPS
@@ -56,11 +56,11 @@ server.register(fastifyStatic, {
 server.register(fastifyFormbody);
 server.register(loginPlugin);
 FriendsRoutes(server);
-
 LoginRoutes(server);
 DashboardRoutes(server);
-
+ db.exec(`ALTER TABLE users ADD COLUMN avatar TEXT`);
 twoStepVerificationRoutes(server);
+server.register(fastifyMultipart);
 
 
 server.listen({ port: 3000 }, (err) => {

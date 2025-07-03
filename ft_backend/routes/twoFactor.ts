@@ -15,6 +15,11 @@ export function twoStepVerificationRoutes(server: FastifyInstance) {
     if (!pending2FA) {
       return reply.status(400).send({ success: false, message: 'No 2FA code pending.' });
     }
+    try {
+		  await request.jwtVerify();
+    } catch (err) {
+      return reply.code(401).send({ success: false, message: "Unauthorized" });
+    }
 
     if (Date.now() > pending2FA.expiresAt) {
       delete request.session.pending2FA;
@@ -37,9 +42,15 @@ export function twoStepVerificationRoutes(server: FastifyInstance) {
       return reply.status(400).send({ success: false, message: "User not found!" });
     }
     // @ts-ignore: Extend session user to include username
+    
     request.session.user = { id: user.id, email: user.email, username: user.username };
     delete request.session.pending2FA;
+    const token = await reply.jwtSign({
+      id: user.id,
+      email: user.email,
+      username: user.username
+    });
 
-    return reply.send({ success: true, message: '2FA verified successfully.' });
+    return reply.send({ success: true, token ,message: '2FA verified successfully.' });
   });
 }

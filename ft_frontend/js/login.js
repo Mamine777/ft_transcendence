@@ -10,6 +10,7 @@ const	verify2faContianer =  document.getElementById("verify-2fa-container");
 
 
 document.getElementById("goToForgotPassword").onclick = () => {
+	window.location.hash = "#forgot"
 	loginView.style.display = "none";
 	forgotPasswordView.style.display = "block"
 };

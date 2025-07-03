@@ -2,7 +2,7 @@ import { FastifyInstance } from "fastify";
 import db from '../db/db';
 import bcrypt from "bcrypt";
 import { user } from '../Login/Login'; 
-import { request } from "http";
+import { request, Server } from "http";
 import '@fastify/session';
 
 declare module "@fastify/session" {
@@ -36,6 +36,11 @@ export function DashboardRoutes(server: FastifyInstance) {
 		return reply.status(400).send({ success: false, message: "User not logged in" });
 	}
 
+	try {
+		await request.jwtVerify();
+	} catch (err) {
+		return reply.code(401).send({ success: false, message: "Unauthorized" });
+	}
 	if (newEmail && !emailRegex.test(newEmail)) {
 		return reply.status(400).send({ success: false, message: "Invalid email format" });
 	}
@@ -100,5 +105,29 @@ export function DashboardRoutes(server: FastifyInstance) {
 			username: (user as { username?: string }).username ?? null,
 			email: user.email,
 		  });
+	});
+	server.post('/uploadFile', async (request, reply) =>{
+		try {
+			await request.jwtVerify();
+		} catch (err) {
+			return reply.code(401).send({ success: false, message: "Unauthorized" });
+		}
+			const data = await request.file();
+		if (!data)
+			return reply.status(400).send({ success: false, message: "No file uploaded" });
+		const userId = request.session.user?.id;
+		const filename = `avatar_${userId}_${Date.now()}.png`;
+		const filepath = `./db/avatars/${filename}`;
+		const fs = await import('fs');
+		await new Promise<void>((resolve, reject) => {
+			const writeStream = fs.createWriteStream(filepath);
+			data.file.pipe(writeStream);
+			data.file.on('end', resolve);
+			data.file.on('error', reject);
+		});
+		const updateStmt = db.prepare('UPDATE users SET avatar = ? WHERE id = ?');
+		updateStmt.run(`/avatars/${filename}`, userId);
+
+		return reply.send({ success: true, message: "Profile picture updated", avatar: `/avatars/${filename}` });
 	})
 }

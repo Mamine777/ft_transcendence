@@ -11,6 +11,7 @@ db.exec(`
     username TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL
+    avatar TEXT
   );
 
   CREATE TABLE IF NOT EXISTS friends (
