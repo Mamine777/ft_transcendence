@@ -28,6 +28,7 @@ import { DashboardRoutes } from './Dashboard/Dashboard';
 import loginPlugin from './Login/Login';
 import crypto from 'crypto';
 import { FriendsRoutes } from "./Friends/friends";
+import { HistoryRoutes } from "./History/history";
 
 
 
@@ -64,6 +65,7 @@ FriendsRoutes(server);
 
 LoginRoutes(server);
 DashboardRoutes(server);
+HistoryRoutes(server);
 
 
 server.listen({ port: 3000 }, (err) => {
