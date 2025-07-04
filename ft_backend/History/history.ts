@@ -114,7 +114,9 @@ export function HistoryRoutes(server: FastifyInstance) {
 		data: History
 		});
 
-		server.post("/RowUpdate", async (request, reply) => {
+		
+	})
+	server.post("/RowUpdate", async (request, reply) => {
 
 		const cookies = request.cookies;
 		const user = request.session.user;
@@ -138,8 +140,6 @@ export function HistoryRoutes(server: FastifyInstance) {
 		return reply.status(200).send({
 		success: true,
 		message: "History updated",
-		});
-	})
-
+	});
 	})
 }
