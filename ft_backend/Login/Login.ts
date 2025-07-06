@@ -32,7 +32,7 @@ export interface user {
 }
 
 export function LoginRoutes(server: FastifyInstance) {
-	server.post("/check", async (request, reply) => {
+	server.post("/login-check", async (request, reply) => {
 	const {email, password} = request.body as {email : string, password : string};
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
@@ -42,13 +42,6 @@ export function LoginRoutes(server: FastifyInstance) {
 	{
 		return reply.status(400).send({ success: false, message: "Invalid email format" });
 	}
-	if (!password || !passwordRegex.test(password))
-	{
-		return reply.status(400).send({
-			success: false,
-			message: "Password must be at least 8 characters long, include 1 capital letter, and 1 special character.",
-		  });	
-	}
 	
 		const sql_stmt_user = db.prepare('SELECT * FROM users WHERE email = ?');
 		const user = sql_stmt_user.get(email) as user;
@@ -56,7 +49,7 @@ export function LoginRoutes(server: FastifyInstance) {
 		
 		if (!user)
 		{
-			return reply.status(400).send({ success: false, message: "User not found!" });
+			return reply.status(400).send({ success: false, message: "credential doesnt match!" });
 		}
 		const passwordMatch = await bcrypt.compare(password, user.password);
 		if (!passwordMatch)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.ts                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mokariou <mokariou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/07/03 17:49:07 by armitite         ###   ########.fr       */
+/*   Updated: 2025/07/05 15:20:55 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ import { FriendsRoutes } from "./Friends/friends";
 import { twoStepVerificationRoutes } from "./routes/twoFactor";
 import fastifyMultipart from '@fastify/multipart';
 import fastifyJwt from '@fastify/jwt';
+import fastifyCors from '@fastify/cors';
 
 
 const server = fastify();
@@ -51,6 +52,10 @@ server.register(fastifySession, {
 server.register(fastifyStatic, {
 	root: path.join(__dirname, "../ft_frontend"),
 	prefix: "/",
+});
+server.register(fastifyCors, {
+	origin: ["http://localhost:5173"],
+	credentials: true,
 });
 
 server.register(fastifyFormbody);

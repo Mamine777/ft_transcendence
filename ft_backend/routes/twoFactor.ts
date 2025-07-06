@@ -11,16 +11,10 @@ export function twoStepVerificationRoutes(server: FastifyInstance) {
   server.post('/verify-2fa', async (request: FastifyRequest, reply: FastifyReply) => {
     const { code2fa } = request.body as { code2fa: string };
     const pending2FA = request.session.pending2FA;
-
+    
     if (!pending2FA) {
       return reply.status(400).send({ success: false, message: 'No 2FA code pending.' });
     }
-    try {
-		  await request.jwtVerify();
-    } catch (err) {
-      return reply.code(401).send({ success: false, message: "Unauthorized" });
-    }
-
     if (Date.now() > pending2FA.expiresAt) {
       delete request.session.pending2FA;
       return reply.status(400).send({ success: false, message: 'Code expired.' });
