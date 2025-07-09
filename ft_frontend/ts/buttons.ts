@@ -60,4 +60,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		});
 	}
+  const profileMenuBtn = document.getElementById("profileMenuBtn");
+  const dropdownMenu = document.getElementById("dropdownMenu");
+
+  if (profileMenuBtn && dropdownMenu) {
+    profileMenuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!dropdownMenu.classList.contains("hidden")) {
+        dropdownMenu.classList.add("hidden");
+      }
+    });
+
+    dropdownMenu.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  const settinsBtn = document.getElementById("settingsBtn");
+  if (settinsBtn)
+  {
+    settinsBtn.addEventListener('click', () => {
+      switchView("settingsView");
+    })
+  }
+  const profileBtn = document.getElementById("profileBtn");
+if (profileBtn) {
+  profileBtn.addEventListener('click', async () => {
+    try {
+      const response = await fetch("http://localhost:3000/user", {
+        method: "GET",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await response.json();
+      if (data.loggedIn)
+        {
+          const profileUsernameElem = document.getElementById("profileUsername");
+          if (profileUsernameElem) {
+            profileUsernameElem.textContent = data.username;
+          }
+          const profileEmailEl = document.getElementById("profileEmail");
+          if (profileUsernameElem && profileEmailEl)
+            profileEmailEl.textContent = data.email;
+          switchView("profileViewDrop");
+      }
+    } catch (error) {
+      console.error("Error fetching /user:", error);
+    }
+  });
+}
+
 });

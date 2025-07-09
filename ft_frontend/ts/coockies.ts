@@ -1,48 +1,28 @@
-type ViewElement = HTMLElement | null;
+import { switchView } from "./login";
 
-// Map of views
-const views: Record<string, ViewElement> = {
-  login: document.getElementById("loginView"),
-  dashboard: document.getElementById("dashboardView"),
-  play: document.getElementById("playView"),
-  settings: document.getElementById("settingsView"),
-  profile: document.getElementById("profileView"),
-  twoFA: document.getElementById("verify2faContainer"),
-  secret: document.getElementById("secretView"),
+export type ViewElement = HTMLElement | null;
+
+export const views: Record<string, ViewElement> = {
+  loginView: document.getElementById("loginView"),
+  signupView: document.getElementById("signupView"),
+  dashboardView: document.getElementById("dashboardView"),
+  twoFAView: document.getElementById("twoFAView"),
+  forgotPasswordView: document.getElementById("forgotPasswordView"),
+  secretView: document.getElementById("secretView"),
+  profileViewDrop : document.getElementById("profileViewDrop"),
+  settingsView : document.getElementById("settingsView")
 };
 
-// Hide all views
-function hideAllViews(): void {
-  Object.values(views).forEach((view) => {
-    if (view) view.style.display = "none";
-  });
-}
 
-// Show a single view
-function showView(view: ViewElement): void {
-  if (view) view.style.display = "block";
-}
-
-// Show the correct view based on the hash
 function showViewFromHash(): void {
-  hideAllViews();
-
   let hash = window.location.hash.slice(1);
   if (!hash) {
-    hash = "dashboard"; // Default to dashboard if no hash
-    window.location.hash = "#dashboard";
+    hash = "loginView";
   }
-
-  const viewKey = hash === "2fa" ? "twoFA" : hash;
-  const view = views[viewKey];
-  if (view) {
-    showView(view);
-  } else {
-    showView(views.dashboard); // Fallback
-  }
+  switchView(hash);
 }
 
-// Load user profile data
+
 async function loadProfile(): Promise<void> {
   const username = document.getElementById("profileUsername");
   const email = document.getElementById("profileEmail");
@@ -65,17 +45,36 @@ async function loadProfile(): Promise<void> {
   }
 }
 
-// Check if the session is valid
+
 async function handleSessionCheck(): Promise<void> {
-  try {
+    try {
+    const headers: HeadersInit = {};
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      headers['Authorization'] = `Bearer ${jwt}`;
+    }
     const response = await fetch("http://localhost:3000/me", {
+      headers,
       credentials: "include"
     });
     const data = await response.json();
+    console.log("handleSessionCheck received:", data);
 
     if (data.loggedIn) {
       showViewFromHash();
-    } else {
+    }
+    else if (data.needs2FA) {
+      switchView("twoFAView");
+    }
+    else if (
+      window.location.hash === "#signupView" ||
+      window.location.hash === "#forgotPasswordView" ||
+      window.location.hash === "#secretView"
+    ) {
+      const hash = window.location.hash.slice(1);
+      switchView(hash);
+    }
+    else {
       redirectToLogin();
     }
   } catch (err) {
@@ -86,36 +85,35 @@ async function handleSessionCheck(): Promise<void> {
   }
 }
 
-// Force to login view
+
 function redirectToLogin(): void {
-  hideAllViews();
-  showView(views.login);
-  window.location.hash = "#login";
+  switchView("loginView");
 }
 
-// Wire navigation button clicks
+
 function setupNavigationListeners(): void {
   document.getElementById("backToDashboard")?.addEventListener("click", () => {
-    window.location.hash = "#dashboard";
+    window.location.hash = "#dashboardView";
   });
 
   document.getElementById("settingsBtn")?.addEventListener("click", () => {
-    window.location.hash = "#settings";
+    window.location.hash = "#settingsView";
   });
 
   document.getElementById("backFromSettings")?.addEventListener("click", () => {
-    window.location.hash = "#dashboard";
+    window.location.hash = "#dashboardView";
   });
 
   document.getElementById("profileBtnScroll")?.addEventListener("click", () => {
-    window.location.hash = "#profile";
+    window.location.hash = "#profileView";
     loadProfile();
   });
 
   document.getElementById("backToDashboardFromProfile")?.addEventListener("click", () => {
-    window.location.hash = "#dashboard";
+    window.location.hash = "#dashboardView";
   });
 }
+
 
 // Initialization
 function initialize(): void {
@@ -131,5 +129,4 @@ function initialize(): void {
   setupNavigationListeners();
 }
 
-// Start app
 initialize();

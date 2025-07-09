@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.ts                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mokariou <mokariou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/07/05 15:20:55 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/07/07 10:43:18 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,19 @@ declare module "@fastify/session" {
     user?: { id: number; email: string };
   }
 }
-server.register(fastifyJwt, { secret: 'Black-White' });
+server.register(fastifyJwt, {
+  secret: 'Black-White',
+  verify: {
+    extractToken: (request) => {
+      const authHeader = request.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        return authHeader.slice(7);
+      }
+      return undefined;
+    }
+  }
+});
+
 server.register(fastifySession, {
   secret: 'a-very-secret-key-must-be-32-characters',
   cookie: { secure: false }, // set to true if using HTTPS

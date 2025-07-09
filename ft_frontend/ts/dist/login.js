@@ -7,18 +7,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-export function switchView(targetViewId) {
-    const views = document.querySelectorAll(".view");
-    views.forEach((view) => {
-        view.style.display = "none";
+import { views } from "./coockies";
+export function switchView(viewKey) {
+    Object.values(views).forEach((view) => {
+        if (view)
+            view.style.display = "none";
     });
-    const targetView = document.getElementById(targetViewId);
+    const targetView = views[viewKey];
     if (targetView) {
         targetView.style.display = "block";
-        window.location.hash = `#${targetViewId}`;
+        window.location.hash = `#${viewKey}`;
     }
     else {
-        console.error(`View with ID "${targetViewId}" not found.`);
+        console.error(`View "${viewKey}" not found.`);
     }
 }
 document.addEventListener("DOMContentLoaded", () => {
@@ -32,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = yield fetch("http://localhost:3000/login-check", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 credentials: "include",
                 body: JSON.stringify({ email: email.value, password: password.value })
@@ -51,20 +52,25 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         const verifyMessage = document.getElementById("twoFAMessage");
         const code2fa = document.getElementById("twoFACode").value;
+        if (!verifyMessage) {
+            console.error('Element with id "twoFAMessage" not found.');
+            return;
+        }
         try {
             const response = yield fetch("http://localhost:3000/verify-2fa", {
                 method: "POST",
                 credentials: "include",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json",
+                },
                 body: JSON.stringify({ code2fa })
             });
             const data = yield response.json();
-            localStorage.setItem('jwt', data);
             if (data.success) {
+                localStorage.setItem('jwt', data.token);
                 verifyMessage.textContent = data.message;
                 verifyMessage.classList.remove("text-red-500");
                 verifyMessage.classList.add("text-green-600");
-                switchView("dashboardView"); // Navigate to the dashboard view
+                switchView("dashboardView");
             }
             else {
                 verifyMessage.textContent = data.message;
@@ -74,12 +80,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         catch (error) {
             console.error("Error during 2FA verification:", error);
-            verifyMessage.textContent = "An error occurred. Please try again.";
-            verifyMessage.classList.remove("text-green-600");
-            verifyMessage.classList.add("text-red-500");
         }
     }));
     (_c = document.getElementById("forgotPasswordForm")) === null || _c === void 0 ? void 0 : _c.addEventListener("submit", (event) => __awaiter(void 0, void 0, void 0, function* () {
+        event.preventDefault();
         const messageDiv = document.getElementById("forgotMessage");
         const email = document.getElementById("forgotEmail");
         const secretKey = document.getElementById("secretKey");
@@ -87,10 +91,8 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const response = yield fetch("http://localhost:3000/check-forgot", {
                 method: "POST",
-                headers: {
-                    credentials: "include",
-                    "Content-Type": "application/json"
-                },
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     email: email.value,
                     secretKey: secretKey.value,
@@ -104,9 +106,10 @@ document.addEventListener("DOMContentLoaded", () => {
             messageDiv.textContent = "An error occurred. Please try again.";
         }
     }));
-    (_d = document.getElementById("signupView")) === null || _d === void 0 ? void 0 : _d.addEventListener("submit", (event) => __awaiter(void 0, void 0, void 0, function* () {
-        const email = document.getElementById("email");
-        const password = document.getElementById("password");
+    (_d = document.getElementById("signupForm")) === null || _d === void 0 ? void 0 : _d.addEventListener("submit", (event) => __awaiter(void 0, void 0, void 0, function* () {
+        event.preventDefault();
+        const email = document.getElementById("signupEmail");
+        const password = document.getElementById("signupPassword");
         const username = document.getElementById("username");
         const messageDivsignUp = document.getElementById("signupMessage");
         try {
@@ -124,11 +127,12 @@ document.addEventListener("DOMContentLoaded", () => {
             if (data.success) {
                 switchView("secretView");
                 (document.getElementById("secretMessage")).textContent = data.message;
-                (document.getElementById("secretNote")).textContent = data.importNote;
-                (document.getElementById("secretPhrase")).textContent = data.secretPhrase;
+                (document.getElementById("secretNote")).textContent = data.importNote || "";
+                (document.getElementById("secretPhrase")).textContent = data.secretPhrase || "";
             }
-            else
+            else {
                 messageDivsignUp.textContent = data.message;
+            }
         }
         catch (error) {
             messageDivsignUp.textContent = "An error occurred. Please try again.";

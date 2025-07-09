@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,46 +7,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-// Map of views
-const views = {
-    login: document.getElementById("loginView"),
-    dashboard: document.getElementById("dashboardView"),
-    play: document.getElementById("playView"),
-    settings: document.getElementById("settingsView"),
-    profile: document.getElementById("profileView"),
-    twoFA: document.getElementById("verify2faContainer"),
-    secret: document.getElementById("secretView"),
+import { switchView } from "./login";
+export const views = {
+    loginView: document.getElementById("loginView"),
+    signupView: document.getElementById("signupView"),
+    dashboardView: document.getElementById("dashboardView"),
+    twoFAView: document.getElementById("twoFAView"),
+    forgotPasswordView: document.getElementById("forgotPasswordView"),
+    secretView: document.getElementById("secretView"),
+    profileViewDrop: document.getElementById("profileViewDrop"),
+    settingsView: document.getElementById("settingsView")
 };
-// Hide all views
-function hideAllViews() {
-    Object.values(views).forEach((view) => {
-        if (view)
-            view.style.display = "none";
-    });
-}
-// Show a single view
-function showView(view) {
-    if (view)
-        view.style.display = "block";
-}
-// Show the correct view based on the hash
 function showViewFromHash() {
-    hideAllViews();
     let hash = window.location.hash.slice(1);
     if (!hash) {
-        hash = "dashboard"; // Default to dashboard if no hash
-        window.location.hash = "#dashboard";
+        hash = "loginView";
     }
-    const viewKey = hash === "2fa" ? "twoFA" : hash;
-    const view = views[viewKey];
-    if (view) {
-        showView(view);
-    }
-    else {
-        showView(views.dashboard); // Fallback
-    }
+    switchView(hash);
 }
-// Load user profile data
 function loadProfile() {
     return __awaiter(this, void 0, void 0, function* () {
         const username = document.getElementById("profileUsername");
@@ -73,16 +50,31 @@ function loadProfile() {
         }
     });
 }
-// Check if the session is valid
 function handleSessionCheck() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const headers = {};
+            const jwt = localStorage.getItem('jwt');
+            if (jwt) {
+                headers['Authorization'] = `Bearer ${jwt}`;
+            }
             const response = yield fetch("http://localhost:3000/me", {
+                headers,
                 credentials: "include"
             });
             const data = yield response.json();
+            console.log("handleSessionCheck received:", data);
             if (data.loggedIn) {
                 showViewFromHash();
+            }
+            else if (data.needs2FA) {
+                switchView("twoFAView");
+            }
+            else if (window.location.hash === "#signupView" ||
+                window.location.hash === "#forgotPasswordView" ||
+                window.location.hash === "#secretView") {
+                const hash = window.location.hash.slice(1);
+                switchView(hash);
             }
             else {
                 redirectToLogin();
@@ -97,30 +89,26 @@ function handleSessionCheck() {
         }
     });
 }
-// Force to login view
 function redirectToLogin() {
-    hideAllViews();
-    showView(views.login);
-    window.location.hash = "#login";
+    switchView("loginView");
 }
-// Wire navigation button clicks
 function setupNavigationListeners() {
     var _a, _b, _c, _d, _e;
     (_a = document.getElementById("backToDashboard")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => {
-        window.location.hash = "#dashboard";
+        window.location.hash = "#dashboardView";
     });
     (_b = document.getElementById("settingsBtn")) === null || _b === void 0 ? void 0 : _b.addEventListener("click", () => {
-        window.location.hash = "#settings";
+        window.location.hash = "#settingsView";
     });
     (_c = document.getElementById("backFromSettings")) === null || _c === void 0 ? void 0 : _c.addEventListener("click", () => {
-        window.location.hash = "#dashboard";
+        window.location.hash = "#dashboardView";
     });
     (_d = document.getElementById("profileBtnScroll")) === null || _d === void 0 ? void 0 : _d.addEventListener("click", () => {
-        window.location.hash = "#profile";
+        window.location.hash = "#profileView";
         loadProfile();
     });
     (_e = document.getElementById("backToDashboardFromProfile")) === null || _e === void 0 ? void 0 : _e.addEventListener("click", () => {
-        window.location.hash = "#dashboard";
+        window.location.hash = "#dashboardView";
     });
 }
 // Initialization
@@ -134,5 +122,4 @@ function initialize() {
     });
     setupNavigationListeners();
 }
-// Start app
 initialize();

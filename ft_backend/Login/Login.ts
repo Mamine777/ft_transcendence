@@ -8,6 +8,7 @@ import { request } from "https";
 import {generateCode } from '../routes/twoFactor';  
 import { send2FACode } from "../emailService";
 
+
 declare module "fastify" {
   interface Session {
 	pending2FA?: {
@@ -72,11 +73,18 @@ export function LoginRoutes(server: FastifyInstance) {
         }
 	});
 
-server.get("/me", async (request, reply) =>{
-	if (request.session.user)
-		return reply.send({ loggedIn: true, user: request.session.user });
-	else
-		return reply.send({ loggedIn: false });	
+server.get('/me', async (request, reply) => {
+  try {
+    await request.jwtVerify();
+    // If JWT is valid, user is logged in
+    return reply.send({ loggedIn: true, user: request.user });
+  } catch (err) {
+    // If session.pending2FA exists, user needs to complete 2FA
+    if (request.session?.pending2FA) {
+      return reply.send({ loggedIn: false, needs2FA: true });
+    }
+    return reply.send({ loggedIn: false });
+  }
 });
 
 
@@ -162,6 +170,21 @@ server.post("/check-forgot", async (request, reply) => {
 }
 
 
+function generateRandomUsername(): string {
+  const adjectives = [
+    "Swift", "Silent", "Brave", "Clever", "Lucky", "Mighty", "Happy", "Fuzzy", "Chill", "Witty"
+  ];
+  const nouns = [
+    "Tiger", "Falcon", "Otter", "Wolf", "Panda", "Eagle", "Shark", "Lion", "Bear", "Fox"
+  ];
+  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  const number = Math.floor(1000 + Math.random() * 9000); // 4-digit number
+
+  return `${adjective}${noun}${number}`;
+}
+
+
 export default fp(async (fastify) => {
 	const FORTYTWO_CONFIGURATION = {
 		authorizeHost: 'https://api.intra.42.fr',
@@ -198,13 +221,21 @@ export default fp(async (fastify) => {
         stmt.run(userInfo.login, userInfo.email, '42-oauth');
         user = db.prepare('SELECT * FROM users WHERE email = ?').get(userInfo.email);
     }
-	request.session.user = {
-	id: userInfo.id,
-	email: userInfo.email,
-	username: userInfo.login ?? userInfo.username ?? null,
-	} as { id: number; email: string; username: string | null };
-	return reply.redirect('/#dashboard');
-	});
+	  const code = generateCode();
+		request.session.pending2FA = {
+			email: userInfo.email,
+			code,
+			expiresAt: Date.now() + 5 * 60 * 1000
+		};
+		try {
+            await send2FACode(userInfo.email, code);
+			console.log(`2FA code sent to ${userInfo.email}: ${code}`);
+            return reply.redirect('http://localhost:5173/#twoFAView');
+        } catch (error) {
+			console.error("2FA email error:", error);
+            return reply.status(500).send({ success: false, message: "Failed to send 2FA code" });
+        }
+    });
 	 fastify.register(fastifyOauth2, {
         name: 'googleOAuth2',
         scope: ['profile', 'email'],
@@ -234,11 +265,19 @@ export default fp(async (fastify) => {
             stmt.run(userInfo.name || userInfo.email, userInfo.email, 'google-oauth');
             user = db.prepare('SELECT * FROM users WHERE email = ?').get(userInfo.email);
         }
-        request.session.user = {
-			id: userInfo.id,
+       const code = generateCode();
+		request.session.pending2FA = {
 			email: userInfo.email,
-			username: userInfo.login ?? userInfo.username ?? null,
-		} as { id: number; email: string; username: string | null };
-        return reply.redirect('/#dashboard');
+			code,
+			expiresAt: Date.now() + 5 * 60 * 1000
+		};
+		try {
+            await send2FACode(userInfo.email, code);
+			console.log(`2FA code sent to ${userInfo.email}: ${code}`);
+            return reply.redirect('http://localhost:5173/#twoFAView');
+        } catch (error) {
+			console.error("2FA email error:", error);
+            return reply.status(500).send({ success: false, message: "Failed to send 2FA code" });
+        }
     });
 });
