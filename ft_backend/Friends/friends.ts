@@ -9,89 +9,53 @@ import { user } from '../Login/Login';
 
 export function FriendsRoutes(server: FastifyInstance) {
 
-	server.post("/AddFriend", async (request, reply) => {
-		// faire protection au cas ou username = sender username
-		const { message } = request.body as { message: string};
+	    server.post("/AddFriend", async (request, reply) => {
+        const { message } = request.body as { message: string };
 
-		const cookies = request.cookies;
-		const user = request.session.user;
+        const cookies = request.cookies;
+        const user = request.session.user;
 
-		if (!user)
-			return reply.status(400).send({ success: false, error: "User disconnected" });
+        if (!user)
+            return reply.status(400).send({ success: false, error: "User disconnected" });
 
-		console.log("Cookies : ", cookies);
-		console.log("User : ", user);
-		console.log("User : ", user?.email);
+        const sqlStmtUsername = db.prepare('SELECT username FROM users WHERE email = ?');
+        const sender = sqlStmtUsername.get(user.email) as { username: string };
+        if (!sender)
+            return reply.status(400).send({ success: false, error: "Sender not found" });
 
-		const sql_stmt_username = db.prepare('SELECT username FROM users WHERE email = ?');
-		const sender_username = sql_stmt_username.get(user?.email) as user;
-		
-		console.log("Username sender : ", sender_username);
+        if (!message)
+            return reply.status(400).send({ success: false, error: "No username provided" });
 
-		if (!message) {
-			return reply.status(400).send({ success: false, error: "No msg provided" });
-		}
+        if (message === sender.username)
+            return reply.status(400).send({ success: false, error: "Cannot add yourself as a friend" });
 
-		const sql_stmt_user = db.prepare('SELECT id FROM users WHERE username = ?');
-		const id_recv = sql_stmt_user.get(message) as user;
-		console.log("Le id :", id_recv);
-		if (!id_recv)
-			return reply.status(400).send({ success: false, error: "User does not exists" });
+  
+        const sqlStmtUser = db.prepare('SELECT id FROM users WHERE username = ?');
+        const receiver = sqlStmtUser.get(message) as { id: number };
+        if (!receiver)
+            return reply.status(400).send({ success: false, error: "User does not exist" });
 
-		const stmt = db.prepare("INSERT INTO friends (user_id, friend, status) VALUES (?, ?, ?)");
-		stmt.run(id_recv.id, sender_username.username, "pending");
-	
-		console.log("Msg recu :", message);
-		return reply.send({ succes: true, received: message});
-	})
+        const checkPending = db.prepare(
+            'SELECT 1 FROM friends WHERE user_id = ? AND friend = ? AND status = ?'
+        );
+        const pendingExists = checkPending.get(receiver.id, sender.username, 'pending');
+        if (pendingExists)
+            return reply.status(400).send({ success: false, error: "Invitation already pending" });
 
-	server.get("/FriendRequest", async (request, reply) => {
+        const checkFriend = db.prepare(
+            'SELECT 1 FROM friends WHERE user_id = ? AND friend = ? AND status = ?'
+        );
+        const alreadyFriends = checkFriend.get(receiver.id, sender.username, 'friend');
+        if (alreadyFriends)
+            return reply.status(400).send({ success: false, error: "You are already friends" });
 
-		const cookies = request.cookies;
-		const user = request.session.user;
+        const insertStmt = db.prepare(
+            'INSERT INTO friends (user_id, friend, status) VALUES (?, ?, ?)'
+        );
+        insertStmt.run(receiver.id, sender.username, 'pending');
 
-		if (!user)
-			return reply.status(400).send({ success: false, error: "User disconnected" });
-
-		console.log("Cookies : ", cookies);
-		console.log("User : ", user);
-		console.log("User id : ", user?.id);
-
-		const sql_stmt_username = db.prepare('SELECT friend FROM friends WHERE user_id = ? AND status = ?');
-		const sender_username = sql_stmt_username.all(user?.id, 'pending');
-		
-		console.log("Result sql : ", sender_username);
-
-		// const sql_stmt_user = db.prepare('SELECT id FROM users WHERE username = ?');
-		// const id_recv = sql_stmt_user.get(message) as user;
-		// console.log("Le id :", id_recv);
-		// if (!id_recv)
-		// 	return reply.status(400).send({ success: false, error: "User does not exists" });
-
-		// const stmt = db.prepare("INSERT INTO friends (user_id, friend, status) VALUES (?, ?, ?)");
-		// stmt.run(id_recv.id, sender_username.username, "pending");
-	
-		// console.log("Msg recu :", message);
-		return reply.send({ succes: true, received: sender_username});
-	})
-
-	server.get("/FriendList", async (request, reply) => {
-
-		const cookies = request.cookies;
-		const user = request.session.user;
-
-		if (!user)
-			return reply.status(400).send({ success: false, error: "User disconnected" });
-
-		console.log("Cookies : ", cookies);
-		console.log("User : ", user);
-		console.log("User id : ", user?.id);
-
-		const sql_stmt_username = db.prepare('SELECT friend FROM friends WHERE user_id = ? AND status = ?');
-		const sender_username = sql_stmt_username.all(user?.id, 'friend');
-		
-		return reply.send({ succes: true, received: sender_username});
-	})
+        return reply.send({ success: true, received: message });
+    });
 
 	server.post("/AcceptRequest", async (request, reply) => {
 
