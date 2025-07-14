@@ -7,6 +7,8 @@ import fastifyOauth2, { OAuth2Namespace } from '@fastify/oauth2';
 import { request } from "https";
 import { user } from '../Login/Login'; 
 
+type FriendsRow = { friend: string };
+
 export function FriendsRoutes(server: FastifyInstance) {
 
 	    server.post("/AddFriend", async (request, reply) => {
@@ -113,4 +115,60 @@ export function FriendsRoutes(server: FastifyInstance) {
 
 		return reply.send({ succes: true, received: sender_username});
 	})
+
+	server.post("/RemoveFriend", async (request, reply) => {
+        const { message } = request.body as { message: string };
+        const user = request.session.user;
+
+        if (!user)
+            return reply.status(400).send({ success: false, error: "User disconnected" });
+
+        if (!message)
+            return reply.status(400).send({ success: false, error: "No username provided" });
+
+        const sqlStmtUsername = db.prepare('SELECT username FROM users WHERE email = ?');
+        const sender = sqlStmtUsername.get(user.email) as { username: string };
+        if (!sender)
+            return reply.status(400).send({ success: false, error: "Sender not found" });
+
+        const sqlStmtUser = db.prepare('SELECT id FROM users WHERE username = ?');
+        const receiver = sqlStmtUser.get(message) as { id: number };
+        if (!receiver)
+            return reply.status(400).send({ success: false, error: "User does not exist" });
+
+        const checkFriend = db.prepare(
+            'SELECT 1 FROM friends WHERE user_id = ? AND friend = ? AND status = ?'
+        );
+        const isFriend = checkFriend.get(receiver.id, sender.username, 'friend');
+        if (!isFriend)
+            return reply.status(400).send({ success: false, error: "You are not friends" });
+
+        const deleteStmtReceiver = db.prepare(
+            'DELETE FROM friends WHERE user_id = ? AND friend = ? AND status = ?'
+        );
+        deleteStmtReceiver.run(receiver.id, sender.username, 'friend');
+
+        const deleteStmtSender = db.prepare(
+            'DELETE FROM friends WHERE user_id = ? AND friend = ? AND status = ?'
+        );
+        deleteStmtSender.run(user.id, message, 'friend');
+
+        return reply.send({ success: true, removed: message });
+    });
+
+	server.get("/GetFriends", async (request, reply) => {
+        const user = request.session.user;
+
+        if (!user)
+            return reply.status(400).send({ success: false, error: "User disconnected" });
+
+        const stmt = db.prepare(
+            'SELECT friend FROM friends WHERE user_id = ? AND status = ?'
+        );
+        const rows = stmt.all(user.id, 'friend') as FriendsRow[];
+
+        const friendsList = rows.map(r => r.friend);
+        return reply.send({ success: true, friends: friendsList });
+    });
+
 }
