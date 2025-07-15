@@ -25,10 +25,11 @@ function showViewFromHash() {
     }
     switchView(hash);
 }
-function loadProfile() {
+export function loadProfile() {
     return __awaiter(this, void 0, void 0, function* () {
         const username = document.getElementById("profileUsername");
         const email = document.getElementById("profileEmail");
+        const avatar = document.getElementById("profileAvatar");
         try {
             const response = yield fetch("http://localhost:3000/user", {
                 headers: {
@@ -43,6 +44,10 @@ function loadProfile() {
                     username.textContent = data.username;
                 if (email)
                     email.textContent = data.email;
+                if (avatar && data.avatar) {
+                    avatar.src = `${data.avatar}?t=${Date.now()}`;
+                    avatar.classList.remove("hidden");
+                }
             }
         }
         catch (error) {
@@ -50,7 +55,7 @@ function loadProfile() {
         }
     });
 }
-function handleSessionCheck() {
+export function handleSessionCheck() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const headers = {};
@@ -99,6 +104,7 @@ function setupNavigationListeners() {
     });
     (_b = document.getElementById("settingsBtn")) === null || _b === void 0 ? void 0 : _b.addEventListener("click", () => {
         window.location.hash = "#settingsView";
+        loadProfile();
     });
     (_c = document.getElementById("backFromSettings")) === null || _c === void 0 ? void 0 : _c.addEventListener("click", () => {
         window.location.hash = "#dashboardView";
@@ -109,6 +115,7 @@ function setupNavigationListeners() {
     });
     (_e = document.getElementById("backToDashboardFromProfile")) === null || _e === void 0 ? void 0 : _e.addEventListener("click", () => {
         window.location.hash = "#dashboardView";
+        loadProfile();
     });
 }
 // Initialization

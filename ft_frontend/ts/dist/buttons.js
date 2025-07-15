@@ -83,14 +83,20 @@ document.addEventListener("DOMContentLoaded", () => {
             switchView("settingsView");
         });
     }
+    //fill the profile with info
     const profileBtn = document.getElementById("profileBtn");
     if (profileBtn) {
         profileBtn.addEventListener('click', () => __awaiter(void 0, void 0, void 0, function* () {
             try {
+                const jwt = localStorage.getItem('jwt');
+                const headers = { "Content-Type": "application/json" };
+                if (jwt) {
+                    headers["Authorization"] = `Bearer ${jwt}`;
+                }
                 const response = yield fetch("http://localhost:3000/user", {
                     method: "GET",
                     credentials: "include",
-                    headers: { "Content-Type": "application/json" }
+                    headers
                 });
                 const data = yield response.json();
                 if (data.loggedIn) {
@@ -99,13 +105,68 @@ document.addEventListener("DOMContentLoaded", () => {
                         profileUsernameElem.textContent = data.username;
                     }
                     const profileEmailEl = document.getElementById("profileEmail");
-                    if (profileUsernameElem && profileEmailEl)
+                    if (profileEmailEl) {
                         profileEmailEl.textContent = data.email;
+                        const avatarProfile = document.getElementById("profileAvatar");
+                        if (avatarProfile && avatarProfile instanceof HTMLImageElement) {
+                            avatarProfile.src = data.avatar;
+                        }
+                    }
                     switchView("profileViewDrop");
                 }
             }
             catch (error) {
                 console.error("Error fetching /user:", error);
+            }
+        }));
+    }
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                const jwt = localStorage.getItem('jwt');
+                const headers = { "Content-Type": "application/json" };
+                if (jwt) {
+                    headers["Authorization"] = `Bearer ${jwt}`;
+                }
+                yield fetch("http://localhost:3000/logout", {
+                    method: "POST",
+                    credentials: "include",
+                    headers,
+                    body: JSON.stringify({})
+                });
+            }
+            catch (error) {
+                console.error("Error fetching /logout:", error);
+            }
+            finally {
+                localStorage.removeItem('jwt');
+                switchView("loginView");
+            }
+        }));
+    }
+    const logoutBtnProfile = document.getElementById("logoutBtnProfile");
+    if (logoutBtnProfile) {
+        logoutBtnProfile.addEventListener('click', () => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                const jwt = localStorage.getItem('jwt');
+                const headers = { "Content-Type": "application/json" };
+                if (jwt) {
+                    headers["Authorization"] = `Bearer ${jwt}`;
+                }
+                yield fetch("http://localhost:3000/logout", {
+                    method: "POST",
+                    credentials: "include",
+                    headers,
+                    body: JSON.stringify({})
+                });
+            }
+            catch (error) {
+                console.error("Error fetching /logout:", error);
+            }
+            finally {
+                localStorage.removeItem('jwt');
+                switchView("loginView");
             }
         }));
     }

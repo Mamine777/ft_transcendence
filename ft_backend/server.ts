@@ -6,7 +6,7 @@
 /*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/07/07 10:43:18 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:03:22 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ import { twoStepVerificationRoutes } from "./routes/twoFactor";
 import fastifyMultipart from '@fastify/multipart';
 import fastifyJwt from '@fastify/jwt';
 import fastifyCors from '@fastify/cors';
+import { HistoryRoutes } from "./History/history";
 
 
 const server = fastify();
@@ -62,9 +63,15 @@ server.register(fastifySession, {
 });
 
 server.register(fastifyStatic, {
-	root: path.join(__dirname, "../ft_frontend"),
-	prefix: "/",
+  root: path.join(__dirname, '/avatars'),
+  prefix: '/avatars/',
+  decorateReply: false
 });
+server.register(fastifyStatic, {
+  root: path.join(__dirname, "../ft_frontend"),
+  prefix: "/",
+});
+
 server.register(fastifyCors, {
 	origin: ["http://localhost:5173"],
 	credentials: true,
@@ -72,11 +79,13 @@ server.register(fastifyCors, {
 
 server.register(fastifyFormbody);
 server.register(loginPlugin);
+HistoryRoutes(server);
 FriendsRoutes(server);
 LoginRoutes(server);
 DashboardRoutes(server);
 twoStepVerificationRoutes(server);
 server.register(fastifyMultipart);
+
 
 
 server.listen({ port: 3000 }, (err) => {

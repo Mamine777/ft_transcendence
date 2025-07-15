@@ -1,3 +1,4 @@
+ft_backend/.env
 ft_backend/node_modules/.package-lock.json
 ft_backend/node_modules/.bin/acorn
 ft_backend/node_modules/.bin/color-support

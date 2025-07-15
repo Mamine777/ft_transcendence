@@ -23,9 +23,10 @@ function showViewFromHash(): void {
 }
 
 
-async function loadProfile(): Promise<void> {
+export async function loadProfile(): Promise<void> {
   const username = document.getElementById("profileUsername");
   const email = document.getElementById("profileEmail");
+  const avatar = document.getElementById("profileAvatar") as HTMLImageElement;
 
   try {
     const response = await fetch("http://localhost:3000/user", {
@@ -39,6 +40,10 @@ async function loadProfile(): Promise<void> {
     if (data.loggedIn) {
       if (username) username.textContent = data.username;
       if (email) email.textContent = data.email;
+       if (avatar && data.avatar) {
+        avatar.src = `${data.avatar}?t=${Date.now()}`;
+        avatar.classList.remove("hidden");
+      }
     }
   } catch (error) {
     console.error("Error loading profile:", error);
@@ -46,7 +51,7 @@ async function loadProfile(): Promise<void> {
 }
 
 
-async function handleSessionCheck(): Promise<void> {
+ export async function handleSessionCheck(): Promise<void> {
     try {
     const headers: HeadersInit = {};
     const jwt = localStorage.getItem('jwt');
@@ -91,13 +96,17 @@ function redirectToLogin(): void {
 }
 
 
+
 function setupNavigationListeners(): void {
   document.getElementById("backToDashboard")?.addEventListener("click", () => {
     window.location.hash = "#dashboardView";
+    
+
   });
 
   document.getElementById("settingsBtn")?.addEventListener("click", () => {
     window.location.hash = "#settingsView";
+    loadProfile();
   });
 
   document.getElementById("backFromSettings")?.addEventListener("click", () => {
@@ -111,6 +120,7 @@ function setupNavigationListeners(): void {
 
   document.getElementById("backToDashboardFromProfile")?.addEventListener("click", () => {
     window.location.hash = "#dashboardView";
+    loadProfile();
   });
 }
 

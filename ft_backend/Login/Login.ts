@@ -76,10 +76,8 @@ export function LoginRoutes(server: FastifyInstance) {
 server.get('/me', async (request, reply) => {
   try {
     await request.jwtVerify();
-    // If JWT is valid, user is logged in
     return reply.send({ loggedIn: true, user: request.user });
   } catch (err) {
-    // If session.pending2FA exists, user needs to complete 2FA
     if (request.session?.pending2FA) {
       return reply.send({ loggedIn: false, needs2FA: true });
     }
@@ -89,10 +87,15 @@ server.get('/me', async (request, reply) => {
 
 
 server.post("/logout", async (request, reply) => {
-	request.session.destroy(err => {
-		if (err) return reply.status(500).send({ success: false, message: "Logout failed" });
-		reply.send({ success: true, message: "Logged out" });
-	});
+	try {
+		await request.jwtVerify();
+		request.session.destroy((err: any) => {
+			if (err) return reply.status(500).send({ success: false, message: "Logout failed" });
+			reply.send({ success: true ,message: "Logged out" });
+		});
+	} catch (error) {
+		return reply.status(500).send({ success: false, message: "Logout failed" });
+	}
 });
 
 server.post("/check-signup", async (request, reply) => {
