@@ -124,6 +124,7 @@ server.post("/check-settings", async (request, reply) => {
 
 
 server.get('/user', (request, response) => {
+
   try {
     if (!request.session.user) {
       return response.send({ loggedIn: false });
@@ -149,6 +150,13 @@ server.get('/user', (request, response) => {
 
   server.post('/uploadFile', async (request, reply) => {
   try {
+				await request.jwtVerify();
+			} catch (err) {
+				console.log("❌ Unauthorized: JWT verification failed");
+				return reply.code(401).send({ success: false, message: "Unauthorized" });
+			}
+
+  try {
     if (!request.session.user) {
       return reply.code(401).send({ success: false, message: "Unauthorized" });
     }
@@ -159,7 +167,7 @@ server.get('/user', (request, response) => {
     }
 
     const userId = request.session.user.id;
-    const avatarsDir = path.join(__dirname, '../db/avatars');
+    const avatarsDir = path.join(__dirname, '../avatars');
     if (!fs.existsSync(avatarsDir)) {
       fs.mkdirSync(avatarsDir, { recursive: true });
     }

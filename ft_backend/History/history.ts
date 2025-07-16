@@ -23,6 +23,52 @@ export interface RowHistory {
 
 export function HistoryRoutes(server: FastifyInstance) {
 
+	server.get("/AllHistory", async (request, reply) => {
+	const user = request.session.user;
+
+	if (!user)
+		return reply.status(401).send({ success: false, error: "User disconnected" });
+	 try {
+		await request.jwtVerify();
+	} catch (err) {
+		console.log("❌ Unauthorized: JWT verification failed");
+		return reply.code(401).send({ success: false, message: "Unauthorized" });
+	}
+
+	try {
+		const pongStmt = db.prepare("SELECT * FROM PongHistory WHERE user_id = ?");
+		const pongHistory = pongStmt.get(user.id) as PongHistory | undefined;
+
+		const rowStmt = db.prepare("SELECT * FROM RowHistory WHERE user_id = ?");
+		const rowHistory = rowStmt.get(user.id) as RowHistory | undefined;
+
+		const defaultPongHistory: PongHistory = {
+			user_id: user.id,
+			played: 0,
+			wins: 0,
+			scored: 0
+		};
+
+		const defaultRowHistory: RowHistory = {
+			user_id: user.id,
+			played: 0,
+			YellowWins: 0,
+			RedWins: 0
+		};
+
+		return reply.status(200).send({
+			success: true,
+			message: "Combined history available",
+			pong: pongHistory || defaultPongHistory,
+			row: rowHistory || defaultRowHistory
+		});
+
+	} catch (error) {
+		console.error("Error fetching AllHistory:", error);
+		return reply.status(500).send({ success: false, error: "Server error" });
+	}
+	});
+
 	server.get("/PongHistory", async (request, reply) => {
 
 		const cookies = request.cookies;

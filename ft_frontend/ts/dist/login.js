@@ -111,7 +111,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = document.getElementById("signupEmail");
         const password = document.getElementById("signupPassword");
         const username = document.getElementById("username");
-        const messageDivsignUp = document.getElementById("signupMessage");
+        const messageDivSignUp = document.getElementById("signupMessage");
+        const secretPhrase = document.getElementById("secretPhrase");
+        messageDivSignUp.textContent = "";
+        if (!email.value || !password.value || !username.value) {
+            messageDivSignUp.textContent = "Please fill out all fields.";
+            return;
+        }
         try {
             const response = yield fetch("http://localhost:3000/check-signup", {
                 method: "POST",
@@ -126,16 +132,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = yield response.json();
             if (data.success) {
                 switchView("secretView");
-                (document.getElementById("secretMessage")).textContent = data.message;
-                (document.getElementById("secretNote")).textContent = data.importNote || "";
-                (document.getElementById("secretPhrase")).textContent = data.secretPhrase || "";
+                const secretMessage = document.getElementById("secretMessage");
+                const secretNote = document.getElementById("secretNote");
+                if (secretMessage)
+                    secretMessage.textContent = data.message || "Registration successful.";
+                if (secretNote)
+                    secretNote.textContent = data.importNote || "Save this recovery key securely.";
+                if (secretPhrase)
+                    secretPhrase.textContent = data.secret || "No secret provided.";
             }
             else {
-                messageDivsignUp.textContent = data.message;
+                messageDivSignUp.textContent = data.message || "Registration failed.";
             }
         }
         catch (error) {
-            messageDivsignUp.textContent = "An error occurred. Please try again.";
+            messageDivSignUp.textContent = "An error occurred. Please try again.";
+            console.error(error);
         }
     }));
 });

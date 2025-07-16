@@ -5,198 +5,768 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🏓 ft_transcendence</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      overflow-x: hidden;
+    }
+    
+    .orbitron {
+      font-family: 'Orbitron', monospace;
+    }
+    
+    /* Animated background */
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(0, 255, 127, 0.1) 0%, transparent 50%);
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    
+    /* Neon glow effects */
+    .neon-border {
+      border: 2px solid #00ffff;
+      box-shadow: 
+        0 0 20px rgba(0, 255, 255, 0.3),
+        inset 0 0 20px rgba(0, 255, 255, 0.1);
+    }
+    
+    .neon-text {
+      text-shadow: 
+        0 0 10px rgba(0, 255, 255, 0.8),
+        0 0 20px rgba(0, 255, 255, 0.6),
+        0 0 30px rgba(0, 255, 255, 0.4);
+    }
+    
+    .gaming-card {
+      background: rgba(15, 15, 35, 0.9);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .gaming-card:hover {
+      border-color: rgba(0, 255, 255, 0.8);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+      transform: translateY(-5px);
+    }
+    
+    .gaming-button {
+      background: linear-gradient(45deg, #00ffff, #0080ff);
+      border: none;
+      color: #000;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .gaming-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+    
+    .gaming-button:hover::before {
+      left: 100%;
+    }
+    
+    .gaming-button:hover {
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+    
+    .gaming-button-secondary {
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      border: none;
+      color: white;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .gaming-button-secondary:hover {
+      box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+      transform: translateY(-2px);
+    }
+    
+    .gaming-input {
+      background: rgba(15, 15, 35, 0.8);
+      border: 2px solid rgba(0, 255, 255, 0.3);
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+    
+    .gaming-input:focus {
+      border-color: #00ffff;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+      outline: none;
+    }
+    
+    .gaming-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Glitch effect for title */
+    .glitch {
+      position: relative;
+      color: #00ffff;
+      font-size: 4rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      animation: glitch 2s infinite;
+    }
+    
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .glitch::before {
+      animation: glitch-1 0.5s infinite;
+      color: #ff00ff;
+      z-index: -1;
+    }
+    
+    .glitch::after {
+      animation: glitch-2 0.5s infinite;
+      color: #ffff00;
+      z-index: -2;
+    }
+    
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+    }
+    
+    @keyframes glitch-1 {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(2px, -2px); }
+      40% { transform: translate(-2px, 2px); }
+      60% { transform: translate(-2px, -2px); }
+      80% { transform: translate(2px, 2px); }
+    }
+    
+    @keyframes glitch-2 {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, -2px); }
+      40% { transform: translate(2px, 2px); }
+      60% { transform: translate(2px, -2px); }
+      80% { transform: translate(-2px, 2px); }
+    }
+    
+    /* Particle effect */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #00ffff;
+      border-radius: 50%;
+      animation: float-particles 6s infinite linear;
+    }
+    
+    @keyframes float-particles {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    
+    .view {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .dropdown-menu {
+      background: rgba(15, 15, 35, 0.95);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+    }
+    
+    .dropdown-menu button:hover {
+      background: rgba(0, 255, 255, 0.1);
+      color: #00ffff;
+    }
+    
+    .stats-card {
+      background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+    }
+    
+    .friend-item {
+      background: rgba(0, 255, 255, 0.1);
+      border-left: 3px solid #00ffff;
+      transition: all 0.3s ease;
+    }
+    
+    .friend-item:hover {
+      background: rgba(0, 255, 255, 0.2);
+      transform: translateX(5px);
+    }
+    
+    .pulse-ring {
+      animation: pulse-ring 2s infinite;
+    }
+    
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(0.33);
+        opacity: 1;
+      }
+      80%, 100% {
+        transform: scale(1);
+        opacity: 0;
+      }
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 min-h-screen flex flex-col font-sans text-white">
+<body class="text-white min-h-screen overflow-x-hidden">
+  <!-- Animated Background -->
+  <div class="animated-bg"></div>
+  
+  <!-- Floating Particles -->
+  <div class="particles" id="particles"></div>
 
   <!-- HEADER -->
-  <header class="py-10 text-center">
-    <h1 class="text-5xl font-extrabold drop-shadow-lg">🏓 ft_transcendence</h1>
-    <p class="mt-2 text-lg text-purple-200">The Ultimate Ping Pong Showdown</p>
+  <header class="py-8 text-center relative z-10">
+    <h1 class="glitch orbitron neon-text mb-4" data-text="ft_transcendence">ft_transcendence</h1>
+    <div class="flex items-center justify-center gap-2 text-xl">
+      <span class="text-cyan-400">🏓</span>
+      <span class="text-gray-300">The Ultimate</span>
+      <span class="text-pink-400 font-bold">Ping Pong</span>
+      <span class="text-gray-300">Arena</span>
+    </div>
   </header>
 
   <!-- MAIN CONTAINER -->
-  <main class="flex-grow flex items-center justify-center">
+  <main class="flex-grow flex items-center justify-center relative z-10">
 
     <!-- LOGIN VIEW -->
     <section id="loginView" class="view" style="display: block;">
-      <h2 class="text-3xl font-bold text-center">Login</h2>
-      <form id="loginForm" method="POST" class="flex flex-col gap-4">
-        <input type="email" id="email" placeholder="Email" required class="p-3 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black" />
-        <input type="password" id="password" placeholder="Password" required class="p-3 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black" />
-        <button type="submit" class="bg-indigo-600 text-white py-3 rounded hover:bg-indigo-700 transition">Login</button>
-      </form>
-      <div class="text-center space-y-3">
-        <p class="text-gray-600">or</p>
-        <a href="http://localhost:3000/auth/42" class="inline-block bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition">Login with 42 Account</a>
-        <a href="http://localhost:3000/auth/google" class="inline-flex items-center border border-gray-300 bg-white text-gray-700 py-2 px-4 rounded hover:bg-gray-100 transition shadow">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5 mr-2" />
-          Login with Google
-        </a>
-        <p id="loginMessage" class="text-sm text-red-500"></p>
-        <p>Don't have an account? <button id="goToSignup" class="text-indigo-600 hover:underline">Sign Up</button></p>
-        <p>Forgot your password? <button id="goToForgotPassword" class="text-indigo-600 hover:underline">Reset Password</button></p>
+      <div class="gaming-card rounded-2xl p-8 w-full max-w-md">
+        <h2 class="text-3xl font-bold text-center mb-8 text-cyan-400 orbitron">ACCESS TERMINAL</h2>
+        <form id="loginForm" method="POST" class="space-y-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-300">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email" required 
+                   class="gaming-input w-full p-4 rounded-lg text-white" />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-300">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" required 
+                   class="gaming-input w-full p-4 rounded-lg text-white" />
+          </div>
+          <button type="submit" class="gaming-button w-full py-4 rounded-lg font-bold text-lg">
+            INITIALIZE CONNECTION
+          </button>
+        </form>
+        
+        <div class="mt-8 space-y-4">
+          <div class="flex items-center">
+            <hr class="flex-grow border-gray-600">
+            <span class="px-4 text-gray-400">or connect via</span>
+            <hr class="flex-grow border-gray-600">
+          </div>
+          
+          <div class="grid grid-cols-1 gap-3">
+            <a href="http://localhost:3000/auth/42" 
+               class="gaming-button-secondary flex items-center justify-center gap-3 py-3 rounded-lg transition-all hover:scale-105">
+              <span class="font-bold">42</span>
+              <span>School Network</span>
+            </a>
+            <a href="http://localhost:3000/auth/google" 
+               class="gaming-button flex items-center justify-center gap-3 py-3 rounded-lg transition-all hover:scale-105">
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+                   alt="Google" class="w-5 h-5" />
+              <span>Google Account</span>
+            </a>
+          </div>
+        </div>
+        
+        <p id="loginMessage" class="text-sm text-red-400 mt-4 text-center"></p>
+        
+        <div class="mt-6 text-center space-y-2">
+          <p class="text-gray-400">
+            New player? 
+            <button id="goToSignup" class="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
+              Create Account
+            </button>
+          </p>
+          <p class="text-gray-400">
+            Lost access? 
+            <button id="goToForgotPassword" class="text-pink-400 hover:text-pink-300 font-semibold transition-colors">
+              Recover Account
+            </button>
+          </p>
+        </div>
       </div>
     </section>
 
     <!-- SIGNUP VIEW -->
     <section id="signupView" class="view" style="display: none;">
-      <h2 class="text-3xl font-bold text-center">Sign Up</h2>
-      <form id="signupForm" method="POST" class="flex flex-col gap-4">
-        <input type="text" id="username" placeholder="Username" required class="p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500 text-black" />
-        <input type="email" id="signupEmail" placeholder="Email" required class="p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500 text-black" />
-        <input type="password" id="signupPassword" placeholder="Password" required class="p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500 text-black" />
-        <button type="submit" class="bg-green-600 text-white py-3 rounded hover:bg-green-700 transition">Register</button>
-      </form>
-      <div class="text-center">
-        <p id="signupMessage" class="text-sm text-red-500"></p>
-        <p>Already have an account? <button id="goToLogin" class="text-green-600 hover:underline">Log In</button></p>
+      <div class="gaming-card rounded-2xl p-8 w-full max-w-md">
+        <h2 class="text-3xl font-bold text-center mb-8 text-green-400 orbitron">CREATE PROFILE</h2>
+        <form id="signupForm" method="POST" class="space-y-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-300">Player Name</label>
+            <input type="text" id="username" placeholder="Choose your gaming handle" required 
+                   class="gaming-input w-full p-4 rounded-lg text-white" />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-300">Email</label>
+            <input type="email" id="signupEmail" placeholder="Enter your email" required 
+                   class="gaming-input w-full p-4 rounded-lg text-white" />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-300">Password</label>
+            <input type="password" id="signupPassword" placeholder="Create a strong password" required 
+                   class="gaming-input w-full p-4 rounded-lg text-white" />
+          </div>
+          <button type="submit" class="gaming-button w-full py-4 rounded-lg font-bold text-lg">
+            REGISTER PLAYER
+          </button>
+        </form>
+        
+        <p id="signupMessage" class="text-sm text-red-400 mt-4 text-center"></p>
+        
+        <div class="mt-6 text-center">
+          <p class="text-gray-400">
+            Already registered? 
+            <button id="goToLogin" class="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
+              Access Account
+            </button>
+          </p>
+        </div>
       </div>
     </section>
 
     <!-- DASHBOARD VIEW -->
-      <section id="dashboardView" class="view" style="display: none;">
-        <div class="absolute top-6 right-6">
-    <div class="relative inline-block text-left">
-      <button id="profileMenuBtn" class="inline-flex justify-center w-full rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow hover:bg-gray-100 transition">
-        Profile ▾
-      </button>
-      <div id="dropdownMenu" class="origin-top-right absolute right-0 mt-2 w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-50">
-        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="profileMenuBtn">
-          <button class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left" role="menuitem" id="profileBtn">Profile</button>
-          <button class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left" role="menuitem" id="settingsBtn">Settings</button>
-          <button class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 w-full text-left" role="menuitem" id="logoutBtn">Logout</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-        <div class="flex flex-col items-center justify-center h-full space-y-8">
-          <div class="space-y-4 w-full max-w-md">
-            <button id="playBtn" class="bg-white text-gray-900 w-full py-4 rounded-xl shadow hover:bg-gray-200 transition">Play</button>
-            <button class="bg-white text-gray-900 w-full py-4 rounded-xl shadow hover:bg-gray-200 transition">Tournament</button>
-            <button class="bg-white text-gray-900 w-full py-4 rounded-xl shadow hover:bg-gray-200 transition">Friends</button>
+    <section id="dashboardView" class="view" style="display: none;">
+      <div class="absolute top-6 right-6 z-20">
+        <div class="relative">
+          <button id="profileMenuBtn" class="gaming-button px-6 py-3 rounded-lg font-semibold">
+            PROFILE ▾
+          </button>
+          <div id="dropdownMenu" class="dropdown-menu absolute right-0 mt-2 w-48 rounded-lg shadow-2xl hidden">
+            <div class="py-2">
+              <button class="block w-full text-left px-4 py-3 text-gray-300 hover:bg-cyan-900/30 hover:text-cyan-400 transition-colors" 
+                      id="profileBtn">👤 Profile</button>
+              <button class="block w-full text-left px-4 py-3 text-gray-300 hover:bg-cyan-900/30 hover:text-cyan-400 transition-colors" 
+                      id="settingsBtn">⚙️ Settings</button>
+              <hr class="border-gray-600 my-2">
+              <button class="block w-full text-left px-4 py-3 text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors" 
+                      id="logoutBtn">🚪 Logout</button>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
+
+      <div class="text-center space-y-8">
+        <div class="mb-12">
+          <h2 class="text-4xl font-bold text-cyan-400 orbitron mb-2">GAME LOBBY</h2>
+          <p class="text-gray-400 text-lg">Choose your battle</p>
+        </div>
+        
+        <div class="grid grid-cols-1 gap-6 w-full max-w-md mx-auto">
+          <button id="playBtn" class="gaming-button py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
+            🎮 QUICK MATCH
+          </button>
+          <button id="TournamentsBtn" class="gaming-button-secondary py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
+            🏆 TOURNAMENTS
+          </button>
+          <button id="FriendsBtn" class="gaming-button py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
+            👥 FRIENDS
+          </button>
+        </div>
+      </div>
+    </section>
 
     <!-- 2FA VIEW -->
     <section id="twoFAView" class="view" style="display: none;">
-      <h2 class="text-3xl font-bold text-center">Two-Factor Authentication</h2>
-      <p class="text-center text-gray-600">Enter the 6-digit code sent to your email.</p>
-      <form id="twoFAForm" method="POST" class="flex flex-col gap-4">
-        <input 
-          type="text" 
-          id="twoFACode" 
-          maxlength="6" 
-          placeholder="Enter 6-digit code" 
-          required 
-          pattern="\d{6}"
-          class="p-3 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center tracking-widest text-xl text-black"
-          inputmode="numeric"
-          autocomplete="one-time-code"
-        />
-        <button type="submit" class="bg-indigo-600 text-white py-3 rounded hover:bg-indigo-700 transition">Verify Code</button>
-      </form>
-      <div class="text-center space-y-2">
-        <p id="twoFAMessage" class="text-sm text-red-500"></p>
-        <button id="resendCodeBtn" class="text-indigo-600 hover:underline">Resend Code</button>
-        <button id="cancelTwoFABtn" class="text-gray-600 hover:underline">Cancel</button>
+      <div class="gaming-card rounded-2xl p-8 w-full max-w-md">
+        <h2 class="text-3xl font-bold text-center mb-4 text-yellow-400 orbitron">SECURITY CHECK</h2>
+        <p class="text-center text-gray-400 mb-8">Enter the 6-digit verification code</p>
+        
+        <form id="twoFAForm" method="POST" class="space-y-6">
+          <div class="space-y-2">
+            <input type="text" id="twoFACode" maxlength="6" placeholder="000000" required 
+                   pattern="\d{6}" inputmode="numeric" autocomplete="one-time-code"
+                   class="gaming-input w-full p-4 rounded-lg text-center text-2xl font-mono tracking-widest" />
+          </div>
+          <button type="submit" class="gaming-button w-full py-4 rounded-lg font-bold text-lg">
+            VERIFY ACCESS
+          </button>
+        </form>
+        
+        <div class="mt-6 text-center space-y-3">
+          <p id="twoFAMessage" class="text-sm text-red-400"></p>
+          <button id="resendCodeBtn" class="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
+            Resend Code
+          </button>
+          <br>
+          <button id="cancelTwoFABtn" class="text-gray-400 hover:text-gray-300 transition-colors">
+            Cancel
+          </button>
+        </div>
       </div>
     </section>
 
     <!-- FORGOT PASSWORD VIEW -->
     <section id="forgotPasswordView" class="view" style="display: none;">
-      <h2 class="text-3xl font-bold text-center">Forgot Password</h2>
-      <form id="forgotPasswordForm" method="POST" class="flex flex-col gap-4">
-        <input type="email" id="forgotEmail" placeholder="Your Email" required class="p-3 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-500 text-black" />
-        <input type="text" id="secretKey" placeholder="Enter Your Secret Key" required class="p-3 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-500 text-black" />
-        <input type="password" id="newPassword" placeholder="New Password" required class="p-3 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-500 text-black" />
-        <p id="forgotMessage" class="text-sm text-red-500 text-center"></p>
-        <button type="submit" class="bg-yellow-600 text-white py-3 rounded hover:bg-yellow-700 transition">Reset Password</button>
-      </form>
-      <div class="text-center mt-4">
-        <p>Already have an account? 
-          <button id="backtoLogin" class="text-yellow-600 hover:underline">Log In</button>
-        </p>
+      <div class="gaming-card rounded-2xl p-8 w-full max-w-md">
+        <h2 class="text-3xl font-bold text-center mb-8 text-yellow-400 orbitron">ACCOUNT RECOVERY</h2>
+        
+        <form id="forgotPasswordForm" method="POST" class="space-y-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-300">Email Address</label>
+            <input type="email" id="forgotEmail" placeholder="Enter your email" required 
+                   class="gaming-input w-full p-4 rounded-lg text-white" />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-300">Secret Recovery Key</label>
+            <input type="text" id="secretKey" placeholder="Enter your recovery key" required 
+                   class="gaming-input w-full p-4 rounded-lg text-white" />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-300">New Password</label>
+            <input type="password" id="newPassword" placeholder="Create new password" required 
+                   class="gaming-input w-full p-4 rounded-lg text-white" />
+          </div>
+          
+          <p id="forgotMessage" class="text-sm text-red-400 text-center"></p>
+          
+          <button type="submit" class="gaming-button w-full py-4 rounded-lg font-bold text-lg">
+            RESET PASSWORD
+          </button>
+        </form>
+        
+        <div class="mt-6 text-center">
+          <p class="text-gray-400">
+            Remember your password? 
+            <button id="backtoLogin" class="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
+              Back to Login
+            </button>
+          </p>
+        </div>
       </div>
     </section>
 
     <!-- SECRET PHRASE VIEW -->
     <section id="secretView" class="view" style="display: none;">
-  <div class="text-center">
-    <h2 class="text-3xl font-bold text-center">User Registered Successfully!</h2>
-    <p id="secretMessage" class="text-lg mb-4">Please save your secret phrase securely.</p>
-    <p id="secretNote" class="text-red-600 font-semibold mb-3">*Important! You'll need this phrase to reset your password.</p>
-    <pre id="secretPhrase" class="bg-gray-100 border border-dashed border-red-400 p-6 rounded-xl font-mono text-lg text-gray-800 mb-8 break-words whitespace-pre-wrap text-center mx-auto max-w-full overflow-auto"></pre>
-    <button id="continueToLogin" class="bg-red-600 text-white text-lg py-3 px-6 rounded-xl hover:bg-red-700 transition-all">Continue To Login</button>
-  </div>
-</section>
- <!-- PROFILE VIEW -->
-    <section id="profileViewDrop" class="view bg-white text-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md mx-auto relative overflow-auto" style="display: none;">
-      <button id="backToDashboardFromProfile" class="absolute top-6 left-6 bg-gray-300 py-2 px-6 rounded shadow hover:bg-gray-400 transition">
-        ← Back
-      </button>
-      <div class="flex flex-col items-center justify-center min-h-[70vh] px-4">
-        <h2 class="text-4xl font-bold text-center mb-6">👤 My Profile</h2>
-        <div class="w-full bg-gray-100 rounded-2xl shadow-lg p-6">
-          <div class="flex flex-col items-center space-y-4">
-            <img id="profileAvatar" alt="avatar" class="w-24 h-24 rounded-full shadow-md" />
-            <div class="text-center">
-              <h3 id="profileUsername" class="text-2xl font-semibold"></h3>
-              <p id="profileEmail" class="text-gray-600"></p>
-            </div>
-            <div class="w-full mt-4">
-              <p class="font-medium text-lg">Stats:</p>
-              <ul class="mt-2 space-y-1 text-gray-700">
-                <li>🏆 Wins: <span id="profileWins">0</span></li>
-                <li>❌ Losses: <span id="profileLosses">0</span></li>
-                <li>🔥 Rank: <span id="profileRank">Bronze</span></li>
-              </ul>
-            </div>
-            <button id="logoutBtnProfile" class="mt-6 bg-red-600 text-white py-2 px-6 rounded hover:bg-red-700 transition">
-              Logout
-            </button>
+      <div class="gaming-card rounded-2xl p-8 w-full max-w-lg">
+        <div class="text-center">
+          <h2 class="text-3xl font-bold mb-4 text-green-400 orbitron">REGISTRATION COMPLETE</h2>
+          <p id="secretMessage" class="text-lg mb-6 text-gray-300">Your recovery key has been generated</p>
+          
+          <div class="bg-red-900/30 border border-red-400 rounded-lg p-4 mb-6">
+            <p id="secretNote" class="text-red-400 font-semibold mb-2">⚠️ CRITICAL: Save this recovery key securely!</p>
+            <p class="text-sm text-gray-400">You'll need this to recover your account if you forget your password.</p>
           </div>
+          
+          <div class="gaming-card rounded-lg p-6 mb-8">
+            <pre id="secretPhrase" class="font-mono text-lg text-cyan-400 break-words whitespace-pre-wrap text-center"></pre>
+          </div>
+          
+          <button id="continueToLogin" class="gaming-button-secondary py-4 px-8 rounded-lg font-bold text-lg">
+            CONTINUE TO LOGIN
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROFILE VIEW -->
+    <section id="profileViewDrop" class="view" style="display: none;">
+      <div class="gaming-card rounded-2xl p-8 w-full max-w-md relative">
+        <button id="backToDashboardFromProfile" class="absolute top-4 left-4 gaming-button-secondary px-4 py-2 rounded-lg">
+          ← Back
+        </button>
+        
+        <div class="text-center mt-8">
+          <h2 class="text-3xl font-bold mb-8 text-cyan-400 orbitron">PLAYER PROFILE</h2>
+          
+          <div class="stats-card rounded-xl p-6 mb-6">
+            <div class="flex flex-col items-center space-y-4">
+              <div class="relative">
+                <img id="profileAvatar" alt="Player Avatar" 
+                     class="w-24 h-24 rounded-full border-2 border-cyan-400 shadow-lg" />
+                <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-2 border-gray-800 pulse-ring"></div>
+              </div>
+              
+              <div>
+                <h3 id="profileUsername" class="text-2xl font-bold text-cyan-400"></h3>
+                <p id="profileEmail" class="text-gray-400"></p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="stats-card rounded-lg p-4">
+              <div class="text-2xl font-bold text-green-400" id="profileWins">0</div>
+              <div class="text-sm text-gray-400">Wins</div>
+            </div>
+            <div class="stats-card rounded-lg p-4">
+              <div class="text-2xl font-bold text-red-400" id="profileLosses">0</div>
+              <div class="text-sm text-gray-400">Losses</div>
+            </div>
+            <div class="stats-card rounded-lg p-4">
+              <div class="text-lg font-bold text-yellow-400" id="profileRank">Bronze</div>
+              <div class="text-sm text-gray-400">Rank</div>
+            </div>
+          </div>
+          
+          <button id="logoutBtnProfile" class="gaming-button-secondary w-full py-3 rounded-lg font-bold">
+            LOGOUT
+          </button>
         </div>
       </div>
     </section>
 
     <!-- SETTINGS VIEW -->
-    <section id="settingsView" class="view bg-white p-8 rounded-xl shadow-2xl w-full max-w-md text-gray-800 mx-auto" style="display: none;">
-      <button id="backFromSettings" type="button" class="mb-4 bg-gray-300 text-gray-900 py-1 px-4 rounded shadow hover:bg-gray-400 transition">
-        ← Back
-      </button>
-      <h2 class="text-3xl font-bold mb-6 text-center">Settings</h2>
-      <form id="settingsForm" method="post" class="flex flex-col gap-6">
-        <div>
-          <label for="newUsername" class="block font-semibold mb-1">Change Username</label>
-          <input type="text" id="newUsername" name="newUsername" placeholder="New Username" class="w-full p-2 border rounded" />
-        </div>
-        <div>
-          <label for="newEmail" class="block font-semibold mb-1">Change Email</label>
-          <input type="email" id="newEmail" name="newEmail" placeholder="New Email" class="w-full p-2 border rounded" />
-        </div>
-        <div>
-          <label for="newPasswordSettings" class="block font-semibold mb-1">Change Password</label>
-          <input type="password" id="newPasswordSettings" name="newPassword" placeholder="New Password" class="w-full p-2 border rounded" />
-        </div>
-        <div>
-        <label for="avatarUpload" class="block font-semibold mb-1">Upload Custom Avatar</label>
-        <input type="file" id="avatarUpload" name="avatarUpload" accept="image/*" class="w-full p-2 border rounded bg-white" />
-        <img id="customAvatarPreview" alt="Custom Avatar Preview" class="w-12 h-12 mt-2 rounded-full border hidden" />
-        <button type="button" id="randomAvatarBtn" class="mt-2 bg-gray-300 text-gray-900 py-1 px-4 rounded shadow hover:bg-gray-400 transition">Random</button>
+    <section id="settingsView" class="view" style="display: none;">
+      <div class="gaming-card rounded-2xl p-8 w-full max-w-md">
+        <button id="backFromSettings" class="gaming-button-secondary px-4 py-2 rounded-lg mb-6">
+          ← Back
+        </button>
+        
+        <h2 class="text-3xl font-bold mb-8 text-center text-cyan-400 orbitron">SETTINGS</h2>
+        
+        <form id="settingsForm" method="post" class="space-y-6">
+          <div class="space-y-2">
+            <label for="newUsername" class="block text-sm font-medium text-gray-300">Player Name</label>
+            <input type="text" id="newUsername" name="newUsername" placeholder="New username" 
+                   class="gaming-input w-full p-3 rounded-lg" />
+          </div>
+          
+          <div class="space-y-2">
+            <label for="newEmail" class="block text-sm font-medium text-gray-300">Email Address</label>
+            <input type="email" id="newEmail" name="newEmail" placeholder="New email" 
+                   class="gaming-input w-full p-3 rounded-lg" />
+          </div>
+          
+          <div class="space-y-2">
+            <label for="newPasswordSettings" class="block text-sm font-medium text-gray-300">Password</label>
+            <input type="password" id="newPasswordSettings" name="newPassword" placeholder="New password" 
+                   class="gaming-input w-full p-3 rounded-lg" />
+          </div>
+          
+          <div class="space-y-2">
+            <label for="avatarUpload" class="block text-sm font-medium text-gray-300">Avatar</label>
+            <input type="file" id="avatarUpload" name="avatarUpload" accept="image/*" 
+                   class="gaming-input w-full p-3 rounded-lg" />
+            <img id="customAvatarPreview" alt="Avatar Preview" 
+                 class="w-16 h-16 rounded-full border-2 border-cyan-400 mt-2 hidden" />
+            <button type="button" id="randomAvatarBtn" class="gaming-button-secondary px-4 py-2 rounded-lg mt-2">
+              Random Avatar
+            </button>
+          </div>
+          
+          <button type="submit" class="gaming-button w-full py-4 rounded-lg font-bold text-lg">
+            SAVE CHANGES
+          </button>
+          
+          <p id="settingsMessage" class="text-sm text-red-400 text-center"></p>
+        </form>
       </div>
-        <button type="submit" class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Save Changes</button>
-        <p id="settingsMessage" class="message text-sm text-red-500 text-center mt-2"></p>
-      </form>
+    </section>
+    <!-- MAIN FRIENDS VIEW -->
+    <section id="FriendsView" class="view" style="display: none;">
+      <div class="gaming-card rounded-2xl p-8 w-full max-w-2xl">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold text-cyan-400 orbitron mb-4">FRIENDS NETWORK</h2>
+          
+          <div class="flex justify-center gap-4">
+            <button id="showFriendsListBtn" class="gaming-button px-6 py-3 rounded-lg font-semibold">
+              📋 List
+            </button>
+            <button id="showAddFriendBtn" class="gaming-button px-6 py-3 rounded-lg font-semibold">
+              ➕ Add
+            </button>
+            <button id="showRemoveFriendBtn" class="gaming-button-secondary px-6 py-3 rounded-lg font-semibold">
+              ➖ Remove
+            </button>
+          </div>
+        </div>
+
+        <!-- BACK TO DASHBOARD -->
+        <div class="text-center mt-8">
+          <button id="backToDashboardFromFriends" class="gaming-button-secondary px-6 py-3 rounded-lg font-semibold">
+            ← Back to Dashboard
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FRIENDS LIST VIEW -->
+    <section id="friendsListView" class="view" style="display: none;">
+      <div class="gaming-card rounded-2xl p-8 w-full max-w-2xl">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold text-cyan-400 orbitron mb-4">FRIENDS LIST</h2>
+        </div>
+
+        <div class="space-y-4">
+          <p id="friendListMessage" class="text-center text-gray-400"></p>
+          <ul id="friendsList" class="space-y-2">
+            <!-- Friends will be populated here -->
+          </ul>
+          
+          <div class="text-center">
+            <p id="pendingListMessage" class="text-gray-400 mb-4"></p>
+            <ul id="pendingList" class="space-y-2">
+              <!-- Pending requests will be populated here -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- BACK TO FRIENDS -->
+        <div class="text-center mt-8">
+          <button id="backToFriendsFromList" class="gaming-button-secondary px-6 py-3 rounded-lg font-semibold">
+            ← Back to Friends
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADD FRIEND VIEW -->
+    <section id="addFriendView" class="view" style="display: none;">
+      <div class="gaming-card rounded-2xl p-8 w-full max-w-2xl">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold text-cyan-400 orbitron mb-4">ADD NEW FRIEND</h2>
+        </div>
+
+        <div class="space-y-4">
+          <form id="addFriendForm" class="space-y-4">
+            <div class="flex gap-3">
+              <input type="text" id="addFriendInput" placeholder="Enter friend's username" required 
+                    class="gaming-input flex-1 p-3 rounded-lg text-white" />
+              <button type="submit" class="gaming-button px-6 py-3 rounded-lg font-semibold">
+                Add Friend
+              </button>
+            </div>
+          </form>
+          <p id="addFriendMessage" class="text-sm text-center"></p>
+        </div>
+
+        <!-- BACK TO FRIENDS -->
+        <div class="text-center mt-8">
+          <button id="backToFriendsFromAdd" class="gaming-button-secondary px-6 py-3 rounded-lg font-semibold">
+            ← Back to Friends
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- REMOVE FRIEND VIEW -->
+    <section id="removeFriendView" class="view" style="display: none;">
+      <div class="gaming-card rounded-2xl p-8 w-full max-w-2xl">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold text-red-400 orbitron mb-4">REMOVE FRIEND</h2>
+        </div>
+
+        <div class="space-y-4">
+          <form id="removeFriendForm" class="space-y-4">
+            <div class="flex gap-3">
+              <input type="text" id="removeFriendInput" placeholder="Enter friend's username" required 
+                    class="gaming-input flex-1 p-3 rounded-lg text-white" />
+              <button type="submit" class="gaming-button-secondary px-6 py-3 rounded-lg font-semibold">
+                Remove
+              </button>
+            </div>
+          </form>
+          <p id="removeFriendMessage" class="text-sm text-center"></p>
+        </div>
+
+        <!-- BACK TO FRIENDS -->
+        <div class="text-center mt-8">
+          <button id="backToFriendsFromRemove" class="gaming-button-secondary px-6 py-3 rounded-lg font-semibold">
+            ← Back to Friends
+          </button>
+        </div>
+      </div>
     </section>
 
   </main>
 
-<script type="module" src="ts/dist/login.js"></script>
-<script type="module" src="ts/dist/buttons.js"></script>
-<script type="module" src="ts/dist/coockies.js"></script>
-<script type="module" src="ts/dist/settings.js"></script>
-  
+  <!-- SCRIPTS -->
+  <script>
+    // Create floating particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Initialize particles on page load
+    document.addEventListener('DOMContentLoaded', createParticles);
+  </script>
+  <script type="module" src="ts/dist/login.js"></script>
+  <script type="module" src="ts/dist/buttons.js"></script>
+  <script type="module" src="ts/dist/coockies.js"></script>
+  <script type="module" src="ts/dist/settings.js"></script>
+  <script type="module" src="ts/dist/friends.js"></script>
 </body>
 </html>
+    

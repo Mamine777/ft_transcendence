@@ -1,3 +1,4 @@
+
 import path from 'path'
 import fs from 'fs'
 import Database from 'better-sqlite3'
@@ -18,6 +19,20 @@ db.exec(`
   user_id INTEGER NOT NULL,
   friend TEXT NOT NULL,
   status TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS PongHistory (
+  user_id INTEGER NOT NULL,
+  played INTEGER,
+  wins INTEGER,
+  scored INTEGER
+  );
+
+  CREATE TABLE IF NOT EXISTS RowHistory (
+  user_id INTEGER NOT NULL,
+  played INTEGER,
+  YellowWins INTEGER,
+  RedWins INTEGER
   )
 `);
 

@@ -16,7 +16,11 @@ export const views = {
     forgotPasswordView: document.getElementById("forgotPasswordView"),
     secretView: document.getElementById("secretView"),
     profileViewDrop: document.getElementById("profileViewDrop"),
-    settingsView: document.getElementById("settingsView")
+    settingsView: document.getElementById("settingsView"),
+    FriendsView: document.getElementById("FriendsView"),
+    friendsListView: document.getElementById("friendsListView"),
+    addFriendView: document.getElementById("addFriendView"),
+    removeFriendView: document.getElementById("removeFriendView")
 };
 function showViewFromHash() {
     let hash = window.location.hash.slice(1);
@@ -98,9 +102,10 @@ function redirectToLogin() {
     switchView("loginView");
 }
 function setupNavigationListeners() {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     (_a = document.getElementById("backToDashboard")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => {
         window.location.hash = "#dashboardView";
+        loadProfile();
     });
     (_b = document.getElementById("settingsBtn")) === null || _b === void 0 ? void 0 : _b.addEventListener("click", () => {
         window.location.hash = "#settingsView";
@@ -115,6 +120,22 @@ function setupNavigationListeners() {
     });
     (_e = document.getElementById("backToDashboardFromProfile")) === null || _e === void 0 ? void 0 : _e.addEventListener("click", () => {
         window.location.hash = "#dashboardView";
+        loadProfile();
+    });
+    (_f = document.getElementById("backToFriendsFromList")) === null || _f === void 0 ? void 0 : _f.addEventListener('click', () => {
+        switchView("dashboardView");
+        loadProfile();
+    });
+    (_g = document.getElementById("backToFriendsFromRemove")) === null || _g === void 0 ? void 0 : _g.addEventListener('click', () => {
+        switchView("dashboardView");
+        loadProfile();
+    });
+    (_h = document.getElementById("backToFriendsFromAdd")) === null || _h === void 0 ? void 0 : _h.addEventListener('click', () => {
+        switchView("dashboardView");
+        loadProfile();
+    });
+    (_j = document.getElementById("backToDashboardFromFriends")) === null || _j === void 0 ? void 0 : _j.addEventListener('click', () => {
+        switchView("dashboardView");
         loadProfile();
     });
 }

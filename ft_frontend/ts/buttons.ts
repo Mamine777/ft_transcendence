@@ -33,6 +33,11 @@ document.addEventListener("DOMContentLoaded", () => {
       switchView("loginView");
     });
   }
+  const FriendsBtn = document.getElementById("FriendsBtn");
+  if (FriendsBtn)
+      FriendsBtn.addEventListener("click", () =>{
+        switchView("FriendsView");
+      })
 
   // Event listener for "Continue to Login" button in the Secret Phrase view
   const continueToLogin = document.getElementById("continueToLogin");
@@ -41,7 +46,14 @@ document.addEventListener("DOMContentLoaded", () => {
       switchView("loginView");
     });
   }
-
+  
+  const showRemoveFriendBtn = document.getElementById("showRemoveFriendBtn");
+  if (showRemoveFriendBtn)
+  {
+    showRemoveFriendBtn.addEventListener("click", () =>{
+      switchView("removeFriendView");
+    })
+  }
   // Event listener for "Logout" button in the Dashboard view
   const logoutBtnDropdown = document.getElementById("logoutBtnDropdown");
   if (logoutBtnDropdown) {
@@ -49,17 +61,16 @@ document.addEventListener("DOMContentLoaded", () => {
       switchView("loginView");
     	});
 	}
-	const cancelTwoFABtn = document.getElementById("cancelTwoFABtn");
-	if (cancelTwoFABtn) {
-		cancelTwoFABtn.addEventListener("click", () => {
-      (document.getElementById("email") as HTMLInputElement).value = "";
-      (document.getElementById("password") as HTMLInputElement).value = "";
-      (document.getElementById("loginMessage") as HTMLElement).innerText = "";
+  const showAddFriendBtn = document.getElementById("showAddFriendBtn");
+  if (showAddFriendBtn)
+  {
+    showAddFriendBtn.addEventListener("click", () =>{
+      switchView("addFriendView");
+    })
+  }
 
-			switchView("loginView");
 
-		});
-	}
+
   const profileMenuBtn = document.getElementById("profileMenuBtn");
   const dropdownMenu = document.getElementById("dropdownMenu");
 
@@ -119,9 +130,46 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           switchView("profileViewDrop");
         }
-      } catch (error) {
-        console.error("Error fetching /user:", error);
+        const historyRes = await fetch("http://localhost:3000/AllHistory", {
+        method: "GET",
+        credentials: "include",
+        headers
+      });
+
+      const historyData = await historyRes.json();
+      if (!historyData.success) {
+        console.error("Could not load game history:", historyData.error);
+        return;
       }
+
+      // Update Pong stats
+      const pong = historyData.pong;
+      if (pong) {
+        const wins = pong.wins;
+        const losses = pong.played - pong.wins;
+
+        document.getElementById("profileWins")!.textContent = wins.toString();
+        document.getElementById("profileLosses")!.textContent = losses.toString();
+      }
+
+      const row = historyData.row;
+      if (row) {
+        const totalWins = row.YellowWins + row.RedWins;
+
+        let rank = "Bronze";
+        if (totalWins > 20) rank = "Silver";
+        if (totalWins > 50) rank = "Gold";
+        if (totalWins > 100) rank = "Platinum";
+
+        document.getElementById("profileRank")!.textContent = rank;
+      }
+
+      // Finally show the profile view
+      switchView("profileViewDrop");
+
+    } catch (err) {
+      console.error("Error loading profile:", err);
+    }
     });
   }
   const logoutBtn = document.getElementById("logoutBtn");

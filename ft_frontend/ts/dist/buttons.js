@@ -38,11 +38,22 @@ document.addEventListener("DOMContentLoaded", () => {
             switchView("loginView");
         });
     }
+    const FriendsBtn = document.getElementById("FriendsBtn");
+    if (FriendsBtn)
+        FriendsBtn.addEventListener("click", () => {
+            switchView("FriendsView");
+        });
     // Event listener for "Continue to Login" button in the Secret Phrase view
     const continueToLogin = document.getElementById("continueToLogin");
     if (continueToLogin) {
         continueToLogin.addEventListener("click", () => {
             switchView("loginView");
+        });
+    }
+    const showRemoveFriendBtn = document.getElementById("showRemoveFriendBtn");
+    if (showRemoveFriendBtn) {
+        showRemoveFriendBtn.addEventListener("click", () => {
+            switchView("removeFriendView");
         });
     }
     // Event listener for "Logout" button in the Dashboard view
@@ -52,13 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
             switchView("loginView");
         });
     }
-    const cancelTwoFABtn = document.getElementById("cancelTwoFABtn");
-    if (cancelTwoFABtn) {
-        cancelTwoFABtn.addEventListener("click", () => {
-            document.getElementById("email").value = "";
-            document.getElementById("password").value = "";
-            document.getElementById("loginMessage").innerText = "";
-            switchView("loginView");
+    const showAddFriendBtn = document.getElementById("showAddFriendBtn");
+    if (showAddFriendBtn) {
+        showAddFriendBtn.addEventListener("click", () => {
+            switchView("addFriendView");
         });
     }
     const profileMenuBtn = document.getElementById("profileMenuBtn");
@@ -114,9 +122,41 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                     switchView("profileViewDrop");
                 }
+                const historyRes = yield fetch("http://localhost:3000/AllHistory", {
+                    method: "GET",
+                    credentials: "include",
+                    headers
+                });
+                const historyData = yield historyRes.json();
+                if (!historyData.success) {
+                    console.error("Could not load game history:", historyData.error);
+                    return;
+                }
+                // Update Pong stats
+                const pong = historyData.pong;
+                if (pong) {
+                    const wins = pong.wins;
+                    const losses = pong.played - pong.wins;
+                    document.getElementById("profileWins").textContent = wins.toString();
+                    document.getElementById("profileLosses").textContent = losses.toString();
+                }
+                const row = historyData.row;
+                if (row) {
+                    const totalWins = row.YellowWins + row.RedWins;
+                    let rank = "Bronze";
+                    if (totalWins > 20)
+                        rank = "Silver";
+                    if (totalWins > 50)
+                        rank = "Gold";
+                    if (totalWins > 100)
+                        rank = "Platinum";
+                    document.getElementById("profileRank").textContent = rank;
+                }
+                // Finally show the profile view
+                switchView("profileViewDrop");
             }
-            catch (error) {
-                console.error("Error fetching /user:", error);
+            catch (err) {
+                console.error("Error loading profile:", err);
             }
         }));
     }

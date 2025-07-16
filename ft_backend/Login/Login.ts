@@ -139,10 +139,17 @@ server.post("/check-signup", async (request, reply) => {
 
 		const stmt = db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
 		stmt.run(username, signupEmail, hashedPassword);
-		return reply.send({ success: true, message: `User registered successfully!\n\n *import !!! this is your secret phrase incase you trying to change your password we will ask for it ${hashedPassword}` });
+		return reply.send({ success: true, message: `User registered successfully!\n\n *import !!! this is your secret phrase incase you trying to change your password we will ask for it`, secret: hashedPassword });
 	});
 
-
+	//cenceling2FA
+server.post('/auth/cancel-2fa', (request, reply) => {
+		
+	request.session.pending2FA = undefined;
+	request.session.user = undefined;
+		
+	reply.send({ success: true, message: '2FA session canceled' });
+});
 server.post("/check-forgot", async (request, reply) => {
 	const { email, secretKey, newpassword } = request.body as { email: string; secretKey: string; newpassword: string };
 
@@ -283,4 +290,5 @@ export default fp(async (fastify) => {
             return reply.status(500).send({ success: false, message: "Failed to send 2FA code" });
         }
     });
+
 });

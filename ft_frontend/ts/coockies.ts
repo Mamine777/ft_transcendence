@@ -10,7 +10,11 @@ export const views: Record<string, ViewElement> = {
   forgotPasswordView: document.getElementById("forgotPasswordView"),
   secretView: document.getElementById("secretView"),
   profileViewDrop : document.getElementById("profileViewDrop"),
-  settingsView : document.getElementById("settingsView")
+  settingsView : document.getElementById("settingsView"),
+  FriendsView : document.getElementById("FriendsView"),
+  friendsListView : document.getElementById("friendsListView"),
+  addFriendView : document.getElementById("addFriendView"),
+  removeFriendView : document.getElementById("removeFriendView")
 };
 
 
@@ -100,8 +104,7 @@ function redirectToLogin(): void {
 function setupNavigationListeners(): void {
   document.getElementById("backToDashboard")?.addEventListener("click", () => {
     window.location.hash = "#dashboardView";
-    
-
+    loadProfile();
   });
 
   document.getElementById("settingsBtn")?.addEventListener("click", () => {
@@ -122,6 +125,22 @@ function setupNavigationListeners(): void {
     window.location.hash = "#dashboardView";
     loadProfile();
   });
+  document.getElementById("backToFriendsFromList")?.addEventListener('click', () =>{
+    switchView("dashboardView");
+    loadProfile();
+  })
+  document.getElementById("backToFriendsFromRemove")?.addEventListener('click', () =>{
+    switchView("dashboardView");
+    loadProfile();
+  })
+  document.getElementById("backToFriendsFromAdd")?.addEventListener('click', () =>{
+    switchView("dashboardView");
+    loadProfile();
+  })
+  document.getElementById("backToDashboardFromFriends")?.addEventListener('click', () =>{
+    switchView("dashboardView");
+    loadProfile();
+  })
 }
 
 

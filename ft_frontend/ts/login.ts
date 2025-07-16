@@ -102,37 +102,50 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	});
 	document.getElementById("signupForm")?.addEventListener("submit", async (event) => {
-		event.preventDefault();
-		const email = document.getElementById("signupEmail") as HTMLInputElement;
-		const password = document.getElementById("signupPassword") as HTMLInputElement;
-		const username = document.getElementById("username") as HTMLInputElement;
-		const messageDivsignUp = document.getElementById("signupMessage") as HTMLElement;
+	event.preventDefault();
 
-		try {
-			const response = await fetch("http://localhost:3000/check-signup", {
-			method: "POST",
-			credentials: "include",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				signupEmail: email.value,
-				signupPassword: password.value,
-				username: username.value
-			})
-			});
-			const data = await response.json();
-			if (data.success) {
-			switchView("secretView");
-			(document.getElementById("secretMessage")!).textContent = data.message;
-			(document.getElementById("secretNote")!).textContent = data.importNote || "";
-			(document.getElementById("secretPhrase")!).textContent = data.secretPhrase || "";
-			} else {
-			messageDivsignUp.textContent = data.message;
-			}
-		} catch (error) {
-			messageDivsignUp.textContent = "An error occurred. Please try again.";
+	const email = document.getElementById("signupEmail") as HTMLInputElement;
+	const password = document.getElementById("signupPassword") as HTMLInputElement;
+	const username = document.getElementById("username") as HTMLInputElement;
+	const messageDivSignUp = document.getElementById("signupMessage") as HTMLElement;
+	const secretPhrase = document.getElementById("secretPhrase") as HTMLElement;
+
+	messageDivSignUp.textContent = "";
+	
+	if (!email.value || !password.value || !username.value) {
+		messageDivSignUp.textContent = "Please fill out all fields.";
+		return;
+	}
+
+	try {
+		const response = await fetch("http://localhost:3000/check-signup", {
+		method: "POST",
+		credentials: "include",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({
+			signupEmail: email.value,
+			signupPassword: password.value,
+			username: username.value
+		})
+		});
+
+		const data = await response.json();
+
+		if (data.success) {
+		switchView("secretView");
+
+		const secretMessage = document.getElementById("secretMessage");
+		const secretNote = document.getElementById("secretNote");
+
+		if (secretMessage) secretMessage.textContent = data.message || "Registration successful.";
+		if (secretNote) secretNote.textContent = data.importNote || "Save this recovery key securely.";
+		if (secretPhrase) secretPhrase.textContent = data.secret || "No secret provided.";
+		} else {
+		messageDivSignUp.textContent = data.message || "Registration failed.";
 		}
-	});
-	
-
-	
+	} catch (error) {
+		messageDivSignUp.textContent = "An error occurred. Please try again.";
+		console.error(error);
+	}
+	});	
 });
