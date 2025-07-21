@@ -20,7 +20,8 @@ export const views = {
     FriendsView: document.getElementById("FriendsView"),
     friendsListView: document.getElementById("friendsListView"),
     addFriendView: document.getElementById("addFriendView"),
-    removeFriendView: document.getElementById("removeFriendView")
+    removeFriendView: document.getElementById("removeFriendView"),
+    GameView: document.getElementById("GameView")
 };
 function showViewFromHash() {
     let hash = window.location.hash.slice(1);

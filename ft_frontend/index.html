@@ -622,6 +622,52 @@
         </form>
       </div>
     </section>
+
+        <!-- GAMES VIEW-->
+    <section id="GameView" class="view" style="display: none;">
+      <div class="gaming-card rounded-2xl p-8 w-full max-w-4xl shadow-lg border border-cyan-400">
+        <h2 class="text-3xl font-bold text-center mb-8 text-cyan-400 orbitron neon-text">GAME ARENA</h2>
+        <div class="mb-6 flex items-center gap-4">
+          <label for="game-choice" class="text-lg font-semibold text-gray-300">Choisir un jeu :</label>
+          <select id="game-choice" class="gaming-input p-2 rounded-lg bg-gray-800 text-white">
+            <option value="pong">Pong</option>
+            <option value="connect4">Puissance 4</option>
+          </select>
+        </div>
+
+        <p id="instruction" class="text-sm text-gray-400 mt-2 mb-4 text-center"></p>
+
+        <!-- Menu Pong -->
+        <div id="pong-menu" class="mb-6 flex items-center gap-2 justify-center">
+          <select id="mode" class="gaming-input p-2 rounded-lg bg-gray-800 text-white mr-2">
+            <option value="BOT">BOT</option>
+            <option value="PVP">PVP</option>
+          </select>
+          <button id="start" class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
+            Start
+          </button>
+        </div>
+
+        <div class="flex justify-center mb-6">
+          <canvas width="800" height="600" class="border border-gray-600 rounded-lg shadow-lg"></canvas>
+        </div>
+
+        <!-- Puissance 4 -->
+        <div id="connect4-container" class="text-center hidden">
+          <h2 id="winner" class="text-2xl font-bold mb-4 text-yellow-400"></h2>
+          <div id="board" class="grid grid-cols-7 gap-2 justify-center"></div>
+          <button id="restart-connect4" class="gaming-button-secondary mt-4 px-4 py-2 rounded-lg font-bold hover:scale-105 transition-all">
+            Rejouer 🔄
+          </button>
+        </div>
+        <div class="text-center mt-8">
+          <button id="backToDashboardFromFriends" class="gaming-button-secondary px-6 py-3 rounded-lg font-semibold">
+            ← Back to Dashboard
+          </button>
+        </div>
+      </div>
+    </section>
+
         <!-- MAIN FRIENDS VIEW -->
     <section id="FriendsView" class="view" style="display: none;">
       <div class="gaming-card rounded-2xl p-8 w-full max-w-4xl">
@@ -756,6 +802,7 @@
   <script type="module" src="ts/dist/coockies.js"></script>
   <script type="module" src="ts/dist/settings.js"></script>
   <script type="module" src="ts/dist/friends.js"></script>
+  <script type="module" src="ts/dist/games/main.js"></script>
 </body>
 </html>
     

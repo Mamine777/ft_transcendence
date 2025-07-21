@@ -43,6 +43,11 @@ document.addEventListener("DOMContentLoaded", () => {
         FriendsBtn.addEventListener("click", () => {
             switchView("FriendsView");
         });
+    const GameBtn = document.getElementById("playBtn");
+    if (GameBtn)
+        GameBtn.addEventListener("click", () => {
+            switchView("GameView");
+        });
     // Event listener for "Continue to Login" button in the Secret Phrase view
     const continueToLogin = document.getElementById("continueToLogin");
     if (continueToLogin) {
