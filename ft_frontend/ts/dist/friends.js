@@ -8,465 +8,559 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { switchView } from './login';
-document.addEventListener("DOMContentLoaded", () => {
-    var _a, _b;
-    (_a = document.getElementById("addFriendForm")) === null || _a === void 0 ? void 0 : _a.addEventListener("submit", (event) => __awaiter(void 0, void 0, void 0, function* () {
-        event.preventDefault();
-        const addFriendMessageElem = document.getElementById("addFriendMessage");
-        const addFriendInput = document.getElementById("addFriendInput");
-        const jwt = localStorage.getItem("jwt");
+// Application state
+class FriendsManager {
+    constructor() {
+        this.friends = [];
+        this.pendingRequests = [];
+        this.filteredFriends = [];
+        this.currentPage = 1;
+        this.currentTab = 'friends';
+        this.ITEMS_PER_PAGE = 5;
+        // DOM element references
+        this.elements = {};
+        this.initializeElements();
+        this.setupEventListeners();
+    }
+    // Step 1: Initialize DOM elements
+    initializeElements() {
+        const elementIds = [
+            'friendsTab', 'pendingTab', 'addFriendTab',
+            'friendsContainer', 'pendingContainer', 'outgoingContainer',
+            'addFriendForm', 'searchInput', 'statusFilter', 'sortBy',
+            'prevPage', 'nextPage', 'pageInfo',
+            'friendsCount', 'pendingCount',
+            'friendUsername', 'friendMessage',
+            'sendFriendRequest', 'cancelAddFriend',
+            'friendsList', 'pendingRequests'
+        ];
+        elementIds.forEach(id => {
+            this.elements[id] = document.getElementById(id);
+        });
+    }
+    // Step 2: Setup all event listeners
+    setupEventListeners() {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        // Tab navigation
+        (_a = this.elements.friendsTab) === null || _a === void 0 ? void 0 : _a.addEventListener('click', () => this.switchTab('friends'));
+        (_b = this.elements.pendingTab) === null || _b === void 0 ? void 0 : _b.addEventListener('click', () => this.switchTab('pending'));
+        (_c = this.elements.addFriendTab) === null || _c === void 0 ? void 0 : _c.addEventListener('click', () => this.switchTab('addFriend'));
+        // Search and filters
+        (_d = this.elements.searchInput) === null || _d === void 0 ? void 0 : _d.addEventListener('input', () => this.handleFilters());
+        (_e = this.elements.statusFilter) === null || _e === void 0 ? void 0 : _e.addEventListener('change', () => this.handleFilters());
+        (_f = this.elements.sortBy) === null || _f === void 0 ? void 0 : _f.addEventListener('change', () => this.handleFilters());
+        // Pagination
+        (_g = this.elements.prevPage) === null || _g === void 0 ? void 0 : _g.addEventListener('click', () => this.previousPage());
+        (_h = this.elements.nextPage) === null || _h === void 0 ? void 0 : _h.addEventListener('click', () => this.nextPage());
+        // Add friend form
+        (_j = this.elements.sendFriendRequest) === null || _j === void 0 ? void 0 : _j.addEventListener('click', () => this.sendFriendRequest());
+        (_k = this.elements.cancelAddFriend) === null || _k === void 0 ? void 0 : _k.addEventListener('click', () => this.cancelAddFriend());
+        // Back to dashboard
+        (_l = document.getElementById('backToDashboardFromFriends')) === null || _l === void 0 ? void 0 : _l.addEventListener('click', () => {
+            switchView('dashboardView');
+        });
+    }
+    // Step 3: API helper for authentication headers
+    getHeaders() {
         const headers = {
             "Content-Type": "application/json",
         };
+        const jwt = localStorage.getItem("jwt");
         if (jwt) {
             headers["Authorization"] = `Bearer ${jwt}`;
         }
-        try {
-            const response = yield fetch("http://localhost:3000/AddFriend", {
-                method: "POST",
-                headers,
-                credentials: "include",
-                body: JSON.stringify({ message: addFriendInput.value.trim() })
-            });
-            const data = yield response.json();
-            if (addFriendMessageElem) {
-                addFriendMessageElem.textContent = data.received;
+        return headers;
+    }
+    // Step 4: Fetch friends and pending requests from server
+    fetchFriends() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield fetch("http://localhost:3000/GetFriends", {
+                    method: "GET",
+                    headers: this.getHeaders(),
+                    credentials: "include",
+                });
+                const data = yield response.json();
+                // Add debugging
+                console.log("Backend response:", data);
+                console.log("Pending requests:", data.pendingRequests);
+                if (data.success) {
+                    // Transform server data to our interface
+                    this.friends = (data.friends || []).map((username, idx) => ({
+                        id: idx + 1,
+                        username,
+                        status: this.getRandomStatus(),
+                        addedDate: new Date().toISOString().split('T')[0],
+                        lastSeen: this.getRandomLastSeen(),
+                    }));
+                    // FIX: Properly handle the pending requests structure from backend
+                    this.pendingRequests = (data.pendingRequests || []).map((request, idx) => ({
+                        id: idx + 1,
+                        username: request.username,
+                        date: new Date().toISOString().split('T')[0],
+                        type: request.type,
+                    }));
+                    // Add debugging
+                    console.log("Processed pending requests:", this.pendingRequests);
+                    this.updateCounts();
+                    this.handleFilters();
+                    this.renderCurrentTab();
+                }
+                else {
+                    this.showError("Failed to fetch friends: " + (data.error || "Unknown error"));
+                }
+            }
+            catch (error) {
+                console.error("Error fetching friends:", error);
+                this.showError("Network error while fetching friends");
+            }
+        });
+    }
+    // Step 5: Update UI counters
+    updateCounts() {
+        const friendsCount = this.elements.friendsCount;
+        const pendingCount = this.elements.pendingCount;
+        if (friendsCount) {
+            friendsCount.textContent = `(${this.friends.length})`;
+        }
+        if (pendingCount) {
+            if (this.pendingRequests.length > 0) {
+                pendingCount.style.display = 'inline-block';
+                pendingCount.textContent = this.pendingRequests.length.toString();
+            }
+            else {
+                pendingCount.style.display = 'none';
             }
         }
-        catch (error) {
-            console.error("Error adding friend:", error);
+    }
+    // Step 6: Filter and sort friends based on user input
+    handleFilters() {
+        const searchInput = this.elements.searchInput;
+        const statusFilter = this.elements.statusFilter;
+        const sortBy = this.elements.sortBy;
+        if (!searchInput || !statusFilter || !sortBy)
+            return;
+        const searchTerm = searchInput.value.toLowerCase();
+        const statusValue = statusFilter.value;
+        const sortValue = sortBy.value;
+        // Filter friends
+        this.filteredFriends = this.friends.filter(friend => {
+            const matchesSearch = friend.username.toLowerCase().includes(searchTerm);
+            const matchesStatus = statusValue === 'all' || friend.status === statusValue;
+            return matchesSearch && matchesStatus;
+        });
+        // Sort friends
+        switch (sortValue) {
+            case 'name':
+                this.filteredFriends.sort((a, b) => a.username.localeCompare(b.username));
+                break;
+            case 'status':
+                this.filteredFriends.sort((a, b) => this.getStatusPriority(a.status) - this.getStatusPriority(b.status));
+                break;
+            case 'recent':
+                this.filteredFriends.sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime());
+                break;
         }
-    }));
-    //////////////////****friend list*******////////////////
+        this.currentPage = 1;
+        this.renderFriends();
+        this.updatePagination();
+    }
+    // Step 7: Render friends list with pagination
+    renderFriends() {
+        const container = this.elements.friendsContainer;
+        if (!container)
+            return;
+        container.innerHTML = '';
+        if (this.filteredFriends.length === 0) {
+            container.innerHTML = '<div class="text-center text-gray-400 py-8">No friends found.</div>';
+            return;
+        }
+        const startIndex = (this.currentPage - 1) * this.ITEMS_PER_PAGE;
+        const endIndex = startIndex + this.ITEMS_PER_PAGE;
+        const pageItems = this.filteredFriends.slice(startIndex, endIndex);
+        pageItems.forEach(friend => {
+            const friendElement = this.createFriendElement(friend);
+            container.appendChild(friendElement);
+        });
+    }
+    // Step 8: Create individual friend element
+    createFriendElement(friend) {
+        const div = document.createElement('div');
+        div.className = 'friend-item flex justify-between items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors';
+        const statusColor = this.getStatusColor(friend.status);
+        const statusText = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
+        div.innerHTML = `
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+          ${friend.username.charAt(0).toUpperCase()}
+        </div>
+        <div>
+          <h4 class="font-semibold text-white">${friend.username}</h4>
+          <div class="flex items-center gap-2 text-sm text-gray-400">
+            <span class="w-2 h-2 rounded-full ${statusColor}"></span>
+            <span>${statusText}</span>
+            <span>•</span>
+            <span>Added: ${friend.addedDate}</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button class="gaming-button-secondary px-3 py-1 text-sm rounded hover:bg-gray-600" 
+                onclick="friendsManager.viewProfile('${friend.username}')" title="View Profile">
+          👤
+        </button>
+        <button class="gaming-button-danger px-3 py-1 text-sm rounded hover:bg-red-600" 
+                onclick="friendsManager.removeFriend('${friend.username}')" title="Remove Friend">
+          ❌
+        </button>
+      </div>
+    `;
+        return div;
+    }
+    // Step 9: Render pending requests
+    renderPendingRequests() {
+        const incomingContainer = this.elements.pendingContainer;
+        const outgoingContainer = this.elements.outgoingContainer;
+        if (!incomingContainer || !outgoingContainer)
+            return;
+        incomingContainer.innerHTML = '';
+        outgoingContainer.innerHTML = '';
+        const incoming = this.pendingRequests.filter(r => r.type === 'incoming');
+        const outgoing = this.pendingRequests.filter(r => r.type === 'outgoing');
+        if (incoming.length === 0) {
+            incomingContainer.innerHTML = '<div class="text-center text-gray-400 py-4">No incoming requests.</div>';
+        }
+        else {
+            incoming.forEach(request => {
+                const el = this.createPendingRequestElement(request);
+                incomingContainer.appendChild(el);
+            });
+        }
+        if (outgoing.length === 0) {
+            outgoingContainer.innerHTML = '<div class="text-center text-gray-400 py-4">No outgoing requests.</div>';
+        }
+        else {
+            outgoing.forEach(request => {
+                const el = this.createPendingRequestElement(request);
+                outgoingContainer.appendChild(el);
+            });
+        }
+    }
+    // Step 10: Create pending request element
+    createPendingRequestElement(request) {
+        const div = document.createElement('div');
+        div.className = 'pending-request-item flex justify-between items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors';
+        const typeText = request.type === 'incoming' ? 'Incoming Request' : 'Outgoing Request';
+        const typeColor = request.type === 'incoming' ? 'text-green-400' : 'text-yellow-400';
+        div.innerHTML = `
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold">
+          ${request.username.charAt(0).toUpperCase()}
+        </div>
+        <div>
+          <h4 class="font-semibold text-white">${request.username}</h4>
+          <div class="text-sm text-gray-400">
+            <span class="${typeColor}">${typeText}</span>
+            <span> • ${request.date}</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        ${request.type === 'incoming' ? `
+          <button class="gaming-button px-3 py-1 text-sm rounded hover:bg-green-600" 
+                  onclick="friendsManager.acceptRequest('${request.username}')" title="Accept">
+            ✅
+          </button>
+          <button class="gaming-button-danger px-3 py-1 text-sm rounded hover:bg-red-600" 
+                  onclick="friendsManager.declineRequest('${request.username}')" title="Decline">
+            ❌
+          </button>
+        ` : `
+          <button class="gaming-button-secondary px-3 py-1 text-sm rounded hover:bg-gray-600" 
+                  onclick="friendsManager.cancelRequest('${request.username}')" title="Cancel Request">
+            Cancel
+          </button>
+        `}
+      </div>
+    `;
+        return div;
+    }
+    // Step 11: Tab switching logic
+    switchTab(tab) {
+        var _a, _b, _c;
+        this.currentTab = tab;
+        // Update tab button states
+        (_a = this.elements.friendsTab) === null || _a === void 0 ? void 0 : _a.classList.toggle('active', tab === 'friends');
+        (_b = this.elements.pendingTab) === null || _b === void 0 ? void 0 : _b.classList.toggle('active', tab === 'pending');
+        (_c = this.elements.addFriendTab) === null || _c === void 0 ? void 0 : _c.classList.toggle('active', tab === 'addFriend');
+        // Show/hide content panels
+        const friendsList = this.elements.friendsList;
+        const pendingRequests = this.elements.pendingRequests;
+        const addFriendForm = this.elements.addFriendForm;
+        if (friendsList)
+            friendsList.style.display = tab === 'friends' ? 'block' : 'none';
+        if (pendingRequests)
+            pendingRequests.style.display = tab === 'pending' ? 'block' : 'none';
+        if (addFriendForm)
+            addFriendForm.style.display = tab === 'addFriend' ? 'block' : 'none';
+        // Render content for current tab
+        this.renderCurrentTab();
+    }
+    // Step 12: Render content based on current tab
+    renderCurrentTab() {
+        switch (this.currentTab) {
+            case 'friends':
+                this.renderFriends();
+                this.updatePagination();
+                break;
+            case 'pending':
+                this.renderPendingRequests();
+                break;
+            case 'addFriend':
+                // Add friend form is static HTML, no rendering needed
+                break;
+        }
+    }
+    // Step 13: Pagination logic
+    updatePagination() {
+        const totalPages = Math.ceil(this.filteredFriends.length / this.ITEMS_PER_PAGE) || 1;
+        const pageInfo = this.elements.pageInfo;
+        const prevBtn = this.elements.prevPage;
+        const nextBtn = this.elements.nextPage;
+        if (pageInfo) {
+            pageInfo.textContent = `Page ${this.currentPage} of ${totalPages}`;
+        }
+        if (prevBtn) {
+            prevBtn.disabled = this.currentPage <= 1;
+            prevBtn.classList.toggle('opacity-50', this.currentPage <= 1);
+        }
+        if (nextBtn) {
+            nextBtn.disabled = this.currentPage >= totalPages;
+            nextBtn.classList.toggle('opacity-50', this.currentPage >= totalPages);
+        }
+    }
+    previousPage() {
+        if (this.currentPage > 1) {
+            this.currentPage--;
+            this.renderFriends();
+            this.updatePagination();
+        }
+    }
+    nextPage() {
+        const totalPages = Math.ceil(this.filteredFriends.length / this.ITEMS_PER_PAGE) || 1;
+        if (this.currentPage < totalPages) {
+            this.currentPage++;
+            this.renderFriends();
+            this.updatePagination();
+        }
+    }
+    // Step 14: Friend request operations - FIXED
+    sendFriendRequest() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const usernameInput = this.elements.friendUsername;
+            const messageInput = this.elements.friendMessage;
+            if (!usernameInput)
+                return;
+            const username = usernameInput.value.trim();
+            if (!username) {
+                this.showError("Please enter a username.");
+                return;
+            }
+            try {
+                const response = yield fetch("http://localhost:3000/AddFriend", {
+                    method: "POST",
+                    headers: this.getHeaders(),
+                    credentials: "include",
+                    body: JSON.stringify({ message: username })
+                });
+                const data = yield response.json();
+                console.log("AddFriend response:", data);
+                if (data.success) {
+                    this.showSuccess(`Friend request sent to ${username}`);
+                    usernameInput.value = '';
+                    if (messageInput)
+                        messageInput.value = '';
+                    yield this.fetchFriends();
+                    this.switchTab('pending'); // FIXED: Switch to pending tab to show outgoing request
+                }
+                else {
+                    this.showError(data.received || "Failed to send friend request");
+                }
+            }
+            catch (error) {
+                console.error("Error sending friend request:", error);
+                this.showError("Network error while sending friend request");
+            }
+        });
+    }
+    acceptRequest(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield fetch("http://localhost:3000/AcceptRequest", {
+                    method: "POST",
+                    headers: this.getHeaders(),
+                    credentials: "include",
+                    body: JSON.stringify({ message: username })
+                });
+                const data = yield response.json();
+                if (data.succes || data.success) {
+                    this.showSuccess(`Friend request from ${username} accepted`);
+                    yield this.fetchFriends();
+                    this.switchTab('friends');
+                }
+                else {
+                    this.showError(data.error || "Failed to accept friend request");
+                }
+            }
+            catch (error) {
+                console.error("Error accepting friend request:", error);
+                this.showError("Network error while accepting friend request");
+            }
+        });
+    }
+    declineRequest(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!confirm(`Decline friend request from ${username}?`))
+                return;
+            try {
+                const response = yield fetch("http://localhost:3000/RemoveFriend", {
+                    method: "POST",
+                    headers: this.getHeaders(),
+                    credentials: "include",
+                    body: JSON.stringify({ message: username })
+                });
+                const data = yield response.json();
+                if (data.success) {
+                    this.showSuccess(`Friend request from ${username} declined`);
+                    yield this.fetchFriends();
+                    this.renderCurrentTab();
+                }
+                else {
+                    this.showError(data.error || "Failed to decline friend request");
+                }
+            }
+            catch (error) {
+                console.error("Error declining friend request:", error);
+                this.showError("Network error while declining friend request");
+            }
+        });
+    }
+    removeFriend(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!confirm(`Remove ${username} from your friends?`))
+                return;
+            try {
+                const response = yield fetch("http://localhost:3000/RemoveFriend", {
+                    method: "POST",
+                    headers: this.getHeaders(),
+                    credentials: "include",
+                    body: JSON.stringify({ message: username })
+                });
+                const data = yield response.json();
+                if (data.success) {
+                    this.showSuccess(`${username} removed from friends`);
+                    yield this.fetchFriends();
+                    this.renderCurrentTab();
+                }
+                else {
+                    this.showError(data.error || "Failed to remove friend");
+                }
+            }
+            catch (error) {
+                console.error("Error removing friend:", error);
+                this.showError("Network error while removing friend");
+            }
+        });
+    }
+    // Cancel outgoing friend request (uses same RemoveFriend endpoint)
+    cancelRequest(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!confirm(`Cancel friend request to ${username}?`))
+                return;
+            try {
+                const response = yield fetch("http://localhost:3000/RemoveFriend", {
+                    method: "POST",
+                    headers: this.getHeaders(),
+                    credentials: "include",
+                    body: JSON.stringify({ message: username })
+                });
+                const data = yield response.json();
+                if (data.success) {
+                    this.showSuccess(`Friend request to ${username} cancelled`);
+                    yield this.fetchFriends();
+                    this.renderCurrentTab();
+                }
+                else {
+                    this.showError(data.error || "Failed to cancel friend request");
+                }
+            }
+            catch (error) {
+                console.error("Error cancelling friend request:", error);
+                this.showError("Network error while cancelling friend request");
+            }
+        });
+    }
+    // Step 15: Helper functions
+    cancelAddFriend() {
+        const usernameInput = this.elements.friendUsername;
+        const messageInput = this.elements.friendMessage;
+        if (usernameInput)
+            usernameInput.value = '';
+        if (messageInput)
+            messageInput.value = '';
+        this.switchTab('friends');
+    }
+    viewProfile(username) {
+        alert(`View profile of ${username}`);
+        // Implement profile viewing logic here
+    }
+    getStatusColor(status) {
+        switch (status) {
+            case 'online': return 'bg-green-500';
+            case 'away': return 'bg-yellow-500';
+            case 'offline': return 'bg-gray-500';
+            default: return 'bg-gray-500';
+        }
+    }
+    getStatusPriority(status) {
+        switch (status) {
+            case 'online': return 1;
+            case 'away': return 2;
+            case 'offline': return 3;
+            default: return 4;
+        }
+    }
+    getRandomStatus() {
+        const statuses = ['online', 'offline', 'away'];
+        return statuses[Math.floor(Math.random() * statuses.length)];
+    }
+    getRandomLastSeen() {
+        const options = ['Now', '5 min ago', '1 hour ago', '1 day ago', '3 days ago'];
+        return options[Math.floor(Math.random() * options.length)];
+    }
+    showSuccess(message) {
+        // You can implement a toast notification system here
+        console.log("Success:", message);
+        alert(message);
+    }
+    showError(message) {
+        // You can implement a toast notification system here
+        console.log("Error:", message);
+        alert(message);
+    }
+}
+// Step 16: Initialize the system
+let friendsManager;
+document.addEventListener("DOMContentLoaded", () => {
+    friendsManager = new FriendsManager();
+    // Make friendsManager available globally for onclick handlers
+    window.friendsManager = friendsManager;
+    // Initialize when friends view is shown
     const showFriendsListBtn = document.getElementById("showFriendsListBtn");
     if (showFriendsListBtn) {
         showFriendsListBtn.addEventListener("click", () => {
-            switchView("friendsListView");
-            const friendListElem = document.getElementById("friendsList");
-            const friendListMessageElem = document.getElementById("friendListMessage");
-            const pendingListElem = document.getElementById("pendingList");
-            const pendingListMessageElem = document.getElementById("pendingListMessage");
-            const jwt = localStorage.getItem("jwt");
-            const headers = {
-                "Content-Type": "application/json",
-            };
-            if (jwt) {
-                headers["Authorization"] = `Bearer ${jwt}`;
-            }
-            (() => __awaiter(void 0, void 0, void 0, function* () {
-                try {
-                    const response = yield fetch("http://localhost:3000/GetFriends", {
-                        method: "GET",
-                        headers,
-                        credentials: "include",
-                    });
-                    const data = yield response.json();
-                    if (data.success) {
-                        // Populate accepted friends
-                        if (friendListElem) {
-                            friendListElem.innerHTML = "";
-                            friendListMessageElem.textContent = "";
-                            if (!data.friends || data.friends.length === 0) {
-                                friendListMessageElem.textContent = "No friends found.";
-                            }
-                            else {
-                                data.friends.forEach((friend) => {
-                                    const li = document.createElement("li");
-                                    li.textContent = friend;
-                                    friendListElem.appendChild(li);
-                                });
-                            }
-                        }
-                        // Populate pending requests
-                        if (pendingListElem) {
-                            pendingListElem.innerHTML = "";
-                            pendingListMessageElem.textContent = "";
-                            if (!data.pendingRequests || data.pendingRequests.length === 0) {
-                                pendingListMessageElem.textContent = "No pending requests.";
-                            }
-                            else {
-                                data.pendingRequests.forEach((pending) => {
-                                    const li = document.createElement("li");
-                                    li.textContent = pending;
-                                    pendingListElem.appendChild(li);
-                                });
-                            }
-                        }
-                    }
-                    else {
-                        if (friendListMessageElem)
-                            friendListMessageElem.textContent = data.error || "Could not fetch friend list.";
-                        if (pendingListMessageElem)
-                            pendingListMessageElem.textContent = data.error || "Could not fetch pending requests.";
-                    }
-                }
-                catch (error) {
-                    if (friendListMessageElem)
-                        friendListMessageElem.textContent = "Error fetching friend list.";
-                    if (pendingListMessageElem)
-                        pendingListMessageElem.textContent = "Error fetching pending requests.";
-                    console.error(error);
-                }
-            }))();
+            switchView("FriendsView");
+            friendsManager.fetchFriends();
         });
     }
-    (_b = document.getElementById("removeFriendForm")) === null || _b === void 0 ? void 0 : _b.addEventListener("submit", (event) => __awaiter(void 0, void 0, void 0, function* () {
-        event.preventDefault();
-        const removeFriendMessageElem = document.getElementById("removeFriendMessage");
-        const removeFriendInput = document.getElementById("removeFriendInput");
-        const jwt = localStorage.getItem("jwt");
-        const headers = {
-            "Content-Type": "application/json",
-        };
-        if (jwt) {
-            headers["Authorization"] = `Bearer ${jwt}`;
-        }
-        try {
-            const response = yield fetch("http://localhost:3000/RemoveFriend", {
-                method: "POST",
-                headers,
-                credentials: "include",
-                body: JSON.stringify({ message: removeFriendInput.value.trim() })
-            });
-            const data = yield response.json();
-            if (removeFriendMessageElem) {
-                removeFriendMessageElem.textContent = data.removed
-                    ? `Friend "${data.removed}" removed successfully.`
-                    : data.error || "Failed to remove friend.";
-            }
-        }
-        catch (error) {
-            console.error("Error removing friend:", error);
-            if (removeFriendMessageElem) {
-                removeFriendMessageElem.textContent = "Error removing friend.";
-            }
-        }
-    }));
 });
-// interface Friend {
-//   id: number;
-//   username: string;
-//   addedDate: string;
-//   lastSeen: string;
-// }
-// interface PendingRequest {
-//   id: number;
-//   username: string;
-//   date: string;
-// }
-// // State
-// let friends: Friend[] = [];
-// let pendingRequests: PendingRequest[] = [];
-// let filteredFriends: Friend[] = [];
-// let currentPage = 1;
-// let currentTab: 'friends' | 'pending' | 'addFriend' = 'friends';
-// const ITEMS_PER_PAGE = 5;
-// // DOM Elements - Check if elements exist before using them
-// const friendsTab = document.getElementById('friendsTab') as HTMLButtonElement;
-// const pendingTab = document.getElementById('pendingTab') as HTMLButtonElement;
-// const addFriendTab = document.getElementById('addFriendTab') as HTMLButtonElement;
-// const friendsContainer = document.getElementById('friendsContainer')!;
-// const pendingContainer = document.getElementById('pendingContainer')!;
-// const addFriendForm = document.getElementById('addFriendForm')!;
-// const searchInput = document.getElementById('searchInput') as HTMLInputElement;
-// const statusFilter = document.getElementById('statusFilter') as HTMLSelectElement;
-// const sortBy = document.getElementById('sortBy') as HTMLSelectElement;
-// const prevPageBtn = document.getElementById('prevPage') as HTMLButtonElement;
-// const nextPageBtn = document.getElementById('nextPage') as HTMLButtonElement;
-// const pageInfo = document.getElementById('pageInfo')!;
-// const friendsCountSpan = document.getElementById('friendsCount')!;
-// const pendingCountBadge = document.getElementById('pendingCount')!;
-// const friendUsernameInput = document.getElementById('friendUsername') as HTMLInputElement;
-// const sendFriendRequestBtn = document.getElementById('sendFriendRequest')!;
-// const cancelAddFriendBtn = document.getElementById('cancelAddFriend')!;
-// // Helper: Get headers with JWT
-// function getHeaders(): { [key: string]: string } {
-//   const headers: { [key: string]: string } = {
-//     "Content-Type": "application/json",
-//   };
-//   const jwt = localStorage.getItem("jwt");
-//   if (jwt) headers["Authorization"] = `Bearer ${jwt}`;
-//   return headers;
-// }
-// // Fetch friends & pending requests
-// async function fetchFriends() {
-//   try {
-//     const response = await fetch("http://localhost:3000/GetFriends", {
-//       method: "GET",
-//       headers: getHeaders(),
-//       credentials: "include",
-//     });
-//     const data = await response.json();
-//     if (data.success) {
-//       friends = data.friends.map((username: string, idx: number) => ({
-//         id: idx + 1,
-//         username,
-//         addedDate: new Date().toISOString().split('T')[0],
-//         lastSeen: 'Now',
-//       }));
-//       pendingRequests = data.pendingRequests.map((username: string, idx: number) => ({
-//         id: idx + 1,
-//         username,
-//         date: new Date().toISOString().split('T')[0],
-//       }));
-//       updateCounts();
-//       handleFilters();
-//       renderPendingRequests();
-//     } else {
-//       alert("Failed to fetch friends: " + (data.error || "Unknown error"));
-//     }
-//   } catch (err) {
-//     console.error("Error fetching friends:", err);
-//   }
-// }
-// // Update friends and pending counts in UI
-// function updateCounts() {
-//   if (friendsCountSpan) {
-//     friendsCountSpan.textContent = `(${friends.length})`;
-//   }
-//   if (pendingCountBadge) {
-//     if (pendingRequests.length > 0) {
-//       pendingCountBadge.style.display = 'inline-block';
-//       pendingCountBadge.textContent = pendingRequests.length.toString();
-//     } else {
-//       pendingCountBadge.style.display = 'none';
-//     }
-//   }
-// }
-// // Filter and sort friends based on search and sort input
-// function handleFilters() {
-//   if (!searchInput || !sortBy) return;
-//   const term = searchInput.value.toLowerCase();
-//   filteredFriends = friends.filter(f => f.username.toLowerCase().includes(term));
-//   const sortValue = sortBy.value;
-//   if (sortValue === 'name') {
-//     filteredFriends.sort((a,b) => a.username.localeCompare(b.username));
-//   } else if (sortValue === 'recent') {
-//     filteredFriends.sort((a,b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime());
-//   }
-//   currentPage = 1;
-//   renderFriends();
-//   updatePagination();
-// }
-// // Render friends list with pagination
-// function renderFriends() {
-//   if (!friendsContainer) return;
-//   friendsContainer.innerHTML = '';
-//   if (filteredFriends.length === 0) {
-//     friendsContainer.textContent = "No friends found.";
-//     return;
-//   }
-//   const start = (currentPage - 1) * ITEMS_PER_PAGE;
-//   const pageItems = filteredFriends.slice(start, start + ITEMS_PER_PAGE);
-//   pageItems.forEach(friend => {
-//     const div = document.createElement('div');
-//     div.className = 'friend-item flex justify-between items-center p-2 bg-gray-800 rounded-md';
-//     div.innerHTML = `
-//       <div>
-//         <h4 class="font-semibold">${friend.username}</h4>
-//         <small>Added: ${friend.addedDate}</small>
-//       </div>
-//       <div class="flex gap-2">
-//         <button class="gaming-button-secondary px-3 py-1 text-sm" onclick="viewProfile('${friend.username}')">👤</button>
-//         <button class="gaming-button-danger px-3 py-1 text-sm" onclick="removeFriendHandler('${friend.username}')">❌</button>
-//       </div>
-//     `;
-//     friendsContainer.appendChild(div);
-//   });
-// }
-// // Update pagination buttons and info
-// function updatePagination() {
-//   const totalPages = Math.ceil(filteredFriends.length / ITEMS_PER_PAGE) || 1;
-//   if (pageInfo) {
-//     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-//   }
-//   if (prevPageBtn) {
-//     prevPageBtn.disabled = currentPage <= 1;
-//   }
-//   if (nextPageBtn) {
-//     nextPageBtn.disabled = currentPage >= totalPages;
-//   }
-// }
-// // Render pending friend requests
-// function renderPendingRequests() {
-//   if (!pendingContainer) return;
-//   pendingContainer.innerHTML = '';
-//   if (pendingRequests.length === 0) {
-//     pendingContainer.textContent = "No pending friend requests.";
-//     return;
-//   }
-//   pendingRequests.forEach(req => {
-//     const div = document.createElement('div');
-//     div.className = 'pending-request-item flex justify-between items-center p-2 bg-gray-800 rounded-md';
-//     div.innerHTML = `
-//       <div>
-//         <h4 class="font-semibold">${req.username}</h4>
-//         <small>Request sent: ${req.date}</small>
-//       </div>
-//       <div class="flex gap-2">
-//         <button class="gaming-button px-3 py-1 text-sm" onclick="acceptRequest('${req.username}')">✅ Accept</button>
-//         <button class="gaming-button-danger px-3 py-1 text-sm" onclick="declineRequest('${req.username}')">❌ Decline</button>
-//       </div>
-//     `;
-//     pendingContainer.appendChild(div);
-//   });
-// }
-// // Send friend request
-// async function sendFriendRequest() {
-//   if (!friendUsernameInput) return;
-//   const username = friendUsernameInput.value.trim();
-//   if (!username) {
-//     alert("Please enter a username or email.");
-//     return;
-//   }
-//   try {
-//     const res = await fetch("http://localhost:3000/AddFriend", {
-//       method: "POST",
-//       headers: getHeaders(),
-//       credentials: "include",
-//       body: JSON.stringify({ message: username }),
-//     });
-//     const data = await res.json();
-//     if (data.success) {
-//       alert(`Friend request sent to ${username}`);
-//       friendUsernameInput.value = '';
-//       await fetchFriends();
-//       switchTab('friends');
-//     } else {
-//       alert("Failed to send friend request: " + (data.error || data.received || "Unknown error"));
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     alert("Error sending friend request.");
-//   }
-// }
-// // Accept friend request
-// async function acceptRequest(username: string) {
-//   try {
-//     const res = await fetch("http://localhost:3000/AcceptRequest", {
-//       method: "POST",
-//       headers: getHeaders(),
-//       credentials: "include",
-//       body: JSON.stringify({ message: username }),
-//     });
-//     const data = await res.json();
-//     if (data.success) {
-//       alert(`Friend request from ${username} accepted.`);
-//       await fetchFriends();
-//       switchTab('friends');
-//     } else {
-//       alert("Failed to accept request: " + (data.error || "Unknown error"));
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     alert("Error accepting friend request.");
-//   }
-// }
-// // Decline friend request
-// async function declineRequest(username: string) {
-//   try {
-//     const res = await fetch("http://localhost:3000/RemoveFriend", {
-//       method: "POST",
-//       headers: getHeaders(),
-//       credentials: "include",
-//       body: JSON.stringify({ message: username }),
-//     });
-//     const data = await res.json();
-//     if (data.success) {
-//       alert(`Friend request from ${username} declined.`);
-//       await fetchFriends();
-//       switchTab('pending');
-//     } else {
-//       alert("Failed to decline request: " + (data.error || "Unknown error"));
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     alert("Error declining friend request.");
-//   }
-// }
-// // Remove friend handler
-// async function removeFriendHandler(username: string) {
-//   if (!confirm(`Remove friend ${username}?`)) return;
-//   try {
-//     const res = await fetch("http://localhost:3000/RemoveFriend", {
-//       method: "POST",
-//       headers: getHeaders(),
-//       credentials: "include",
-//       body: JSON.stringify({ message: username }),
-//     });
-//     const data = await res.json();
-//     if (data.success) {
-//       alert(`${username} removed from friends.`);
-//       await fetchFriends();
-//     } else {
-//       alert("Failed to remove friend: " + (data.error || "Unknown error"));
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     alert("Error removing friend.");
-//   }
-// }
-// // UI Tab switcher
-// function switchTab(tab: 'friends' | 'pending' | 'addFriend') {
-//   currentTab = tab;
-//   // Set active classes
-//   if (friendsTab) friendsTab.classList.toggle('active', tab === 'friends');
-//   if (pendingTab) pendingTab.classList.toggle('active', tab === 'pending');
-//   if (addFriendTab) addFriendTab.classList.toggle('active', tab === 'addFriend');
-//   // Show/hide content panels - use the correct element IDs from your HTML
-//   const friendsList = document.getElementById('friendsList');
-//   const pendingRequests = document.getElementById('pendingRequests');
-//   const addFriendFormElement = document.getElementById('addFriendForm');
-//   if (friendsList) friendsList.style.display = tab === 'friends' ? 'block' : 'none';
-//   if (pendingRequests) pendingRequests.style.display = tab === 'pending' ? 'block' : 'none';
-//   if (addFriendFormElement) addFriendFormElement.style.display = tab === 'addFriend' ? 'block' : 'none';
-// }
-// // Global functions for onclick handlers
-// (window as any).viewProfile = (username: string) => alert(`View profile of ${username}`);
-// (window as any).acceptRequest = acceptRequest;
-// (window as any).declineRequest = declineRequest;
-// (window as any).removeFriendHandler = removeFriendHandler;
-// // Event listeners setup
-// function setupEventListeners() {
-//   // Pagination controls
-//   if (prevPageBtn) {
-//     prevPageBtn.addEventListener('click', () => {
-//       if (currentPage > 1) {
-//         currentPage--;
-//         renderFriends();
-//         updatePagination();
-//       }
-//     });
-//   }
-//   if (nextPageBtn) {
-//     nextPageBtn.addEventListener('click', () => {
-//       const totalPages = Math.ceil(filteredFriends.length / ITEMS_PER_PAGE) || 1;
-//       if (currentPage < totalPages) {
-//         currentPage++;
-//         renderFriends();
-//         updatePagination();
-//       }
-//     });
-//   }
-//   // Search, sort, filter listeners
-//   if (searchInput) searchInput.addEventListener('input', handleFilters);
-//   if (sortBy) sortBy.addEventListener('change', handleFilters);
-//   // Tab buttons
-//   if (friendsTab) friendsTab.addEventListener('click', () => switchTab('friends'));
-//   if (pendingTab) pendingTab.addEventListener('click', () => switchTab('pending'));
-//   if (addFriendTab) addFriendTab.addEventListener('click', () => switchTab('addFriend'));
-//   // Add friend form buttons
-//   if (sendFriendRequestBtn) sendFriendRequestBtn.addEventListener('click', sendFriendRequest);
-//   if (cancelAddFriendBtn) {
-//     cancelAddFriendBtn.addEventListener('click', () => {
-//       if (friendUsernameInput) friendUsernameInput.value = '';
-//       switchTab('friends');
-//     });
-//   }
-// }
-// // Initialize on load
-// window.addEventListener('load', () => {
-//   setupEventListeners();
-//   fetchFriends();
-//   switchTab('friends');
-// });
