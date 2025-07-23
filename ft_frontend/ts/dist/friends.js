@@ -81,15 +81,12 @@ class FriendsManager {
                     credentials: "include",
                 });
                 const data = yield response.json();
-                // Add debugging
-                console.log("Backend response:", data);
-                console.log("Pending requests:", data.pendingRequests);
                 if (data.success) {
                     // Transform server data to our interface
                     this.friends = (data.friends || []).map((username, idx) => ({
                         id: idx + 1,
                         username,
-                        status: this.getRandomStatus(),
+                        status: "",
                         addedDate: new Date().toISOString().split('T')[0],
                         lastSeen: this.getRandomLastSeen(),
                     }));
@@ -100,8 +97,6 @@ class FriendsManager {
                         date: new Date().toISOString().split('T')[0],
                         type: request.type,
                     }));
-                    // Add debugging
-                    console.log("Processed pending requests:", this.pendingRequests);
                     this.updateCounts();
                     this.handleFilters();
                     this.renderCurrentTab();
@@ -167,6 +162,7 @@ class FriendsManager {
     }
     // Step 7: Render friends list with pagination
     renderFriends() {
+        this.fetchFriends();
         const container = this.elements.friendsContainer;
         if (!container)
             return;
@@ -287,24 +283,27 @@ class FriendsManager {
     }
     // Step 11: Tab switching logic
     switchTab(tab) {
-        var _a, _b, _c;
-        this.currentTab = tab;
-        // Update tab button states
-        (_a = this.elements.friendsTab) === null || _a === void 0 ? void 0 : _a.classList.toggle('active', tab === 'friends');
-        (_b = this.elements.pendingTab) === null || _b === void 0 ? void 0 : _b.classList.toggle('active', tab === 'pending');
-        (_c = this.elements.addFriendTab) === null || _c === void 0 ? void 0 : _c.classList.toggle('active', tab === 'addFriend');
-        // Show/hide content panels
-        const friendsList = this.elements.friendsList;
-        const pendingRequests = this.elements.pendingRequests;
-        const addFriendForm = this.elements.addFriendForm;
-        if (friendsList)
-            friendsList.style.display = tab === 'friends' ? 'block' : 'none';
-        if (pendingRequests)
-            pendingRequests.style.display = tab === 'pending' ? 'block' : 'none';
-        if (addFriendForm)
-            addFriendForm.style.display = tab === 'addFriend' ? 'block' : 'none';
-        // Render content for current tab
-        this.renderCurrentTab();
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c;
+            this.currentTab = tab;
+            // Update tab button states
+            (_a = this.elements.friendsTab) === null || _a === void 0 ? void 0 : _a.classList.toggle('active', tab === 'friends');
+            (_b = this.elements.pendingTab) === null || _b === void 0 ? void 0 : _b.classList.toggle('active', tab === 'pending');
+            (_c = this.elements.addFriendTab) === null || _c === void 0 ? void 0 : _c.classList.toggle('active', tab === 'addFriend');
+            // Show/hide content panels
+            const friendsList = this.elements.friendsList;
+            const pendingRequests = this.elements.pendingRequests;
+            const addFriendForm = this.elements.addFriendForm;
+            if (friendsList)
+                friendsList.style.display = tab === 'friends' ? 'block' : 'none';
+            if (pendingRequests)
+                pendingRequests.style.display = tab === 'pending' ? 'block' : 'none';
+            if (addFriendForm)
+                addFriendForm.style.display = tab === 'addFriend' ? 'block' : 'none';
+            // Render content for current tab
+            yield this.fetchFriends();
+            this.renderCurrentTab();
+        });
     }
     // Step 12: Render content based on current tab
     renderCurrentTab() {

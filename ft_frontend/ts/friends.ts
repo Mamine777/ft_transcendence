@@ -101,16 +101,12 @@ class FriendsManager {
 
       const data = await response.json();
       
-      // Add debugging
-      console.log("Backend response:", data);
-      console.log("Pending requests:", data.pendingRequests);
-
       if (data.success) {
         // Transform server data to our interface
         this.friends = (data.friends || []).map((username: string, idx: number) => ({
           id: idx + 1,
           username,
-          status: this.getRandomStatus(),
+          status: "",
           addedDate: new Date().toISOString().split('T')[0],
           lastSeen: this.getRandomLastSeen(),
         }));
@@ -123,8 +119,6 @@ class FriendsManager {
           type: request.type,
         }));
 
-        // Add debugging
-        console.log("Processed pending requests:", this.pendingRequests);
 
         this.updateCounts();
         this.handleFilters();
@@ -196,6 +190,7 @@ class FriendsManager {
 
   // Step 7: Render friends list with pagination
   private renderFriends(): void {
+    this.fetchFriends();
     const container = this.elements.friendsContainer;
     if (!container) return;
 
@@ -332,7 +327,7 @@ private renderPendingRequests(): void {
   }
 
   // Step 11: Tab switching logic
-  private switchTab(tab: 'friends' | 'pending' | 'addFriend'): void {
+  private async switchTab(tab: 'friends' | 'pending' | 'addFriend'): Promise<void> {
     this.currentTab = tab;
 
     // Update tab button states
@@ -350,6 +345,7 @@ private renderPendingRequests(): void {
     if (addFriendForm) addFriendForm.style.display = tab === 'addFriend' ? 'block' : 'none';
 
     // Render content for current tab
+    await this.fetchFriends();
     this.renderCurrentTab();
   }
 
