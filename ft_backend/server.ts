@@ -6,7 +6,7 @@
 /*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/07/14 13:03:22 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/07/27 16:37:23 by mokariou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ import fastifyMultipart from '@fastify/multipart';
 import fastifyJwt from '@fastify/jwt';
 import fastifyCors from '@fastify/cors';
 import { HistoryRoutes } from "./History/history";
+import { tournaments } from "./tournament/tournament";
 
 
 const server = fastify();
@@ -84,6 +85,7 @@ FriendsRoutes(server);
 LoginRoutes(server);
 DashboardRoutes(server);
 twoStepVerificationRoutes(server);
+tournaments(server);
 server.register(fastifyMultipart);
 
 
