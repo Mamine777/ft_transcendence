@@ -7,6 +7,9 @@ let currentMode: GameMode = "BOT";
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
 
+let animationId: number | null = null;
+let winnerCallback: ((winner: "left" | "right" | "") => void) | null = null;
+
 // Balle
 let ballX: number;
 let ballY: number;
@@ -43,7 +46,6 @@ export function initGame(
   document.addEventListener("keydown", (e) => {
     keysPressed[e.key] = true;
 
-    // pour changer la difficulté en direct (optionnel)
     if (e.key === "1") setDifficulty("EASY");
     if (e.key === "2") setDifficulty("MEDIUM");
     if (e.key === "3") setDifficulty("HARD");
@@ -78,46 +80,32 @@ export function resetScore() {
   rightScore = 0;
 }
 
-export function update(callback: (winner: "left" | "right" | "") => void) {
+export function updateFrame(callback: (winner: "left" | "right" | "") => void) {
   if (!ctx) return;
 
   ctx.fillStyle = "pink";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Contrôle joueur 1
   if (keysPressed["w"] && leftPaddleY > 0) leftPaddleY -= paddleSpeed;
   if (keysPressed["s"] && leftPaddleY < canvas.height - paddleHeight)
     leftPaddleY += paddleSpeed;
 
-  // Contrôle bot
   if (currentMode === "BOT") {
-    updateBotAI(
-  ballY,
-  rightPaddleY,
-  paddleHeight,
-  ballX,
-  ballSpeedX,
-  canvas.width
-);
-
+    updateBotAI(ballY, rightPaddleY, paddleHeight, ballX, ballSpeedX, canvas.width);
   }
 
-  // Contrôle raquette droite (player ou bot)
   if (keysPressed["ArrowUp"] && rightPaddleY > 0)
     rightPaddleY -= paddleSpeed;
   if (keysPressed["ArrowDown"] && rightPaddleY < canvas.height - paddleHeight)
     rightPaddleY += paddleSpeed;
 
-  // Mouvement balle
   if (!ballPaused) {
     ballX += ballSpeedX;
     ballY += ballSpeedY;
   }
 
-  // Rebonds
   if (ballY <= 0 || ballY >= canvas.height) ballSpeedY = -ballSpeedY;
 
-  // Raquette gauche
   if (
     ballX <= 20 &&
     ballY >= leftPaddleY &&
@@ -125,7 +113,6 @@ export function update(callback: (winner: "left" | "right" | "") => void) {
   )
     ballSpeedX = -ballSpeedX;
 
-  // Raquette droite
   if (
     ballX >= canvas.width - 20 &&
     ballY >= rightPaddleY &&
@@ -133,12 +120,12 @@ export function update(callback: (winner: "left" | "right" | "") => void) {
   )
     ballSpeedX = -ballSpeedX;
 
-  // Score
   if (ballX <= 0) {
     rightScore++;
     const winner = checkScore(leftScore, rightScore);
     if (winner === "") resetBall();
     callback(winner);
+    return;
   }
 
   if (ballX >= canvas.width) {
@@ -146,9 +133,9 @@ export function update(callback: (winner: "left" | "right" | "") => void) {
     const winner = checkScore(leftScore, rightScore);
     if (winner === "") resetBall();
     callback(winner);
+    return;
   }
 
-  // Affichage
   ctx.beginPath();
   ctx.arc(ballX, ballY, 10, 0, Math.PI * 2);
   ctx.fillStyle = "white";
@@ -162,8 +149,31 @@ export function update(callback: (winner: "left" | "right" | "") => void) {
   ctx.font = "32px Arial";
   ctx.fillText(`${leftScore}`, canvas.width / 4, 50);
   ctx.fillText(`${rightScore}`, (canvas.width * 3) / 4, 50);
+}
 
-  requestAnimationFrame(() => update(callback));
+export function startGameLoop(callback: (w: "left" | "right" | "") => void) {
+  winnerCallback = callback;
+
+  function loop() {
+    updateFrame((winner) => {
+      if (winner !== "") {
+        stopGameLoop();
+        if (winnerCallback) winnerCallback(winner);
+        return;
+      }
+    });
+    animationId = requestAnimationFrame(loop);
+  }
+
+  stopGameLoop();
+  loop();
+}
+
+export function stopGameLoop() {
+  if (animationId !== null) {
+    cancelAnimationFrame(animationId);
+    animationId = null;
+  }
 }
 
 export { keysPressed };

@@ -1,4 +1,9 @@
-import { initGame, resetScore, update } from "./game";
+import {
+  initGame,
+  resetScore,
+  startGameLoop,
+  stopGameLoop
+} from "./game";
 import { resetGame, showWinner } from "./score";
 import { initConnect4 } from "./puissance4";
 
@@ -35,18 +40,21 @@ window.addEventListener("DOMContentLoaded", () => {
 
   switchGameView("pong");
 
-  startBtn.addEventListener("click", () => {
-    const selectedMode = modeSelector.value === "BOT" ? "BOT" : "PVP";
-    resetGame();
-    initGame(canvas, ctx, selectedMode);
-    requestAnimationFrame(() => update(handleWinner));
-  });
+startBtn.addEventListener("click", () => {
+  const selectedMode = modeSelector.value === "BOT" ? "BOT" : "PVP";
+  startBtn.classList.add("hidden"); // <-- ici on le cache
+  stopGameLoop();
+  resetGame();
+  initGame(canvas, ctx, selectedMode);
+  startGameLoop(handleWinner);
+});
 
-  function handleWinner(winner: "left" | "right" | "") {
-    if (winner !== "") {
-      showWinner(ctx, canvas, winner);
-    }
+function handleWinner(winner: "left" | "right" | "") {
+  if (winner !== "") {
+    showWinner(ctx, canvas, winner);
+    startBtn.classList.remove("hidden"); // <-- ici on le remet visible
   }
+}
 
   initConnect4();
 
