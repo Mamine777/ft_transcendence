@@ -1,0 +1,33 @@
+services:
+  backend:
+    build:
+      context: ./ft_backend
+    container_name: fastify_backend
+    expose:
+      - "3000"
+    networks:
+      - app-net
+    working_dir: /app
+    volumes:
+      - ./ft_backend:/app
+    command: npx ts-node server.ts
+
+  frontend:
+    build:
+      context: ./ft_frontend
+    container_name: vite_frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - app-net
+    working_dir: /app
+    volumes:
+      - ./ft_frontend:/app
+    environment:
+      - VITE_API_URL=http://backend:3000
+    command: npm run dev -- --host
+
+networks:
+  app-net:
+    driver: bridge
+
