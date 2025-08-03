@@ -19,6 +19,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const connect4Container = document.getElementById("connect4-container")!;
   const restartConnect4 = document.getElementById("restart-connect4") as HTMLButtonElement;
 
+  const refreshBtn = document.getElementById("refresh") as HTMLButtonElement;
+
   const pongElements = [canvas, pongMenu];
 
   function switchGameView(choice: string) {
@@ -37,7 +39,9 @@ window.addEventListener("DOMContentLoaded", () => {
     const selected = (e.target as HTMLSelectElement).value;
     switchGameView(selected);
   });
-
+  refreshBtn.addEventListener("click", () => {
+  location.reload();
+});
   switchGameView("pong");
 
 startBtn.addEventListener("click", () => {
@@ -49,10 +53,10 @@ startBtn.addEventListener("click", () => {
   startGameLoop(handleWinner);
 });
 
+
 function handleWinner(winner: "left" | "right" | "") {
   if (winner !== "") {
     showWinner(ctx, canvas, winner);
-    startBtn.classList.remove("hidden"); // <-- ici on le remet visible
   }
 }
 

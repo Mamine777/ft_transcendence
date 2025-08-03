@@ -32,5 +32,4 @@ export function showWinner(
   ctx.textAlign = "center";
   const text = winner === "left" ? "Gauche gagne !" : "Droite gagne !";
   ctx.fillText(text, canvas.width / 2, canvas.height / 2);
-  //resetScore();
 }
