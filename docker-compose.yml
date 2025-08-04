@@ -8,9 +8,6 @@ services:
     networks:
       - app-net
     working_dir: /app
-    volumes:
-      - ./ft_backend:/app
-    command: npx ts-node server.ts
 
   frontend:
     build:
@@ -21,11 +18,8 @@ services:
     networks:
       - app-net
     working_dir: /app
-    volumes:
-      - ./ft_frontend:/app
     environment:
       - VITE_API_URL=http://backend:3000
-    command: npm run dev -- --host
 
 networks:
   app-net:

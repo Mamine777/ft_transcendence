@@ -3,10 +3,11 @@ FROM node:22.2.0
 WORKDIR /app
 
 COPY package*.json tsconfig.json ./
-#RUN npm install
+RUN npm install
 
 COPY . .
 
 EXPOSE 5173
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev", "--", "--host"]
+
