@@ -9,5 +9,7 @@ COPY . .
 
 EXPOSE 5173
 
-CMD ["npm", "run", "dev", "--", "--host"]
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+CMD ["/start.sh"]
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.ts                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mokariou <mokariou>                        +#+  +:+       +#+        */
+/*   By: najeuneh <najeuneh@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/07/27 16:37:23 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:55:17 by najeuneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ server.register(fastifyMultipart);
 
 
 
-server.listen({ port: 3000 }, (err) => {
+server.listen({ port: 3000, host: '0.0.0.0' }, (err) => {
 	if (err) {
 		console.error(err);
 		process.exit(1);

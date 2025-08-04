@@ -3,8 +3,8 @@ services:
     build:
       context: ./ft_backend
     container_name: fastify_backend
-    expose:
-      - "3000"
+    ports:
+      - "3000:3000"
     networks:
       - app-net
     working_dir: /app
@@ -19,7 +19,7 @@ services:
       - app-net
     working_dir: /app
     environment:
-      - VITE_API_URL=http://backend:3000
+      - VITE_API_URL=http://localhost:3000
 
 networks:
   app-net:
