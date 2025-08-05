@@ -1,7 +1,12 @@
+import { switchView } from "./login";
+import { Tournament, tournaments} from "../../ft_backend/tournament/tournament";
+
 document.addEventListener("DOMContentLoaded", () => {
 	const addBtn = document.getElementById("ADDplayerBtn");
 	const usernameInput = document.getElementById("PlayerUsername") as HTMLInputElement;
 	const playersList = document.getElementById("playersList");
+	const Player = document.getElementById("Player_tournament")!;
+	const CreateTournamentBtn = document.getElementById("CreateTournamentBtn");
 
 	function updatePlayersList() {
 		if (playersList) {
@@ -23,38 +28,77 @@ document.addEventListener("DOMContentLoaded", () => {
 			});
 		}
 	}
+	// function startTournament() {
+	// 	fetch("http://localhost:3000/tournament/start", {
+	// 		method: "POST",
+	// 		credentials: "include",
+	// 		headers: { 
+	// 			'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+	// 			"Content-Type": "application/json" 
+	// 		},
+	// 		body: JSON.stringify({ players }),
+	// 	})
+	// 	.then(res => res.json())
+	// 	.then((data) => {
+	// 		if (data.success && data.tournament) {
+	// 			const tournament: Tournament = data.tournament;
+	// 			const match = tournament.matches[tournament.currentMatchIndex];
+	// 			if (match && Player) {
+	// 				console.log(data);
+	// 				Player.textContent = `Players in the tournament: ${match.player1} vs ${match.player2}`;
+	// 			}
+	// 			console.log("ici");
+	// 		}
+  	// 	});
+	// }
 	function startTournament() {
+		console.log("startTournament appelée");
 		fetch("http://localhost:3000/tournament/start", {
 			method: "POST",
 			credentials: "include",
 			headers: { 
-				'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-				"Content-Type": "application/json" 
+			'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+			"Content-Type": "application/json" 
 			},
 			body: JSON.stringify({ players }),
+		})
+		
+		.then(res => {
+			console.log("Réponse reçue", res);
+			return res.json();
+		})
+		.then((data) => {
+			console.log("Data reçue", data);
+		})
+		.catch((err) => {
+			console.error("Erreur fetch:", err);
 		});
 	}
 	addBtn?.addEventListener("click", () => {
-	const username = usernameInput.value.trim();
-	const CreateTournamentBtn = document.getElementById("CreateTournamentBtn");
-	if (username) {
-		players.push(username);
-		updatePlayersList();
-		usernameInput.value = "";
-		console.log("Player added:", username);
-		console.log("Current players:", players);
-	}
-	if (players.length >= 2) {
-		CreateTournamentBtn?.classList.remove("disabled");
-		CreateTournamentBtn?.addEventListener("click", () => {
-			
-			startTournament();
-			console.log("Tournament started with players:", players);
-		});
-	}
-	else {
-		CreateTournamentBtn?.classList.add("disabled");
-	}
+    const username = usernameInput.value.trim();
+        if (username) {
+            players.push(username);
+            updatePlayersList();
+            usernameInput.value = "";
+            console.log("Player added:", username);
+            console.log("Current players:", players);
+        }
+        if (players.length >= 2) {
+            CreateTournamentBtn?.classList.remove("enabled");
+        } else {
+            CreateTournamentBtn?.classList.add("disabled");
+        }
+    });
+
+    CreateTournamentBtn?.addEventListener("click", () => {
+        if (players.length >= 2) {
+            switchView("TournamentPlayView");
+            console.log("Tournament started with players:", players);
+            startTournament();
+        }
+		else {
+			console.log("nop");
+		}
 	});
 });
 

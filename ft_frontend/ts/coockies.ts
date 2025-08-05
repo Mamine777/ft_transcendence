@@ -17,7 +17,8 @@ export const views: Record<string, ViewElement> = {
   friendsListView : document.getElementById("friendsListView"),
   addFriendView : document.getElementById("addFriendView"),
   removeFriendView : document.getElementById("removeFriendView"),
-  GameView: document.getElementById("GameView")
+  GameView: document.getElementById("GameView"),
+  TournamentPlayView: document.getElementById("TournamentPlayView")
 };
 
 
@@ -123,9 +124,16 @@ function setupNavigationListeners(): void {
     window.location.hash = "#profileView";
     loadProfile();
   });
-
+  document.getElementById("backToPlayFromTournament")?.addEventListener("click", () => {
+    window.location.hash = "#TournamentView";
+    loadProfile();
+  });
   document.getElementById("backToDashboardFromProfile")?.addEventListener("click", () => {
     window.location.hash = "#dashboardView";
+    loadProfile();
+  })
+  document.getElementById("TournamentBtn")?.addEventListener("click", () => {
+    window.location.hash = "#TournamentView";
     loadProfile();
   });
   document.getElementById("backToFriendsFromList")?.addEventListener('click', () =>{

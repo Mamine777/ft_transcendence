@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const usernameInput = document.getElementById("PlayerUsername");
     const playersList = document.getElementById("playersList");
     const Player = document.getElementById("Player_tournament");
+    const CreateTournamentBtn = document.getElementById("CreateTournamentBtn");
     function updatePlayersList() {
         if (playersList) {
             playersList.innerHTML = players
@@ -24,7 +25,31 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
     }
+    // function startTournament() {
+    // 	fetch("http://localhost:3000/tournament/start", {
+    // 		method: "POST",
+    // 		credentials: "include",
+    // 		headers: { 
+    // 			'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+    // 			"Content-Type": "application/json" 
+    // 		},
+    // 		body: JSON.stringify({ players }),
+    // 	})
+    // 	.then(res => res.json())
+    // 	.then((data) => {
+    // 		if (data.success && data.tournament) {
+    // 			const tournament: Tournament = data.tournament;
+    // 			const match = tournament.matches[tournament.currentMatchIndex];
+    // 			if (match && Player) {
+    // 				console.log(data);
+    // 				Player.textContent = `Players in the tournament: ${match.player1} vs ${match.player2}`;
+    // 			}
+    // 			console.log("ici");
+    // 		}
+    // 	});
+    // }
     function startTournament() {
+        console.log("startTournament appelée");
         fetch("http://localhost:3000/tournament/start", {
             method: "POST",
             credentials: "include",
@@ -33,11 +58,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ players }),
+        })
+            .then(res => {
+            console.log("Réponse reçue", res);
+            return res.json();
+        })
+            .then((data) => {
+            console.log("Data reçue", data);
+        })
+            .catch((err) => {
+            console.error("Erreur fetch:", err);
         });
     }
     addBtn === null || addBtn === void 0 ? void 0 : addBtn.addEventListener("click", () => {
         const username = usernameInput.value.trim();
-        const CreateTournamentBtn = document.getElementById("CreateTournamentBtn");
         if (username) {
             players.push(username);
             updatePlayersList();
@@ -46,21 +80,22 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Current players:", players);
         }
         if (players.length >= 2) {
-            CreateTournamentBtn === null || CreateTournamentBtn === void 0 ? void 0 : CreateTournamentBtn.classList.remove("disabled");
-            CreateTournamentBtn === null || CreateTournamentBtn === void 0 ? void 0 : CreateTournamentBtn.addEventListener("click", () => {
-                startTournament();
-                switchView("TournamentPlayView");
-                console.log("Tournament started with players:", players);
-            });
+            CreateTournamentBtn === null || CreateTournamentBtn === void 0 ? void 0 : CreateTournamentBtn.classList.remove("enabled");
         }
         else {
             CreateTournamentBtn === null || CreateTournamentBtn === void 0 ? void 0 : CreateTournamentBtn.classList.add("disabled");
         }
     });
-    if (Player) {
-        Player.textContent = "Players in the tournament: " + players.join(", ");
-        console.log("Player element found:", Player);
-    }
+    CreateTournamentBtn === null || CreateTournamentBtn === void 0 ? void 0 : CreateTournamentBtn.addEventListener("click", () => {
+        if (players.length >= 2) {
+            switchView("TournamentPlayView");
+            console.log("Tournament started with players:", players);
+            startTournament();
+        }
+        else {
+            console.log("nop");
+        }
+    });
 });
 let players = [];
 let newPlayer = "";

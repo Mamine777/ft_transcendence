@@ -6,7 +6,7 @@
 /*   By: najeuneh <najeuneh@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 14:04:28 by mokariou          #+#    #+#             */
-/*   Updated: 2025/07/30 16:24:04 by najeuneh         ###   ########.fr       */
+/*   Updated: 2025/08/05 14:55:26 by najeuneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@ import { Server } from 'http';
 import { send2FACode } from '../emailService';
 import db from '../db/db';
 
-interface Tournament {
+export interface Tournament {
   players: string[];
   matches: Match[];
   currentMatchIndex: number;
 }
 
-interface Match {
+export interface Match {
   player1: string;
   player2: string;
   winner?: string;
@@ -35,6 +35,7 @@ export function tournaments(server: FastifyInstance) {
     const user = req.session.user;
 
     if (!user) {
+      console.log("❌ User disconnected");
       return reply.status(400).send({ success: false, received: "User disconnected" });
     }
     try {
@@ -56,7 +57,12 @@ export function tournaments(server: FastifyInstance) {
       matches,
       currentMatchIndex: 0,
     };
-    reply.status(200).send({success : true, message: "Tournament started", totalMatches: matches.length});
+   reply.status(200).send({
+    success: true,
+    message: "Tournament started",
+    totalMatches: matches.length,
+    tournament,
+   });
   })
   server.get("/tournament/next", async (request, reply) => {
     if (!tournament) return reply.status(400).send({ message : "No tournament active" });
@@ -71,8 +77,6 @@ export function tournaments(server: FastifyInstance) {
       console.log("❌ Unauthorized: JWT verification failed");
       return reply.code(401).send({ success: false, message: "Unauthorized" });
     }
-
-    
   })
 
   server.post("/tournament/result", async (request, reply) => {
