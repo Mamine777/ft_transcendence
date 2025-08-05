@@ -38,14 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
             switchView("loginView");
         });
     }
-<<<<<<< HEAD
-=======
     const TournamentBtn = document.getElementById("TournamentsBtn");
     if (TournamentBtn)
         TournamentBtn.addEventListener("click", () => {
             switchView("TournamentView");
         });
->>>>>>> origin/tournament
     const FriendsBtn = document.getElementById("FriendsBtn");
     if (FriendsBtn)
         FriendsBtn.addEventListener("click", () => {

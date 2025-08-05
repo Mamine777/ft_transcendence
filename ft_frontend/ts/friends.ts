@@ -190,7 +190,6 @@ class FriendsManager {
 
   // Step 7: Render friends list with pagination
   private renderFriends(): void {
-    this.fetchFriends();
     const container = this.elements.friendsContainer;
     if (!container) return;
 

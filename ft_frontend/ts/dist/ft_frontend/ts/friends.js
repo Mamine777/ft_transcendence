@@ -162,10 +162,6 @@ class FriendsManager {
     }
     // Step 7: Render friends list with pagination
     renderFriends() {
-<<<<<<< HEAD
-        this.fetchFriends();
-=======
->>>>>>> origin/tournament
         const container = this.elements.friendsContainer;
         if (!container)
             return;

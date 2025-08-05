@@ -17,20 +17,13 @@ export const views = {
     secretView: document.getElementById("secretView"),
     profileViewDrop: document.getElementById("profileViewDrop"),
     settingsView: document.getElementById("settingsView"),
-<<<<<<< HEAD
-=======
     TournamentView: document.getElementById("TournamentView"),
->>>>>>> origin/tournament
     FriendsView: document.getElementById("FriendsView"),
     friendsListView: document.getElementById("friendsListView"),
     addFriendView: document.getElementById("addFriendView"),
     removeFriendView: document.getElementById("removeFriendView"),
-<<<<<<< HEAD
-    GameView: document.getElementById("GameView")
-=======
     GameView: document.getElementById("GameView"),
     TournamentPlayView: document.getElementById("TournamentPlayView")
->>>>>>> origin/tournament
 };
 function showViewFromHash() {
     let hash = window.location.hash.slice(1);
@@ -112,11 +105,7 @@ function redirectToLogin() {
     switchView("loginView");
 }
 function setupNavigationListeners() {
-<<<<<<< HEAD
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-=======
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
->>>>>>> origin/tournament
     (_a = document.getElementById("backToDashboard")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => {
         window.location.hash = "#dashboardView";
         loadProfile();
@@ -132,25 +121,6 @@ function setupNavigationListeners() {
         window.location.hash = "#profileView";
         loadProfile();
     });
-<<<<<<< HEAD
-    (_e = document.getElementById("backToDashboardFromProfile")) === null || _e === void 0 ? void 0 : _e.addEventListener("click", () => {
-        window.location.hash = "#dashboardView";
-        loadProfile();
-    });
-    (_f = document.getElementById("backToFriendsFromList")) === null || _f === void 0 ? void 0 : _f.addEventListener('click', () => {
-        switchView("dashboardView");
-        loadProfile();
-    });
-    (_g = document.getElementById("backToFriendsFromRemove")) === null || _g === void 0 ? void 0 : _g.addEventListener('click', () => {
-        switchView("dashboardView");
-        loadProfile();
-    });
-    (_h = document.getElementById("backToFriendsFromAdd")) === null || _h === void 0 ? void 0 : _h.addEventListener('click', () => {
-        switchView("dashboardView");
-        loadProfile();
-    });
-    (_j = document.getElementById("backToDashboardFromFriends")) === null || _j === void 0 ? void 0 : _j.addEventListener('click', () => {
-=======
     (_e = document.getElementById("backToPlayFromTournament")) === null || _e === void 0 ? void 0 : _e.addEventListener("click", () => {
         window.location.hash = "#TournamentView";
         loadProfile();
@@ -184,7 +154,6 @@ function setupNavigationListeners() {
         loadProfile();
     });
     (_o = document.getElementById("backToDashboardFromTournament")) === null || _o === void 0 ? void 0 : _o.addEventListener('click', () => {
->>>>>>> origin/tournament
         switchView("dashboardView");
         loadProfile();
     });

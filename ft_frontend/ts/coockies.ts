@@ -1,3 +1,4 @@
+import { initGame } from "./games/game";
 import { switchView } from "./login";
 
 export type ViewElement = HTMLElement | null;
@@ -11,11 +12,13 @@ export const views: Record<string, ViewElement> = {
   secretView: document.getElementById("secretView"),
   profileViewDrop : document.getElementById("profileViewDrop"),
   settingsView : document.getElementById("settingsView"),
+  TournamentView : document.getElementById("TournamentView"),
   FriendsView : document.getElementById("FriendsView"),
   friendsListView : document.getElementById("friendsListView"),
   addFriendView : document.getElementById("addFriendView"),
   removeFriendView : document.getElementById("removeFriendView"),
-  GameView: document.getElementById("GameView")
+  GameView: document.getElementById("GameView"),
+  TournamentPlayView: document.getElementById("TournamentPlayView")
 };
 
 
@@ -121,9 +124,16 @@ function setupNavigationListeners(): void {
     window.location.hash = "#profileView";
     loadProfile();
   });
-
+  document.getElementById("backToPlayFromTournament")?.addEventListener("click", () => {
+    window.location.hash = "#TournamentView";
+    loadProfile();
+  });
   document.getElementById("backToDashboardFromProfile")?.addEventListener("click", () => {
     window.location.hash = "#dashboardView";
+    loadProfile();
+  })
+  document.getElementById("TournamentBtn")?.addEventListener("click", () => {
+    window.location.hash = "#TournamentView";
     loadProfile();
   });
   document.getElementById("backToFriendsFromList")?.addEventListener('click', () =>{
@@ -139,6 +149,14 @@ function setupNavigationListeners(): void {
     loadProfile();
   })
   document.getElementById("backToDashboardFromFriends")?.addEventListener('click', () =>{
+    switchView("dashboardView");
+    loadProfile();
+  })
+   document.getElementById("backToDashboardFromGame")?.addEventListener('click', () =>{
+    switchView("dashboardView");
+    loadProfile();
+  })
+   document.getElementById("backToDashboardFromTournament")?.addEventListener('click', () =>{
     switchView("dashboardView");
     loadProfile();
   })

@@ -650,6 +650,28 @@
       </div>
     </section>
 
+
+    <!-- TOURNAMENT PLAYE VIEW-->
+    <section id="TournamentPlayView" class="view" style="display: none;">
+     <div class="gaming-card rounded-2xl p-8 w-full max-w-4xl shadow-lg border border-cyan-400">
+        <h2 class="text-3xl font-bold text-center mb-8 text-cyan-400 orbitron neon-text">TOURNAMENT ARENA</h2>
+        <p id="Player_tournament" class="text-sm text-gray-400 mt-2 mb-4 text-center"></p>
+        <div id="pong-menu" class="mb-6 flex items-center gap-2 justify-center">
+          <button id="start" class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
+            Start
+          </button>
+        </div>
+        <div class="flex justify-center mb-6">
+          <canvas width="800" height="600" class="border border-gray-600 rounded-lg shadow-lg"></canvas>
+        </div>
+        <div class="text-center mt-8">
+          <button id="backToPlayFromTournament" class="gaming-button-secondary px-6 py-3 rounded-lg font-semibold">
+            ← Back to Dashboard
+          </button>
+        </div>
+      </div>
+    </section>
+
         <!-- GAMES VIEW-->
     <section id="GameView" class="view" style="display: none;">
       <div class="gaming-card rounded-2xl p-8 w-full max-w-4xl shadow-lg border border-cyan-400">
@@ -688,7 +710,7 @@
           </button>
         </div>
         <div class="text-center mt-8">
-          <button id="backToDashboardFromFriends" class="gaming-button-secondary px-6 py-3 rounded-lg font-semibold">
+          <button id="backToDashboardFromGame" class="gaming-button-secondary px-6 py-3 rounded-lg font-semibold">
             ← Back to Dashboard
           </button>
         </div>
@@ -830,6 +852,7 @@
   <script type="module" src="ts/dist/settings.js"></script>
   <script type="module" src="ts/dist/friends.js"></script>
   <script type="module" src="ts/dist/games/main.js"></script>
+  <script type="module" src="ts/dist/tournament.js"></script>
 </body>
 </html>
     

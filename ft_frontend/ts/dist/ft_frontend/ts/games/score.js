@@ -1,12 +1,5 @@
-<<<<<<< HEAD
-import { leftScore, resetScore } from "./game";
-
-
-export const WIN = 2;
-=======
 import { resetScore } from "./game";
 export const WIN = 10;
->>>>>>> origin/tournament
 export let gameOver = false;
 export function checkScore(leftScore, rightScore) {
     if (leftScore >= WIN) {
@@ -31,9 +24,5 @@ export function showWinner(ctx, canvas, winner) {
     ctx.textAlign = "center";
     const text = winner === "left" ? "Gauche gagne !" : "Droite gagne !";
     ctx.fillText(text, canvas.width / 2, canvas.height / 2);
-<<<<<<< HEAD
-    //resetScore();
-=======
     resetScore();
->>>>>>> origin/tournament
 }

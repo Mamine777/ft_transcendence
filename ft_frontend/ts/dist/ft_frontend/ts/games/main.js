@@ -26,19 +26,11 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     gameChoice.addEventListener("change", (e) => {
         const selected = e.target.value;
-<<<<<<< HEAD
-        startBtn.classList.remove("hidden");
-=======
->>>>>>> origin/tournament
         switchGameView(selected);
     });
     switchGameView("pong");
     startBtn.addEventListener("click", () => {
         const selectedMode = modeSelector.value === "BOT" ? "BOT" : "PVP";
-<<<<<<< HEAD
-        startBtn.classList.add("hidden");
-=======
->>>>>>> origin/tournament
         resetGame();
         initGame(canvas, ctx, selectedMode);
         requestAnimationFrame(() => update(handleWinner));
