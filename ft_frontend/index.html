@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,21 +8,21 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
-    
+
     * {
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: 'Rajdhani', sans-serif;
       background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
       overflow-x: hidden;
     }
-    
+
     .orbitron {
       font-family: 'Orbitron', monospace;
     }
-    
+
     /* Animated background */
     .animated-bg {
       position: fixed;
@@ -30,46 +31,53 @@
       width: 100%;
       height: 100%;
       z-index: -1;
-      background: 
+      background:
         radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 40% 80%, rgba(0, 255, 127, 0.1) 0%, transparent 50%);
       animation: float 20s ease-in-out infinite;
     }
-    
+
     @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(180deg); }
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-20px) rotate(180deg);
+      }
     }
-    
+
     /* Neon glow effects */
     .neon-border {
       border: 2px solid #00ffff;
-      box-shadow: 
+      box-shadow:
         0 0 20px rgba(0, 255, 255, 0.3),
         inset 0 0 20px rgba(0, 255, 255, 0.1);
     }
-    
+
     .neon-text {
-      text-shadow: 
+      text-shadow:
         0 0 10px rgba(0, 255, 255, 0.8),
         0 0 20px rgba(0, 255, 255, 0.6),
         0 0 30px rgba(0, 255, 255, 0.4);
     }
-    
+
     .gaming-card {
       background: rgba(15, 15, 35, 0.9);
       border: 1px solid rgba(0, 255, 255, 0.3);
       backdrop-filter: blur(10px);
       transition: all 0.3s ease;
     }
-    
+
     .gaming-card:hover {
       border-color: rgba(0, 255, 255, 0.8);
       box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
       transform: translateY(-5px);
     }
-    
+
     .gaming-button {
       background: linear-gradient(45deg, #00ffff, #0080ff);
       border: none;
@@ -80,7 +88,7 @@
       position: relative;
       overflow: hidden;
     }
-    
+
     .gaming-button::before {
       content: '';
       position: absolute;
@@ -91,16 +99,16 @@
       background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
       transition: left 0.5s;
     }
-    
+
     .gaming-button:hover::before {
       left: 100%;
     }
-    
+
     .gaming-button:hover {
       box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
       transform: translateY(-2px);
     }
-    
+
     .gaming-button-secondary {
       background: linear-gradient(45deg, #ff6b6b, #ee5a24);
       border: none;
@@ -108,29 +116,29 @@
       font-weight: 600;
       transition: all 0.3s ease;
     }
-    
+
     .gaming-button-secondary:hover {
       box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
       transform: translateY(-2px);
     }
-    
+
     .gaming-input {
       background: rgba(15, 15, 35, 0.8);
       border: 2px solid rgba(0, 255, 255, 0.3);
       color: #fff;
       transition: all 0.3s ease;
     }
-    
+
     .gaming-input:focus {
       border-color: #00ffff;
       box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
       outline: none;
     }
-    
+
     .gaming-input::placeholder {
       color: rgba(255, 255, 255, 0.5);
     }
-    
+
     /* Glitch effect for title */
     .glitch {
       position: relative;
@@ -141,7 +149,7 @@
       letter-spacing: 0.1em;
       animation: glitch 2s infinite;
     }
-    
+
     .glitch::before,
     .glitch::after {
       content: attr(data-text);
@@ -151,43 +159,91 @@
       width: 100%;
       height: 100%;
     }
-    
+
     .glitch::before {
       animation: glitch-1 0.5s infinite;
       color: #ff00ff;
       z-index: -1;
     }
-    
+
     .glitch::after {
       animation: glitch-2 0.5s infinite;
       color: #ffff00;
       z-index: -2;
     }
-    
+
     @keyframes glitch {
-      0%, 100% { transform: translate(0); }
-      20% { transform: translate(-2px, 2px); }
-      40% { transform: translate(-2px, -2px); }
-      60% { transform: translate(2px, 2px); }
-      80% { transform: translate(2px, -2px); }
+
+      0%,
+      100% {
+        transform: translate(0);
+      }
+
+      20% {
+        transform: translate(-2px, 2px);
+      }
+
+      40% {
+        transform: translate(-2px, -2px);
+      }
+
+      60% {
+        transform: translate(2px, 2px);
+      }
+
+      80% {
+        transform: translate(2px, -2px);
+      }
     }
-    
+
     @keyframes glitch-1 {
-      0%, 100% { transform: translate(0); }
-      20% { transform: translate(2px, -2px); }
-      40% { transform: translate(-2px, 2px); }
-      60% { transform: translate(-2px, -2px); }
-      80% { transform: translate(2px, 2px); }
+
+      0%,
+      100% {
+        transform: translate(0);
+      }
+
+      20% {
+        transform: translate(2px, -2px);
+      }
+
+      40% {
+        transform: translate(-2px, 2px);
+      }
+
+      60% {
+        transform: translate(-2px, -2px);
+      }
+
+      80% {
+        transform: translate(2px, 2px);
+      }
     }
-    
+
     @keyframes glitch-2 {
-      0%, 100% { transform: translate(0); }
-      20% { transform: translate(-2px, -2px); }
-      40% { transform: translate(2px, 2px); }
-      60% { transform: translate(2px, -2px); }
-      80% { transform: translate(-2px, 2px); }
+
+      0%,
+      100% {
+        transform: translate(0);
+      }
+
+      20% {
+        transform: translate(-2px, -2px);
+      }
+
+      40% {
+        transform: translate(2px, 2px);
+      }
+
+      60% {
+        transform: translate(2px, -2px);
+      }
+
+      80% {
+        transform: translate(-2px, 2px);
+      }
     }
-    
+
     /* Particle effect */
     .particles {
       position: fixed;
@@ -198,7 +254,7 @@
       pointer-events: none;
       z-index: -1;
     }
-    
+
     .particle {
       position: absolute;
       width: 2px;
@@ -207,24 +263,27 @@
       border-radius: 50%;
       animation: float-particles 6s infinite linear;
     }
-    
+
     @keyframes float-particles {
       0% {
         transform: translateY(100vh) rotate(0deg);
         opacity: 0;
       }
+
       10% {
         opacity: 1;
       }
+
       90% {
         opacity: 1;
       }
+
       100% {
         transform: translateY(-100vh) rotate(360deg);
         opacity: 0;
       }
     }
-    
+
     .view {
       min-height: 60vh;
       display: flex;
@@ -232,55 +291,58 @@
       justify-content: center;
       padding: 2rem;
     }
-    
+
     .dropdown-menu {
       background: rgba(15, 15, 35, 0.95);
       border: 1px solid rgba(0, 255, 255, 0.3);
       backdrop-filter: blur(10px);
     }
-    
+
     .dropdown-menu button:hover {
       background: rgba(0, 255, 255, 0.1);
       color: #00ffff;
     }
-    
+
     .stats-card {
       background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
       border: 1px solid rgba(0, 255, 255, 0.3);
       backdrop-filter: blur(10px);
     }
-    
+
     .friend-item {
       background: rgba(0, 255, 255, 0.1);
       border-left: 3px solid #00ffff;
       transition: all 0.3s ease;
     }
-    
+
     .friend-item:hover {
       background: rgba(0, 255, 255, 0.2);
       transform: translateX(5px);
     }
-    
+
     .pulse-ring {
       animation: pulse-ring 2s infinite;
     }
-    
+
     @keyframes pulse-ring {
       0% {
         transform: scale(0.33);
         opacity: 1;
       }
-      80%, 100% {
+
+      80%,
+      100% {
         transform: scale(1);
         opacity: 0;
       }
     }
   </style>
 </head>
+
 <body class="text-white min-h-screen overflow-x-hidden">
   <!-- Animated Background -->
   <div class="animated-bg"></div>
-  
+
   <!-- Floating Particles -->
   <div class="particles" id="particles"></div>
 
@@ -305,52 +367,52 @@
         <form id="loginForm" method="POST" class="space-y-6">
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-300">Email Address</label>
-            <input type="email" id="email" placeholder="Enter your email" required 
-                   class="gaming-input w-full p-4 rounded-lg text-white" />
+            <input type="email" id="email" placeholder="Enter your email" required
+              class="gaming-input w-full p-4 rounded-lg text-white" />
           </div>
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-300">Password</label>
-            <input type="password" id="password" placeholder="Enter your password" required 
-                   class="gaming-input w-full p-4 rounded-lg text-white" />
+            <input type="password" id="password" placeholder="Enter your password" required
+              class="gaming-input w-full p-4 rounded-lg text-white" />
           </div>
           <button type="submit" class="gaming-button w-full py-4 rounded-lg font-bold text-lg">
             INITIALIZE CONNECTION
           </button>
         </form>
-        
+
         <div class="mt-8 space-y-4">
           <div class="flex items-center">
             <hr class="flex-grow border-gray-600">
             <span class="px-4 text-gray-400">or connect via</span>
             <hr class="flex-grow border-gray-600">
           </div>
-          
+
           <div class="grid grid-cols-1 gap-3">
-            <a href="http://localhost:3000/auth/42" 
-               class="gaming-button-secondary flex items-center justify-center gap-3 py-3 rounded-lg transition-all hover:scale-105">
+            <a href="http://localhost:3000/auth/42"
+              class="gaming-button-secondary flex items-center justify-center gap-3 py-3 rounded-lg transition-all hover:scale-105">
               <span class="font-bold">42</span>
               <span>School Network</span>
             </a>
-            <a href="http://localhost:3000/auth/google" 
-               class="gaming-button flex items-center justify-center gap-3 py-3 rounded-lg transition-all hover:scale-105">
-              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
-                   alt="Google" class="w-5 h-5" />
+            <a href="http://localhost:3000/auth/google"
+              class="gaming-button flex items-center justify-center gap-3 py-3 rounded-lg transition-all hover:scale-105">
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"
+                class="w-5 h-5" />
               <span>Google Account</span>
             </a>
           </div>
         </div>
-        
+
         <p id="loginMessage" class="text-sm text-red-400 mt-4 text-center"></p>
-        
+
         <div class="mt-6 text-center space-y-2">
           <p class="text-gray-400">
-            New player? 
+            New player?
             <button id="goToSignup" class="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
               Create Account
             </button>
           </p>
           <p class="text-gray-400">
-            Lost access? 
+            Lost access?
             <button id="goToForgotPassword" class="text-pink-400 hover:text-pink-300 font-semibold transition-colors">
               Recover Account
             </button>
@@ -366,29 +428,29 @@
         <form id="signupForm" method="POST" class="space-y-6">
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-300">Player Name</label>
-            <input type="text" id="username" placeholder="Choose your gaming handle" required 
-                   class="gaming-input w-full p-4 rounded-lg text-white" />
+            <input type="text" id="username" placeholder="Choose your gaming handle" required
+              class="gaming-input w-full p-4 rounded-lg text-white" />
           </div>
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-300">Email</label>
-            <input type="email" id="signupEmail" placeholder="Enter your email" required 
-                   class="gaming-input w-full p-4 rounded-lg text-white" />
+            <input type="email" id="signupEmail" placeholder="Enter your email" required
+              class="gaming-input w-full p-4 rounded-lg text-white" />
           </div>
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-300">Password</label>
-            <input type="password" id="signupPassword" placeholder="Create a strong password" required 
-                   class="gaming-input w-full p-4 rounded-lg text-white" />
+            <input type="password" id="signupPassword" placeholder="Create a strong password" required
+              class="gaming-input w-full p-4 rounded-lg text-white" />
           </div>
           <button type="submit" class="gaming-button w-full py-4 rounded-lg font-bold text-lg">
             REGISTER PLAYER
           </button>
         </form>
-        
+
         <p id="signupMessage" class="text-sm text-red-400 mt-4 text-center"></p>
-        
+
         <div class="mt-6 text-center">
           <p class="text-gray-400">
-            Already registered? 
+            Already registered?
             <button id="goToLogin" class="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
               Access Account
             </button>
@@ -406,13 +468,16 @@
           </button>
           <div id="dropdownMenu" class="dropdown-menu absolute right-0 mt-2 w-48 rounded-lg shadow-2xl hidden">
             <div class="py-2">
-              <button class="block w-full text-left px-4 py-3 text-gray-300 hover:bg-cyan-900/30 hover:text-cyan-400 transition-colors" 
-                      id="profileBtn">👤 Profile</button>
-              <button class="block w-full text-left px-4 py-3 text-gray-300 hover:bg-cyan-900/30 hover:text-cyan-400 transition-colors" 
-                      id="settingsBtn">⚙️ Settings</button>
+              <button
+                class="block w-full text-left px-4 py-3 text-gray-300 hover:bg-cyan-900/30 hover:text-cyan-400 transition-colors"
+                id="profileBtn">👤 Profile</button>
+              <button
+                class="block w-full text-left px-4 py-3 text-gray-300 hover:bg-cyan-900/30 hover:text-cyan-400 transition-colors"
+                id="settingsBtn">⚙️ Settings</button>
               <hr class="border-gray-600 my-2">
-              <button class="block w-full text-left px-4 py-3 text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors" 
-                      id="logoutBtn">🚪 Logout</button>
+              <button
+                class="block w-full text-left px-4 py-3 text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors"
+                id="logoutBtn">🚪 Logout</button>
             </div>
           </div>
         </div>
@@ -423,15 +488,18 @@
           <h2 class="text-4xl font-bold text-cyan-400 orbitron mb-2">GAME LOBBY</h2>
           <p class="text-gray-400 text-lg">Choose your battle</p>
         </div>
-        
+
         <div class="grid grid-cols-1 gap-6 w-full max-w-md mx-auto">
-          <button id="playBtn" class="gaming-button py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
+          <button id="playBtn"
+            class="gaming-button py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
             🎮 QUICK MATCH
           </button>
-          <button id="TournamentsBtn" class="gaming-button-secondary py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
+          <button id="TournamentsBtn"
+            class="gaming-button-secondary py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
             🏆 TOURNAMENTS
           </button>
-          <button id="FriendsBtn" class="gaming-button py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
+          <button id="FriendsBtn"
+            class="gaming-button py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
             👥 FRIENDS
           </button>
         </div>
@@ -443,18 +511,18 @@
       <div class="gaming-card rounded-2xl p-8 w-full max-w-md">
         <h2 class="text-3xl font-bold text-center mb-4 text-yellow-400 orbitron">SECURITY CHECK</h2>
         <p class="text-center text-gray-400 mb-8">Enter the 6-digit verification code</p>
-        
+
         <form id="twoFAForm" method="POST" class="space-y-6">
           <div class="space-y-2">
-            <input type="text" id="twoFACode" maxlength="6" placeholder="000000" required 
-                   pattern="\d{6}" inputmode="numeric" autocomplete="one-time-code"
-                   class="gaming-input w-full p-4 rounded-lg text-center text-2xl font-mono tracking-widest" />
+            <input type="text" id="twoFACode" maxlength="6" placeholder="000000" required pattern="\d{6}"
+              inputmode="numeric" autocomplete="one-time-code"
+              class="gaming-input w-full p-4 rounded-lg text-center text-2xl font-mono tracking-widest" />
           </div>
           <button type="submit" class="gaming-button w-full py-4 rounded-lg font-bold text-lg">
             VERIFY ACCESS
           </button>
         </form>
-        
+
         <div class="mt-6 text-center space-y-3">
           <p id="twoFAMessage" class="text-sm text-red-400"></p>
           <button id="resendCodeBtn" class="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
@@ -472,34 +540,34 @@
     <section id="forgotPasswordView" class="view" style="display: none;">
       <div class="gaming-card rounded-2xl p-8 w-full max-w-md">
         <h2 class="text-3xl font-bold text-center mb-8 text-yellow-400 orbitron">ACCOUNT RECOVERY</h2>
-        
+
         <form id="forgotPasswordForm" method="POST" class="space-y-6">
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-300">Email Address</label>
-            <input type="email" id="forgotEmail" placeholder="Enter your email" required 
-                   class="gaming-input w-full p-4 rounded-lg text-white" />
+            <input type="email" id="forgotEmail" placeholder="Enter your email" required
+              class="gaming-input w-full p-4 rounded-lg text-white" />
           </div>
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-300">Secret Recovery Key</label>
-            <input type="text" id="secretKey" placeholder="Enter your recovery key" required 
-                   class="gaming-input w-full p-4 rounded-lg text-white" />
+            <input type="text" id="secretKey" placeholder="Enter your recovery key" required
+              class="gaming-input w-full p-4 rounded-lg text-white" />
           </div>
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-300">New Password</label>
-            <input type="password" id="newPassword" placeholder="Create new password" required 
-                   class="gaming-input w-full p-4 rounded-lg text-white" />
+            <input type="password" id="newPassword" placeholder="Create new password" required
+              class="gaming-input w-full p-4 rounded-lg text-white" />
           </div>
-          
+
           <p id="forgotMessage" class="text-sm text-red-400 text-center"></p>
-          
+
           <button type="submit" class="gaming-button w-full py-4 rounded-lg font-bold text-lg">
             RESET PASSWORD
           </button>
         </form>
-        
+
         <div class="mt-6 text-center">
           <p class="text-gray-400">
-            Remember your password? 
+            Remember your password?
             <button id="backtoLogin" class="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
               Back to Login
             </button>
@@ -514,16 +582,17 @@
         <div class="text-center">
           <h2 class="text-3xl font-bold mb-4 text-green-400 orbitron">REGISTRATION COMPLETE</h2>
           <p id="secretMessage" class="text-lg mb-6 text-gray-300">Your recovery key has been generated</p>
-          
+
           <div class="bg-red-900/30 border border-red-400 rounded-lg p-4 mb-6">
             <p id="secretNote" class="text-red-400 font-semibold mb-2">⚠️ CRITICAL: Save this recovery key securely!</p>
             <p class="text-sm text-gray-400">You'll need this to recover your account if you forget your password.</p>
           </div>
-          
+
           <div class="gaming-card rounded-lg p-6 mb-8">
-            <pre id="secretPhrase" class="font-mono text-lg text-cyan-400 break-words whitespace-pre-wrap text-center"></pre>
+            <pre id="secretPhrase"
+              class="font-mono text-lg text-cyan-400 break-words whitespace-pre-wrap text-center"></pre>
           </div>
-          
+
           <button id="continueToLogin" class="gaming-button-secondary py-4 px-8 rounded-lg font-bold text-lg">
             CONTINUE TO LOGIN
           </button>
@@ -534,28 +603,31 @@
     <!-- PROFILE VIEW -->
     <section id="profileViewDrop" class="view" style="display: none;">
       <div class="gaming-card rounded-2xl p-8 w-full max-w-md relative">
-        <button id="backToDashboardFromProfile" class="absolute top-4 left-4 gaming-button-secondary px-4 py-2 rounded-lg">
+        <button id="backToDashboardFromProfile"
+          class="absolute top-4 left-4 gaming-button-secondary px-4 py-2 rounded-lg">
           ← Back
         </button>
-        
+
         <div class="text-center mt-8">
           <h2 class="text-3xl font-bold mb-8 text-cyan-400 orbitron">PLAYER PROFILE</h2>
-          
+
           <div class="stats-card rounded-xl p-6 mb-6">
             <div class="flex flex-col items-center space-y-4">
               <div class="relative">
-                <img id="profileAvatar" alt="Player Avatar" 
-                     class="w-24 h-24 rounded-full border-2 border-cyan-400 shadow-lg" />
-                <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-2 border-gray-800 pulse-ring"></div>
+                <img id="profileAvatar" alt="Player Avatar"
+                  class="w-24 h-24 rounded-full border-2 border-cyan-400 shadow-lg" />
+                <div
+                  class="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-2 border-gray-800 pulse-ring">
+                </div>
               </div>
-              
+
               <div>
                 <h3 id="profileUsername" class="text-2xl font-bold text-cyan-400"></h3>
                 <p id="profileEmail" class="text-gray-400"></p>
               </div>
             </div>
           </div>
-          
+
           <div class="grid grid-cols-3 gap-4 mb-6">
             <div class="stats-card rounded-lg p-4">
               <div class="text-2xl font-bold text-green-400" id="profileWins">0</div>
@@ -570,7 +642,7 @@
               <div class="text-sm text-gray-400">Rank</div>
             </div>
           </div>
-          
+
           <button id="logoutBtnProfile" class="gaming-button-secondary w-full py-3 rounded-lg font-bold">
             LOGOUT
           </button>
@@ -584,40 +656,40 @@
         <button id="backFromSettings" class="gaming-button-secondary px-4 py-2 rounded-lg mb-6">
           ← Back
         </button>
-        
+
         <h2 class="text-3xl font-bold mb-8 text-center text-cyan-400 orbitron">SETTINGS</h2>
-        
+
         <form id="settingsForm" method="post" class="space-y-6">
           <div class="space-y-2">
             <label for="newUsername" class="block text-sm font-medium text-gray-300">Player Name</label>
-            <input type="text" id="newUsername" name="newUsername" placeholder="New username" 
-                   class="gaming-input w-full p-3 rounded-lg" />
+            <input type="text" id="newUsername" name="newUsername" placeholder="New username"
+              class="gaming-input w-full p-3 rounded-lg" />
           </div>
-          
+
           <div class="space-y-2">
             <label for="newEmail" class="block text-sm font-medium text-gray-300">Email Address</label>
-            <input type="email" id="newEmail" name="newEmail" placeholder="New email" 
-                   class="gaming-input w-full p-3 rounded-lg" />
+            <input type="email" id="newEmail" name="newEmail" placeholder="New email"
+              class="gaming-input w-full p-3 rounded-lg" />
           </div>
-          
+
           <div class="space-y-2">
             <label for="newPasswordSettings" class="block text-sm font-medium text-gray-300">Password</label>
-            <input type="password" id="newPasswordSettings" name="newPassword" placeholder="New password" 
-                   class="gaming-input w-full p-3 rounded-lg" />
+            <input type="password" id="newPasswordSettings" name="newPassword" placeholder="New password"
+              class="gaming-input w-full p-3 rounded-lg" />
           </div>
-          
+
           <div class="space-y-2">
             <label for="avatarUpload" class="block text-sm font-medium text-gray-300">Avatar</label>
-            <input type="file" id="avatarUpload" name="avatarUpload" accept="image/*" 
-                   class="gaming-input w-full p-3 rounded-lg" />
-            <img id="customAvatarPreview" alt="Avatar Preview" 
-                 class="w-16 h-16 rounded-full border-2 border-cyan-400 mt-2 hidden" />
+            <input type="file" id="avatarUpload" name="avatarUpload" accept="image/*"
+              class="gaming-input w-full p-3 rounded-lg" />
+            <img id="customAvatarPreview" alt="Avatar Preview"
+              class="w-16 h-16 rounded-full border-2 border-cyan-400 mt-2 hidden" />
           </div>
-          
+
           <button type="submit" class="gaming-button w-full py-4 rounded-lg font-bold text-lg">
             SAVE CHANGES
           </button>
-          
+
           <p id="settingsMessage" class="text-sm text-red-400 text-center"></p>
         </form>
       </div>
@@ -692,9 +764,14 @@
             <option value="BOT">BOT</option>
             <option value="PVP">PVP</option>
           </select>
-          <button id="start" class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
+          <button id="start"
+            class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
             Start
           </button>
+          <button id="refresh" class="px-4 py-2 bg-green-600 rounded hover:bg-green-700 transition">
+            Refresh 🔄
+          </button>
+
         </div>
 
         <div class="flex justify-center mb-6">
@@ -705,7 +782,8 @@
         <div id="connect4-container" class="text-center hidden">
           <h2 id="winner" class="text-2xl font-bold mb-4 text-yellow-400"></h2>
           <div id="board" class="grid grid-cols-7 gap-2 justify-center"></div>
-          <button id="restart-connect4" class="gaming-button-secondary mt-4 px-4 py-2 rounded-lg font-bold hover:scale-105 transition-all">
+          <button id="restart-connect4"
+            class="gaming-button-secondary mt-4 px-4 py-2 rounded-lg font-bold hover:scale-105 transition-all">
             Rejouer 🔄
           </button>
         </div>
@@ -717,7 +795,7 @@
       </div>
     </section>
 
-        <!-- MAIN FRIENDS VIEW -->
+    <!-- MAIN FRIENDS VIEW -->
     <section id="FriendsView" class="view" style="display: none;">
       <div class="gaming-card rounded-2xl p-8 w-full max-w-4xl">
         <div class="text-center mb-8">
@@ -741,7 +819,8 @@
 
         <div class="mb-6 flex flex-col sm:flex-row gap-4">
           <div class="flex-1">
-            <input type="text" id="searchInput" class="gaming-input w-full px-4 py-2 rounded-lg" placeholder="Search friends...">
+            <input type="text" id="searchInput" class="gaming-input w-full px-4 py-2 rounded-lg"
+              placeholder="Search friends...">
           </div>
           <div class="flex gap-2">
             <select id="statusFilter" class="gaming-input px-4 py-2 rounded-lg">
@@ -800,7 +879,8 @@
                 <label class="block text-sm font-medium text-gray-300 mb-2">
                   Username or Email
                 </label>
-                <input type="text" id="friendUsername" class="gaming-input w-full px-4 py-2 rounded-lg" placeholder="Enter username">
+                <input type="text" id="friendUsername" class="gaming-input w-full px-4 py-2 rounded-lg"
+                  placeholder="Enter username">
               </div>
 
               <div class="flex gap-4">
@@ -832,7 +912,7 @@
     // Create floating particles
     function createParticles() {
       const particlesContainer = document.getElementById('particles');
-      
+
       for (let i = 0; i < 50; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
@@ -854,5 +934,5 @@
   <script type="module" src="ts/dist/games/main.js"></script>
   <script type="module" src="ts/dist/tournament.js"></script>
 </body>
+
 </html>
-    

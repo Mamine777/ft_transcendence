@@ -16,7 +16,7 @@ export function initConnect4() {
         const row = [];
         for (let c = 0; c < columns; c++) {
             row.push(" ");
-            const colIndex = c; // ✅ capture la colonne pour l'event
+            const colIndex = c;
             const tile = document.createElement("div");
             tile.id = `${r}-${c}`;
             tile.className =

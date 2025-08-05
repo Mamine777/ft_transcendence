@@ -12,6 +12,8 @@ window.addEventListener("DOMContentLoaded", () => {
     const connect4Container = document.getElementById("connect4-container");
     const restartConnect4 = document.getElementById("restart-connect4");
     const pongElements = [canvas, pongMenu];
+  const refreshBtn = document.getElementById("refresh");
+
     function switchGameView(choice) {
         if (choice === "pong") {
             pongElements.forEach(el => el === null || el === void 0 ? void 0 : el.classList.remove("hidden"));
@@ -24,6 +26,9 @@ window.addEventListener("DOMContentLoaded", () => {
             instruction.textContent = "Le jeu Puissance 4 démarre automatiquement.";
         }
     }
+    refreshBtn.addEventListener("click", () => {
+  location.reload();
+});
     gameChoice.addEventListener("change", (e) => {
         const selected = e.target.value;
 <<<<<<< HEAD
@@ -43,6 +48,7 @@ window.addEventListener("DOMContentLoaded", () => {
         initGame(canvas, ctx, selectedMode);
         requestAnimationFrame(() => update(handleWinner));
     });
+
     function handleWinner(winner) {
         if (winner !== "") {
             showWinner(ctx, canvas, winner);

@@ -1,49 +1,55 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-gray-900 text-white">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Puissance 4 Transcendance</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="/style.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <title>Puissance 4 Transcendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="/style.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-  <body class="flex flex-col items-center justify-center min-h-screen p-6">
-    <div class="w-14 h-14 bg-red-500"></div>
+</head>
 
-    <div class="mb-6 flex items-center gap-4">
-      <label for="game-choice">Choisir un jeu :</label>
-      <select id="game-choice" class="p-2 rounded bg-gray-800 text-white">
-        <option value="pong">Pong</option>
-        <option value="connect4">Puissance 4</option>
-      </select>
-    </div>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+  <div class="w-14 h-14 bg-red-500"></div>
 
-    <p id="instruction" class="text-sm text-gray-400 mt-2 mb-4"></p>
+  <div class="mb-6 flex items-center gap-4">
+    <label for="game-choice">Choisir un jeu :</label>
+    <select id="game-choice" class="p-2 rounded bg-gray-800 text-white">
+      <option value="pong">Pong</option>
+      <option value="connect4">Puissance 4</option>
+    </select>
+  </div>
 
-    <!-- Menu Pong -->
-    <div id="pong-menu" class="mb-6">
-      <select id="mode" class="p-2 rounded bg-gray-800 text-white mr-2">
-        <option value="BOT">BOT</option>
-        <option value="PVP">PVP</option>
-      </select>
-      <button id="start" class="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 transition">Start</button>
-    </div>
+  <p id="instruction" class="text-sm text-gray-400 mt-2 mb-4"></p>
 
-    <canvas width="800" height="600" class="mb-6 border border-gray-600"></canvas>
+  <!-- Menu Pong -->
+  <div id="pong-menu" class="mb-6">
+    <select id="mode" class="p-2 rounded bg-gray-800 text-white mr-2">
+      <option value="BOT">BOT</option>
+      <option value="PVP">PVP</option>
+    </select>
+    <button id="start" class="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 transition">Start</button>
+    <button id="refresh" class="px-4 py-2 bg-green-600 rounded hover:bg-green-700 transition">
+      Refresh 🔄
+    </button>
 
-    <!-- Puissance 4 -->
-    <div id="connect4-container" class="text-center hidden">
-      <h2 id="winner" class="text-2xl font-bold mb-4 text-yellow-400"></h2>
-      <div id="board" class="grid grid-cols-7 gap-2 justify-center"></div>
-      <button id="restart-connect4" class="mt-4 px-4 py-2 bg-green-600 rounded hover:bg-green-700 transition">
-        Rejouer 🔄
-      </button>
-    </div>
-    <div class="w-14 h-14 bg-red-500"></div>
+  </div>
+
+  <canvas width="800" height="600" class="mb-6 border border-gray-600"></canvas>
+
+  <!-- Puissance 4 -->
+  <div id="connect4-container" class="text-center hidden">
+    <h2 id="winner" class="text-2xl font-bold mb-4 text-yellow-400"></h2>
+    <div id="board" class="grid grid-cols-7 gap-2 justify-center"></div>
+    <button id="restart-connect4" class="mt-4 px-4 py-2 bg-green-600 rounded hover:bg-green-700 transition">
+      Rejouer 🔄
+    </button>
+  </div>
+  <div class="w-14 h-14 bg-red-500"></div>
 
 
-    <script type="module" src="/main.ts"></script>
-  </body>
+  <script type="module" src="/main.ts"></script>
+</body>
+
 </html>
