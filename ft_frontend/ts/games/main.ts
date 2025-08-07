@@ -8,11 +8,14 @@ import { resetGame, showWinner } from "./score";
 import { initConnect4 } from "./puissance4";
 
 window.addEventListener("DOMContentLoaded", () => {
-  const canvas = document.querySelector("canvas") as HTMLCanvasElement;
-  const ctx = canvas.getContext("2d")!;
+  const canvasGame = document.getElementById("canva-game") as HTMLCanvasElement;
+  const canvasTournament = document.getElementById("canva-2") as HTMLCanvasElement;
+  const ctxGame = canvasGame.getContext("2d")!;
+  const ctxTournament = canvasTournament.getContext("2d")!;
 
   const modeSelector = document.getElementById("mode") as HTMLSelectElement;
   const startBtn = document.getElementById("start") as HTMLButtonElement;
+  const starttournamentBtn = document.getElementById("start-tournament") as HTMLButtonElement;
   const pongMenu = document.getElementById("pong-menu")!;
   const gameChoice = document.getElementById("game-choice") as HTMLSelectElement;
   const instruction = document.getElementById("instruction")!;
@@ -21,7 +24,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const refreshBtn = document.getElementById("refresh") as HTMLButtonElement;
 
-  const pongElements = [canvas, pongMenu];
+  const pongElements = [canvasGame, pongMenu];
 
   function switchGameView(choice: string) {
     if (choice === "pong") {
@@ -49,14 +52,28 @@ startBtn.addEventListener("click", () => {
   startBtn.classList.add("hidden"); // <-- ici on le cache
   stopGameLoop();
   resetGame();
-  initGame(canvas, ctx, selectedMode);
-  startGameLoop(handleWinner);
+  initGame(canvasGame, ctxGame, selectedMode);
+  startGameLoop(handleWinnerGame);
 });
 
+starttournamentBtn.addEventListener("click", () => {
+  const selectedMode = "PVP";
+  startBtn.classList.add("hidden"); // <-- ici on le cache
+  stopGameLoop();
+  resetGame();
+  initGame(canvasTournament, ctxTournament, selectedMode);
+  startGameLoop(handleWinnerTournament);
+});
 
-function handleWinner(winner: "left" | "right" | "") {
+function handleWinnerGame(winner: "left" | "right" | "") {
   if (winner !== "") {
-    showWinner(ctx, canvas, winner);
+    showWinner(ctxGame, canvasGame, winner);
+  }
+}
+
+function handleWinnerTournament(winner: "left" | "right" | "") {
+  if (winner !== "") {
+    showWinner(ctxTournament, canvasTournament, winner);
   }
 }
 

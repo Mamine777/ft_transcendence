@@ -728,13 +728,13 @@
      <div class="gaming-card rounded-2xl p-8 w-full max-w-4xl shadow-lg border border-cyan-400">
         <h2 class="text-3xl font-bold text-center mb-8 text-cyan-400 orbitron neon-text">TOURNAMENT ARENA</h2>
         <p id="Player_tournament" class="text-sm text-gray-400 mt-2 mb-4 text-center"></p>
-        <div id="pong-menu" class="mb-6 flex items-center gap-2 justify-center">
-          <button id="start" class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
+        <div id="pong-menu-tournament" class="mb-6 flex items-center gap-2 justify-center">
+          <button id="start-tournament" class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
             Start
           </button>
         </div>
         <div class="flex justify-center mb-6">
-          <canvas width="800" height="600" class="border border-gray-600 rounded-lg shadow-lg"></canvas>
+          <canvas id="canva-2" width="800" height="600" class="border border-gray-600 rounded-lg shadow-lg"></canvas>
         </div>
         <div class="text-center mt-8">
           <button id="backToPlayFromTournament" class="gaming-button-secondary px-6 py-3 rounded-lg font-semibold">
@@ -775,7 +775,7 @@
         </div>
 
         <div class="flex justify-center mb-6">
-          <canvas width="800" height="600" class="border border-gray-600 rounded-lg shadow-lg"></canvas>
+          <canvas id="canva-game" width="800" height="600" class="border border-gray-600 rounded-lg shadow-lg"></canvas>
         </div>
 
         <!-- Puissance 4 -->
@@ -926,13 +926,13 @@
     // Initialize particles on page load
     document.addEventListener('DOMContentLoaded', createParticles);
   </script>
-  <script type="module" src="ts/dist/login.js"></script>
-  <script type="module" src="ts/dist/buttons.js"></script>
-  <script type="module" src="ts/dist/coockies.js"></script>
-  <script type="module" src="ts/dist/settings.js"></script>
-  <script type="module" src="ts/dist/friends.js"></script>
-  <script type="module" src="ts/dist/games/main.js"></script>
-  <script type="module" src="ts/dist/tournament.js"></script>
+  <script type="module" src="ts/login.ts"></script>
+  <script type="module" src="ts/buttons.ts"></script>
+  <script type="module" src="ts/coockies.ts"></script>
+  <script type="module" src="ts/settings.ts"></script>
+  <script type="module" src="ts/friends.ts"></script>
+  <script type="module" src="ts/games/main.ts"></script>
+  <script type="module" src="ts/tournament.ts"></script>
 </body>
 
 </html>

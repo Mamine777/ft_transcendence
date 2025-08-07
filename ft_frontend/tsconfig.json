@@ -8,7 +8,7 @@
     "moduleResolution": "Node",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "ts/dist"
+    "noEmit": true,
   },
   "include": ["ts/**/*"],
   "exclude": ["node_modules"]
