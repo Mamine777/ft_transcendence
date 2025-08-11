@@ -1,5 +1,7 @@
 import { switchView } from "./login";
-import { Tournament, tournaments} from "../../ft_backend/tournament/tournament";
+// import { Tournament, tournaments} from "../../ft_backend/tournament/tournament";
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
 	const addBtn = document.getElementById("ADDplayerBtn");
@@ -28,31 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			});
 		}
 	}
-	// function startTournament() {
-	// 	fetch("http://localhost:3000/tournament/start", {
-	// 		method: "POST",
-	// 		credentials: "include",
-	// 		headers: { 
-	// 			'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-	// 			"Content-Type": "application/json" 
-	// 		},
-	// 		body: JSON.stringify({ players }),
-	// 	})
-	// 	.then(res => res.json())
-	// 	.then((data) => {
-	// 		if (data.success && data.tournament) {
-	// 			const tournament: Tournament = data.tournament;
-	// 			const match = tournament.matches[tournament.currentMatchIndex];
-	// 			if (match && Player) {
-	// 				console.log(data);
-	// 				Player.textContent = `Players in the tournament: ${match.player1} vs ${match.player2}`;
-	// 			}
-	// 			console.log("ici");
-	// 		}
-  	// 	});
-	// }
+
 	function startTournament() {
-		console.log("startTournament appelée");
 		fetch("http://localhost:3000/tournament/start", {
 			method: "POST",
 			credentials: "include",
@@ -91,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     CreateTournamentBtn?.addEventListener("click", () => {
-        if (players.length >= 2) {
+        if (players.length == 4) {
             switchView("TournamentPlayView");
             console.log("Tournament started with players:", players);
             startTournament();
@@ -104,8 +83,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let players: string[] = [];
 let newPlayer: string = "";
-
-function addPlayer() {
-  players.push(newPlayer);
-  newPlayer = "";
-}
+			console.log("ihi");
