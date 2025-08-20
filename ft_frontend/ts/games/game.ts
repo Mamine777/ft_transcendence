@@ -42,6 +42,8 @@ export function initGame(
   ballY = canvas.height / 2;
   leftPaddleY = canvas.height / 2 - paddleHeight / 2;
   rightPaddleY = canvas.height / 2 - paddleHeight / 2;
+  ballSpeedX = 3;
+  ballSpeedY = 2;
 
   document.addEventListener("keydown", (e) => {
     keysPressed[e.key] = true;
@@ -54,6 +56,12 @@ export function initGame(
   document.addEventListener("keyup", (e) => {
     keysPressed[e.key] = false;
   });
+}
+
+export function stopBall() {
+  ballSpeedX = 0;
+  ballSpeedY = 0;
+  // ballPaused = true;
 }
 
 export function resetBall() {

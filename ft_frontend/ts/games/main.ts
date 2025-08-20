@@ -1,8 +1,10 @@
 import {
   initGame,
+  resetBall,
   resetScore,
   startGameLoop,
-  stopGameLoop
+  stopGameLoop,
+  stopBall
 } from "./game";
 import { resetGame, showWinner } from "./score";
 import { initConnect4 } from "./puissance4";
@@ -49,31 +51,39 @@ window.addEventListener("DOMContentLoaded", () => {
 
 startBtn.addEventListener("click", () => {
   const selectedMode = modeSelector.value === "BOT" ? "BOT" : "PVP";
+  const playerLeftName = "gauche";
+  const playerRightName = "droit ";
   startBtn.classList.add("hidden"); // <-- ici on le cache
-  stopGameLoop();
   resetGame();
   initGame(canvasGame, ctxGame, selectedMode);
-  startGameLoop(handleWinnerGame);
+  startGameLoop((winner: "left" | "right" | "") => handleWinnerGame(winner, playerLeftName, playerRightName));
 });
 
 starttournamentBtn.addEventListener("click", () => {
   const selectedMode = "PVP";
-  startBtn.classList.add("hidden"); // <-- ici on le cache
-  stopGameLoop();
+  const playerLeftName = "gauche";
+  const playerRightName = "droit proute";
+  startBtn.classList.add("hidden");
   resetGame();
   initGame(canvasTournament, ctxTournament, selectedMode);
-  startGameLoop(handleWinnerTournament);
+  startGameLoop((winner: "left" | "right" | "") => handleWinnerTournament(winner, playerLeftName, playerRightName));
 });
 
-function handleWinnerGame(winner: "left" | "right" | "") {
+function handleWinnerGame(winner: "left" | "right" | "", playerleft: string, playerright: string) {
   if (winner !== "") {
-    showWinner(ctxGame, canvasGame, winner);
+    const winnerName = winner === "left" ? playerleft : playerright;
+    stopBall();
+    startBtn.classList.remove("hidden");
+    showWinner(ctxGame, canvasGame, winnerName);
   }
 }
 
-function handleWinnerTournament(winner: "left" | "right" | "") {
+function handleWinnerTournament(winner: "left" | "right" | "", playerleft: string, playerright: string) {
   if (winner !== "") {
-    showWinner(ctxTournament, canvasTournament, winner);
+    const winnerName = winner === "left" ? playerleft : playerright;
+    stopBall();
+    startBtn.classList.remove("hidden");
+    showWinner(ctxTournament, canvasTournament, winnerName);
   }
 }
 
@@ -82,4 +92,13 @@ function handleWinnerTournament(winner: "left" | "right" | "") {
   restartConnect4.addEventListener("click", () => {
     initConnect4();
   });
+
+  window.addEventListener("hashchange", () => {
+    stopGameLoop();
+    resetScore();
+    resetBall();
+    startBtn.classList.remove("hidden");
+  });
+
 });
+

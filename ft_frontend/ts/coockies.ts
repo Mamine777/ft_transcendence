@@ -1,6 +1,6 @@
 import { initGame } from "./games/game";
 import { switchView } from "./login";
-
+// import { stopGame } from "./games/game";
 export type ViewElement = HTMLElement | null;
 
 export const views: Record<string, ViewElement> = {

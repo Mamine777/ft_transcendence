@@ -1,6 +1,6 @@
 import { leftScore, rightScore, resetScore } from "./game";
 
-export const WIN = 10;
+export const WIN = 1;
 export let gameOver = false;
 
 export function checkScore(leftScore: number, rightScore: number): "left" | "right" | "" {
@@ -22,7 +22,7 @@ export function resetGame(): void {
 export function showWinner(
   ctx: CanvasRenderingContext2D,
   canvas: HTMLCanvasElement,
-  winner: "left" | "right"
+  winner: string
 ): void {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -30,6 +30,6 @@ export function showWinner(
   ctx.fillStyle = "white";
   ctx.font = "48px Arial";
   ctx.textAlign = "center";
-  const text = winner === "left" ? "Gauche gagne !" : "Droite gagne !";
+  const text = `${winner} gagne !`;
   ctx.fillText(text, canvas.width / 2, canvas.height / 2);
 }

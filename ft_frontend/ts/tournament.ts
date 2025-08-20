@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			return res.json();
 		})
 		.then((data) => {
-			console.log("Data reçue", data);
+			console
 		})
 		.catch((err) => {
 			console.error("Erreur fetch:", err);
@@ -59,8 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
             players.push(username);
             updatePlayersList();
             usernameInput.value = "";
-            console.log("Player added:", username);
-            console.log("Current players:", players);
         }
         if (players.length >= 2) {
             CreateTournamentBtn?.classList.remove("enabled");
@@ -72,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
     CreateTournamentBtn?.addEventListener("click", () => {
         if (players.length == 4) {
             switchView("TournamentPlayView");
-            console.log("Tournament started with players:", players);
             startTournament();
         }
 		else {
