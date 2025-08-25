@@ -67,10 +67,12 @@ starttournamentBtn.addEventListener("click", () => {
   resetGame();
   initGame(canvasTournament, ctxTournament, selectedMode);
   startGameLoop((winner: "left" | "right" | "") => handleWinnerTournament(winner, playerLeftName, playerRightName));
+  
 });
 
 function handleWinnerGame(winner: "left" | "right" | "", playerleft: string, playerright: string) {
   if (winner !== "") {
+    console.log("Winner is:", winner);
     const winnerName = winner === "left" ? playerleft : playerright;
     stopBall();
     startBtn.classList.remove("hidden");

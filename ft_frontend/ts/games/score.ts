@@ -1,5 +1,6 @@
 import { leftScore, rightScore, resetScore } from "./game";
 
+
 export const WIN = 1;
 export let gameOver = false;
 
@@ -13,6 +14,13 @@ export function checkScore(leftScore: number, rightScore: number): "left" | "rig
   }
   return "";
 }
+
+export function getWinner(): "left" | "right" | "" {
+  if (leftScore >= WIN) return "left";
+  if (rightScore >= WIN) return "right";
+  return "";
+}
+
 
 export function resetGame(): void {
     resetScore();

@@ -61,7 +61,6 @@ export function initGame(
 export function stopBall() {
   ballSpeedX = 0;
   ballSpeedY = 0;
-  // ballPaused = true;
 }
 
 export function resetBall() {
@@ -184,4 +183,21 @@ export function stopGameLoop() {
   }
 }
 
+export function playAndReturnWinner(): Promise<"left" | "right"> {
+  return new Promise((resolve) => {
+    startGameLoop((w) => {
+      if (w !== "") {
+         console.log("Winner is:", w); 
+        resolve(w)
+
+      };
+    });
+  });
+}
+
 export { keysPressed };
+
+export async function runMatch(): Promise<void> {
+  const winner = await playAndReturnWinner();
+  console.log("Winner is:", winner);
+}
