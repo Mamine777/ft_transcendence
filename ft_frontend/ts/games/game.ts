@@ -1,5 +1,8 @@
-import { checkScore } from "./score";
+import { checkScore, getWinner } from "./score";
 import { updateBotAI, setDifficulty } from "./ai";
+
+type Winner2 = "left" | "right";
+let listeners: ((winner: Winner2) => void)[] = [];
 
 export type GameMode = "PVP" | "BOT";
 let currentMode: GameMode = "BOT";
@@ -29,6 +32,28 @@ export let leftScore = 0;
 export let rightScore = 0;
 
 const keysPressed: { [key: string]: boolean } = {};
+
+export function checkScore2() {
+  const winner = getWinner();
+  if (winner !== "") {
+    listeners.forEach(cb => cb(winner)); // exécute tous les callbacks
+    listeners = []; // vide après déclenchement (optionnel)
+  }
+}
+
+export function onWinner(callback: (winner: Winner2) => void) {
+  listeners.push(callback);
+}
+
+export function scoreLeft() {
+  leftScore++;
+  checkScore2();
+}
+
+export function scoreRight() {
+  rightScore++;
+  checkScore2();
+}
 
 export function initGame(
   c: HTMLCanvasElement,
@@ -128,7 +153,8 @@ export function updateFrame(callback: (winner: "left" | "right" | "") => void) {
     ballSpeedX = -ballSpeedX;
 
   if (ballX <= 0) {
-    rightScore++;
+    scoreRight();
+    checkScore2();
     const winner = checkScore(leftScore, rightScore);
     if (winner === "") resetBall();
     callback(winner);
@@ -136,7 +162,8 @@ export function updateFrame(callback: (winner: "left" | "right" | "") => void) {
   }
 
   if (ballX >= canvas.width) {
-    leftScore++;
+    scoreLeft();
+    checkScore2();
     const winner = checkScore(leftScore, rightScore);
     if (winner === "") resetBall();
     callback(winner);
@@ -183,13 +210,11 @@ export function stopGameLoop() {
   }
 }
 
-export function playAndReturnWinner(): Promise<"left" | "right"> {
+export function playAndReturnWinner(player1 : string, player2 : string): Promise<typeof player1 | typeof player2> {
   return new Promise((resolve) => {
     startGameLoop((w) => {
       if (w !== "") {
-         console.log("Winner is:", w); 
         resolve(w)
-
       };
     });
   });
@@ -197,7 +222,7 @@ export function playAndReturnWinner(): Promise<"left" | "right"> {
 
 export { keysPressed };
 
-export async function runMatch(): Promise<void> {
-  const winner = await playAndReturnWinner();
+export async function runMatch(player1 : string, player2 : string): Promise<void> {
+  const winner = await playAndReturnWinner(player1, player2);
   console.log("Winner is:", winner);
 }

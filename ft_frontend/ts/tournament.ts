@@ -1,7 +1,7 @@
+import { runMatch, scoreLeft, scoreRight, onWinner, resetScore } from "./games/game";
+import { getWinner } from "./games/score";
 import { switchView } from "./login";
 // import { Tournament, tournaments} from "../../ft_backend/tournament/tournament";
-
-
 
 document.addEventListener("DOMContentLoaded", () => {
 	const addBtn = document.getElementById("ADDplayerBtn");
@@ -41,13 +41,33 @@ document.addEventListener("DOMContentLoaded", () => {
 			},
 			body: JSON.stringify({ players }),
 		})
-		
-		.then(res => {
-			console.log("Réponse reçue", res);
+		.then((res) => {
 			return res.json();
 		})
 		.then((data) => {
-			console
+			console.log("Tournoi démarré:", data);
+			const firstmatch = data.data.matches[0];
+			if (Player)
+				Player.innerHTML = "Match 1 " + firstmatch.player1 + " vs " + firstmatch.player2;
+			onWinner((winner) => {
+				let result;
+				if (winner === "left")
+					result = firstmatch.player1;
+				else
+					result = firstmatch.player2;
+				const secondMatch = data.data.matches[1];
+				if (Player)
+					Player.innerHTML = "Match 2 " + secondMatch.player1 + " vs " + secondMatch.player2;
+				onWinner((winner2) => {
+					let result2;
+					if (winner2 === "left")
+						result2 = secondMatch.player1;
+					else
+						result2 = secondMatch.player2;
+					if (Player)
+						Player.innerHTML = "Finale " + result + " vs " + result2;
+				});
+			});
 		})
 		.catch((err) => {
 			console.error("Erreur fetch:", err);
@@ -71,11 +91,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (players.length == 4) {
             switchView("TournamentPlayView");
             startTournament();
-        }
+		}
 		else {
 			console.log("nop");
 		}
 	});
+	document.getElementById("leftBtn")?.addEventListener("click", () => scoreLeft());
+	document.getElementById("rightBtn")?.addEventListener("click", () => scoreRight());
 });
 
 let players: string[] = [];

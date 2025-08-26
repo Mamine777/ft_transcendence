@@ -4,7 +4,8 @@ import {
   resetScore,
   startGameLoop,
   stopGameLoop,
-  stopBall
+  stopBall,
+  runMatch
 } from "./game";
 import { resetGame, showWinner } from "./score";
 import { initConnect4 } from "./puissance4";
@@ -54,6 +55,7 @@ startBtn.addEventListener("click", () => {
   const playerLeftName = "gauche";
   const playerRightName = "droit ";
   startBtn.classList.add("hidden"); // <-- ici on le cache
+  console.log("test");
   resetGame();
   initGame(canvasGame, ctxGame, selectedMode);
   startGameLoop((winner: "left" | "right" | "") => handleWinnerGame(winner, playerLeftName, playerRightName));
@@ -62,17 +64,18 @@ startBtn.addEventListener("click", () => {
 starttournamentBtn.addEventListener("click", () => {
   const selectedMode = "PVP";
   const playerLeftName = "gauche";
-  const playerRightName = "droit proute";
+  const playerRightName = "droit";
   startBtn.classList.add("hidden");
   resetGame();
   initGame(canvasTournament, ctxTournament, selectedMode);
-  startGameLoop((winner: "left" | "right" | "") => handleWinnerTournament(winner, playerLeftName, playerRightName));
-  
+  runMatch(playerLeftName, playerRightName).then(() => {
+    startGameLoop((winner: "left" | "right" | "") => handleWinnerTournament(winner, playerLeftName, playerRightName));
+  })
+  resetScore();
 });
 
 function handleWinnerGame(winner: "left" | "right" | "", playerleft: string, playerright: string) {
   if (winner !== "") {
-    console.log("Winner is:", winner);
     const winnerName = winner === "left" ? playerleft : playerright;
     stopBall();
     startBtn.classList.remove("hidden");

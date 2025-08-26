@@ -6,7 +6,7 @@
 /*   By: najeuneh <najeuneh@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 14:04:28 by mokariou          #+#    #+#             */
-/*   Updated: 2025/08/11 19:53:34 by najeuneh         ###   ########.fr       */
+/*   Updated: 2025/08/11 19:57:13 by najeuneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,6 @@ export function tournaments(server: FastifyInstance) {
 
     if (!Array.isArray(players) || players.length < 2)
         reply.status(400).send({success : false ,message: "At least 2 players required" });
-    // const matches : Match[] = [];
-    // for (let i = 0 ; i < players.length ; i++)
-    //   for (let j = i + 1; j < players.length ; j++)
-    //         matches.push({ player1: players[i], player2: players[j] });
       let i = 4;
       let array = [0, 1, 2, 3];
       let order: number[] = [];
@@ -73,7 +69,6 @@ export function tournaments(server: FastifyInstance) {
       matches: matches2,
       currentMatchIndex: 0,
     };
-    //reply.status(200).send({success : true, message: "Tournament started", totalMatches: matches.length});
       return reply.status(200).send({
       success: true,
       message: "Tournament started",

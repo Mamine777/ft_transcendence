@@ -27,7 +27,8 @@ export function resetGame(): void {
     gameOver = false;
 }
 
-export function showWinner(
+export function 
+showWinner(
   ctx: CanvasRenderingContext2D,
   canvas: HTMLCanvasElement,
   winner: string
