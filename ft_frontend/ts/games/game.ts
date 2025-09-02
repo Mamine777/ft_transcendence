@@ -36,13 +36,26 @@ const keysPressed: { [key: string]: boolean } = {};
 export function checkScore2() {
   const winner = getWinner();
   if (winner !== "") {
-    listeners.forEach(cb => cb(winner)); // exécute tous les callbacks
-    listeners = []; // vide après déclenchement (optionnel)
+    listeners.forEach(cb => cb(winner));
+    listeners = [];
   }
 }
 
-export function onWinner(callback: (winner: Winner2) => void) {
-  listeners.push(callback);
+export function onWinner(): Promise<Winner2> {
+  return new Promise((resolve) => {
+    const wrapper = (winner: Winner2) => {
+      resolve(winner);
+       const i = listeners.indexOf(wrapper);
+      if (i !== -1)
+        listeners.splice(i, 1);
+    };
+    listeners.push(wrapper);
+  });
+}
+
+export function clearWinnerListeners() {
+  const wrapper = (winner: "left" | "right") => {};
+  listeners.push(wrapper);
 }
 
 export function scoreLeft() {
@@ -106,6 +119,11 @@ export function resetBall() {
     ballPaused = false;
   }, 500);
 }
+
+export function LookScore() {
+  console.log(`Score: ${leftScore} - ${rightScore}`);
+}
+
 
 export function resetScore() {
   leftScore = 0;

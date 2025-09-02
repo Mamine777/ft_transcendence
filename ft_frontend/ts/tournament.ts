@@ -1,5 +1,5 @@
-import { runMatch, scoreLeft, scoreRight, onWinner, resetScore } from "./games/game";
-import { getWinner } from "./games/score";
+import { runMatch, scoreLeft, scoreRight, onWinner, resetScore, resetBall, stopBall, stopGameLoop, clearWinnerListeners, LookScore } from "./games/game";
+import { getWinner, getWinner2, resetGame } from "./games/score";
 import { switchView } from "./login";
 // import { Tournament, tournaments} from "../../ft_backend/tournament/tournament";
 
@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	const playersList = document.getElementById("playersList");
 	const Player = document.getElementById("Player_tournament")!;
 	const CreateTournamentBtn = document.getElementById("CreateTournamentBtn");
+    const username = usernameInput.value.trim();
 
 	function updatePlayersList() {
 		if (playersList) {
@@ -44,37 +45,33 @@ document.addEventListener("DOMContentLoaded", () => {
 		.then((res) => {
 			return res.json();
 		})
-		.then((data) => {
+		.then(async (data) => {
 			console.log("Tournoi démarré:", data);
+
 			const firstmatch = data.data.matches[0];
+			const secondMatch = data.data.matches[1];
+
 			if (Player)
 				Player.innerHTML = "Match 1 " + firstmatch.player1 + " vs " + firstmatch.player2;
-			onWinner((winner) => {
-				let result;
-				if (winner === "left")
-					result = firstmatch.player1;
-				else
-					result = firstmatch.player2;
-				const secondMatch = data.data.matches[1];
-				if (Player)
-					Player.innerHTML = "Match 2 " + secondMatch.player1 + " vs " + secondMatch.player2;
-				onWinner((winner2) => {
-					let result2;
-					if (winner2 === "left")
-						result2 = secondMatch.player1;
-					else
-						result2 = secondMatch.player2;
-					if (Player)
-						Player.innerHTML = "Finale " + result + " vs " + result2;
-				});
-			});
+
+			let winner1 = await getWinner2();
+			const result = winner1 === "left" ? firstmatch.player1 : firstmatch.player2;
+			if (Player)
+				Player.innerHTML = "Match 2 " + secondMatch.player1 + " vs " + secondMatch.player2;
+			resetScore();
+			stopGameLoop();
+			const winner2 = await getWinner2();
+			resetScore();
+			stopGameLoop();
+			const result2 = winner2 === "left" ? secondMatch.player1 : secondMatch.player2;
+			if (Player)
+				Player.innerHTML = "Finale " + result + " vs " + result2;
 		})
 		.catch((err) => {
 			console.error("Erreur fetch:", err);
 		});
 	}
 	addBtn?.addEventListener("click", () => {
-    const username = usernameInput.value.trim();
         if (username) {
             players.push(username);
             updatePlayersList();
@@ -102,4 +99,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let players: string[] = [];
 let newPlayer: string = "";
-			console.log("ihi");

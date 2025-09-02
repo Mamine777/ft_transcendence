@@ -1,4 +1,4 @@
-import { leftScore, rightScore, resetScore } from "./game";
+import { leftScore, rightScore, resetScore, resetBall } from "./game";
 
 
 export const WIN = 1;
@@ -21,7 +21,13 @@ export function getWinner(): "left" | "right" | "" {
   return "";
 }
 
-
+export async function getWinner2(): Promise <"left" | "right"> {
+  while (true) {
+    if (leftScore >= WIN) return "left";
+    if (rightScore >= WIN) return "right";
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+}
 export function resetGame(): void {
     resetScore();
     gameOver = false;
