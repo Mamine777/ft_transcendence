@@ -708,7 +708,8 @@
           <button id="ADDplayerBtn" class="gaming-button py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
             🎮 ADD Player
           </button>
-          <ul id="playersList" class="text-left mt-4"></ul>
+          <ul id="playersList" class="text-center mt-4"></ul>
+          <ul id="ErrorList" class="text-center mt-4 text-red-400"></ul>
           <button id="CreateTournamentBtn" class="gaming-button py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
             🎮 Create Tournament
           </button>
@@ -727,7 +728,7 @@
     <section id="TournamentPlayView" class="view" style="display: none;">
      <div class="gaming-card rounded-2xl p-8 w-full max-w-4xl shadow-lg border border-cyan-400">
         <h2 class="text-3xl font-bold text-center mb-8 text-cyan-400 orbitron neon-text">TOURNAMENT ARENA</h2>
-        <p id="Player_tournament" class="text-sm text-gray-400 mt-2 mb-4 text-center"></p>
+        <p id="Player_tournament" class="text-xl font-bold text-gray-400 mt-2 mb-4 text-center"></p>
         <div id="pong-menu-tournament" class="mb-6 flex items-center gap-2 justify-center">
           <button id="start-tournament" class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
             Start
@@ -741,6 +742,17 @@
             ← Back to Dashboard
           </button>
         </div>
+      </div>
+    </section>
+
+    <!-- WINNER PAGE -->
+    <section id="WinnerView" class="view" style="display: none;">
+     <div class="gaming-card rounded-2xl p-8 w-full max-w-4xl shadow-lg border border-cyan-400">
+        <h2 class="text-3xl font-bold text-center mb-8 text-cyan-400 orbitron neon-text">WINNER ARENA</h2>
+        <p id="Winner_tournament" class="text-2xl font-bold text-yellow-400 mt-2 mb-4 text-center"></p>
+        <button id="backToDashboardFromWinner" class="gaming-button-secondary px-6 py-3 rounded-lg font-semibold block mx-auto mt-4">
+            ← Back to Dashboard
+        </button>
       </div>
     </section>
 

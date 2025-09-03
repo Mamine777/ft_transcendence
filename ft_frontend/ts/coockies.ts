@@ -1,5 +1,6 @@
 import { initGame } from "./games/game";
 import { switchView } from "./login";
+import { resetPlayer } from "./tournament";
 // import { stopGame } from "./games/game";
 export type ViewElement = HTMLElement | null;
 
@@ -18,7 +19,8 @@ export const views: Record<string, ViewElement> = {
   addFriendView : document.getElementById("addFriendView"),
   removeFriendView : document.getElementById("removeFriendView"),
   GameView: document.getElementById("GameView"),
-  TournamentPlayView: document.getElementById("TournamentPlayView")
+  TournamentPlayView: document.getElementById("TournamentPlayView"),
+  WinnerView: document.getElementById("WinnerView")
 };
 
 
@@ -127,6 +129,7 @@ function setupNavigationListeners(): void {
   document.getElementById("backToPlayFromTournament")?.addEventListener("click", () => {
     window.location.hash = "#TournamentView";
     loadProfile();
+    resetPlayer();
   });
   document.getElementById("backToDashboardFromProfile")?.addEventListener("click", () => {
     window.location.hash = "#dashboardView";
@@ -159,6 +162,11 @@ function setupNavigationListeners(): void {
    document.getElementById("backToDashboardFromTournament")?.addEventListener('click', () =>{
     switchView("dashboardView");
     loadProfile();
+  })
+  document.getElementById("backToDashboardFromWinner")?.addEventListener('click', () =>{
+    switchView("dashboardView");
+    loadProfile();
+    resetPlayer();
   })
 }
 

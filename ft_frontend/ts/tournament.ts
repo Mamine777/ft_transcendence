@@ -1,15 +1,23 @@
-import { runMatch, scoreLeft, scoreRight, onWinner, resetScore, resetBall, stopBall, stopGameLoop, clearWinnerListeners, LookScore } from "./games/game";
+import { runMatch, resetScore, resetBall, stopBall, stopGameLoop } from "./games/game";
 import { getWinner, getWinner2, resetGame } from "./games/score";
 import { switchView } from "./login";
-// import { Tournament, tournaments} from "../../ft_backend/tournament/tournament";
+
+let ExportUpdateList: () => void;
+let ExportErrorList: HTMLElement;
+let players: string[] = [];
+let newPlayer: string = "";
+let FinalWinner: string = "";
+
+export { ExportUpdateList, ExportErrorList };
 
 document.addEventListener("DOMContentLoaded", () => {
 	const addBtn = document.getElementById("ADDplayerBtn");
 	const usernameInput = document.getElementById("PlayerUsername") as HTMLInputElement;
 	const playersList = document.getElementById("playersList");
 	const Player = document.getElementById("Player_tournament")!;
+	const Winner = document.getElementById("Winner_tournament")!;
 	const CreateTournamentBtn = document.getElementById("CreateTournamentBtn");
-    const username = usernameInput.value.trim();
+	const ErrorList = document.getElementById("ErrorList");
 
 	function updatePlayersList() {
 		if (playersList) {
@@ -21,15 +29,24 @@ document.addEventListener("DOMContentLoaded", () => {
 				</li>
 			`)
 			.join("");
-			// Ajoute l'écouteur sur chaque bouton "Retirer"
 			playersList.querySelectorAll('.remove-btn').forEach(btn => {
-			btn.addEventListener('click', (e) => {
-				const index = parseInt((btn as HTMLButtonElement).dataset.idx || "0");
-				players.splice(index, 1);
-				updatePlayersList();
-			});
+				btn.addEventListener('click', (e) => {
+					const index = parseInt((btn as HTMLButtonElement).dataset.idx || "0");
+					players.splice(index, 1);
+					updatePlayersList();
+				});
 			});
 		}
+	}
+
+	function playername(name: string) {
+		let i = 0;
+		while (i <= players.length) {
+			if (players[i] === name)
+				return (false);
+			i++;
+		}
+		return (true);
 	}
 
 	function startTournament() {
@@ -46,8 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			return res.json();
 		})
 		.then(async (data) => {
-			console.log("Tournoi démarré:", data);
-
 			const firstmatch = data.data.matches[0];
 			const secondMatch = data.data.matches[1];
 
@@ -66,17 +81,31 @@ document.addEventListener("DOMContentLoaded", () => {
 			const result2 = winner2 === "left" ? secondMatch.player1 : secondMatch.player2;
 			if (Player)
 				Player.innerHTML = "Finale " + result + " vs " + result2;
-		})
+			resetScore();
+			stopGameLoop();
+			const finalWinner = await getWinner2();
+			const finalResult = finalWinner === "left" ? result : result2;
+			FinalWinner = finalResult + " is the Winner!";
+			switchView("WinnerView");
+		}
+	)
 		.catch((err) => {
 			console.error("Erreur fetch:", err);
 		});
 	}
 	addBtn?.addEventListener("click", () => {
+		const username = usernameInput.value.trim();
         if (username) {
-            players.push(username);
-            updatePlayersList();
-            usernameInput.value = "";
-        }
+			if (playername(username) === false) {
+				ErrorList!.innerText = "Error: Player already added";
+			}
+			else {
+				players.push(username);
+				updatePlayersList();
+				usernameInput.value = "";
+				ErrorList!.innerText = "";
+			}
+		}
         if (players.length >= 2) {
             CreateTournamentBtn?.classList.remove("enabled");
         } else {
@@ -90,12 +119,17 @@ document.addEventListener("DOMContentLoaded", () => {
             startTournament();
 		}
 		else {
-			console.log("nop");
+			ErrorList!.innerText = "Error: Need 4 players to start the tournament";
 		}
 	});
-	document.getElementById("leftBtn")?.addEventListener("click", () => scoreLeft());
-	document.getElementById("rightBtn")?.addEventListener("click", () => scoreRight());
+	if (Winner)
+		Winner.innerText = FinalWinner;
+	ExportErrorList = ErrorList!;
+	ExportUpdateList = updatePlayersList;
 });
 
-let players: string[] = [];
-let newPlayer: string = "";
+export function resetPlayer() {
+		players = [];
+		ExportUpdateList();
+		ExportErrorList.innerText = "";
+}

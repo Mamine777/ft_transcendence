@@ -33,41 +33,6 @@ export let rightScore = 0;
 
 const keysPressed: { [key: string]: boolean } = {};
 
-export function checkScore2() {
-  const winner = getWinner();
-  if (winner !== "") {
-    listeners.forEach(cb => cb(winner));
-    listeners = [];
-  }
-}
-
-export function onWinner(): Promise<Winner2> {
-  return new Promise((resolve) => {
-    const wrapper = (winner: Winner2) => {
-      resolve(winner);
-       const i = listeners.indexOf(wrapper);
-      if (i !== -1)
-        listeners.splice(i, 1);
-    };
-    listeners.push(wrapper);
-  });
-}
-
-export function clearWinnerListeners() {
-  const wrapper = (winner: "left" | "right") => {};
-  listeners.push(wrapper);
-}
-
-export function scoreLeft() {
-  leftScore++;
-  checkScore2();
-}
-
-export function scoreRight() {
-  rightScore++;
-  checkScore2();
-}
-
 export function initGame(
   c: HTMLCanvasElement,
   context: CanvasRenderingContext2D,
@@ -171,8 +136,7 @@ export function updateFrame(callback: (winner: "left" | "right" | "") => void) {
     ballSpeedX = -ballSpeedX;
 
   if (ballX <= 0) {
-    scoreRight();
-    checkScore2();
+    rightScore++;
     const winner = checkScore(leftScore, rightScore);
     if (winner === "") resetBall();
     callback(winner);
@@ -180,8 +144,7 @@ export function updateFrame(callback: (winner: "left" | "right" | "") => void) {
   }
 
   if (ballX >= canvas.width) {
-    scoreLeft();
-    checkScore2();
+    leftScore++;
     const winner = checkScore(leftScore, rightScore);
     if (winner === "") resetBall();
     callback(winner);
