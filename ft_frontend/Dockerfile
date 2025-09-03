@@ -3,9 +3,9 @@ FROM node:22.2.0
 WORKDIR /app
 
 COPY package*.json tsconfig.json ./
-RUN npm install
-
 COPY . .
+
+RUN npm install
 
 EXPOSE 5173
 
