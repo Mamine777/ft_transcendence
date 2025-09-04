@@ -5,7 +5,9 @@ import {
   startGameLoop,
   stopGameLoop,
   stopBall,
-  runMatch
+  runMatch,
+  leftScore,
+  rightScore,
 } from "./game";
 import { resetGame, showWinner } from "./score";
 import { initConnect4 } from "./puissance4";
@@ -54,11 +56,24 @@ startBtn.addEventListener("click", () => {
   const selectedMode = modeSelector.value === "BOT" ? "BOT" : "PVP";
   const playerLeftName = "gauche";
   const playerRightName = "droit ";
-  startBtn.classList.add("hidden"); // <-- ici on le cache
-  console.log("test");
+  startBtn.classList.add("hidden");
   resetGame();
   initGame(canvasGame, ctxGame, selectedMode);
   startGameLoop((winner: "left" | "right" | "") => handleWinnerGame(winner, playerLeftName, playerRightName));
+    fetch("http://localhost:3000/History/PongHistory", {
+      method: "POST",
+      credentials: "include",
+      headers: { 
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        "Content-Type": "application/json" 
+      },
+    body: JSON.stringify({ 
+      scoreleft: leftScore,
+      scoreright: rightScore,
+      mode: getMode(),
+      date: Date.toLocaleString()
+     })
+  })
 });
 
 starttournamentBtn.addEventListener("click", () => {
@@ -107,3 +122,7 @@ function handleWinnerTournament(winner: "left" | "right" | "", playerleft: strin
 
 });
 
+export function getMode() {
+  const modeSelector = document.getElementById("mode") as HTMLSelectElement;
+  return modeSelector.value === "BOT" ? "BOT" : "PVP";
+}

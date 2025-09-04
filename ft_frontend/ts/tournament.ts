@@ -87,6 +87,29 @@ document.addEventListener("DOMContentLoaded", () => {
 			const finalResult = finalWinner === "left" ? result : result2;
 			FinalWinner = finalResult + " is the Winner!";
 			switchView("WinnerView");
+			if (finalWinner == getusername()) {
+				fetch("http://localhost:3000/tournament/TournamentWinner", {
+					method: "POST",
+					credentials: "include",
+					headers: { 
+						'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+						"Content-Type": "application/json" 
+					},
+					body: JSON.stringify(1),
+				})
+			}
+			else {
+				fetch("http://localhost:3000/tournament/TournamentWinner", {
+					method: "POST",
+					credentials: "include",
+					headers: { 
+						'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+						"Content-Type": "application/json" 
+					},
+					body: JSON.stringify(0),
+				})
+			}
+
 		}
 	)
 		.catch((err) => {

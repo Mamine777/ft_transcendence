@@ -1,5 +1,6 @@
 import { checkScore, getWinner } from "./score";
 import { updateBotAI, setDifficulty } from "./ai";
+import { getMode } from "./main";
 
 type Winner2 = "left" | "right";
 let listeners: ((winner: Winner2) => void)[] = [];
@@ -205,5 +206,4 @@ export { keysPressed };
 
 export async function runMatch(player1 : string, player2 : string): Promise<void> {
   const winner = await playAndReturnWinner(player1, player2);
-  console.log("Winner is:", winner);
 }
