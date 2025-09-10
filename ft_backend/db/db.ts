@@ -16,29 +16,30 @@ db.exec(`
   );
 
   CREATE TABLE IF NOT EXISTS friends (
-  user_id INTEGER NOT NULL,
-  friend TEXT NOT NULL,
-  status TEXT NOT NULL
+	user_id INTEGER NOT NULL,
+	friend TEXT NOT NULL,
+	status TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS TournamentHistory (
+	user_id INTEGER NOT NULL,
+	wins INTEGER,
+	loses INTEGER
   );
 
   CREATE TABLE IF NOT EXISTS PongHistory (
-  user_id INTEGER NOT NULL,
-  played INTEGER,
-  wins INTEGER,
-  scored INTEGER
-  );
-
-CREATE TABLE IF NOT EXISTS TournamentHistory (
-  user_id INTEGER NOT NULL,
-  wins INTEGER,
-  loses INTEGER
+	user_id INTEGER NOT NULL,
+	scoreLeft TEXT,
+	scoreRight TEXT,
+	mode TEXT,
+	date TEXT
   );
 
   CREATE TABLE IF NOT EXISTS RowHistory (
-  user_id INTEGER NOT NULL,
-  played INTEGER,
-  YellowWins INTEGER,
-  RedWins INTEGER
+	user_id INTEGER NOT NULL,
+	played INTEGER,
+	YellowWins INTEGER,
+	RedWins INTEGER
   )
 `);
 

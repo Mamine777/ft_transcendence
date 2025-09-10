@@ -223,6 +223,50 @@ export function HistoryRoutes(server: FastifyInstance) {
 	
 	})
 
+	server.post("/History/PongHistory", async (request, reply) => {
+		const cookies = request.cookies;
+		const user = request.session.user;
+
+		if (!user)
+			return reply.status(400).send({ success: false, error: "User disconnected" });
+
+		const { scoreleft, scoreright, mode, date } = request.body as {
+			scoreleft: number;
+			scoreright: number;
+			mode: string;
+			date: string;
+		};
+
+		db.prepare(`
+			INSERT INTO PongHistory (user_id, scoreLeft, scoreRight, mode, date)
+			VALUES (?, ?, ?, ?, ?)
+		`).run(user.id, scoreleft, scoreright, mode, date);
+
+		return reply.status(200).send({
+			success: true,
+			message: "History updated",
+		});
+	})
+
+	server.get("/History/Pong", async (request, reply) => {
+		const cookies = request.cookies;
+		const user = request.session.user;
+
+		if (!user)
+			return reply.status(400).send({ success: false, error: "User disconnected" });
+
+		const getUserAllStmt = db.prepare(`SELECT * FROM PongHistory WHERE user_id = ?`);
+		const userAll = getUserAllStmt.get(user.id);
+
+		if (!userAll) {
+			return reply.status(404).send({ success: false, error: "No matches played yet" });
+		}
+		return reply.status(200).send({
+			success: true,
+			user: userAll
+		});
+	})
+
 	server.get("/RowHistory", async (request, reply) => {
 
 		const cookies = request.cookies;
