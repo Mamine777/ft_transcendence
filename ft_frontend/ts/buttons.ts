@@ -1,4 +1,5 @@
 import { switchView } from './login';
+import { addPlayerbase, ExportUpdateList } from './tournament';
 
 // Ensure the DOM is fully loaded before attaching event listeners
 document.addEventListener("DOMContentLoaded", () => {
@@ -37,6 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (TournamentBtn)
       TournamentBtn.addEventListener("click", () =>{
         switchView("TournamentView");
+        addPlayerbase();
+        ExportUpdateList();
       })
   const FriendsBtn = document.getElementById("FriendsBtn");
   if (FriendsBtn)

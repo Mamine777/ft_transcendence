@@ -7,7 +7,8 @@ let ExportErrorList: HTMLElement;
 let players: string[] = [];
 let newPlayer: string = "";
 let FinalWinner: string = "";
-
+let username: string;
+getusername().then(u => { username = u; });
 export { ExportUpdateList, ExportErrorList };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -85,28 +86,33 @@ document.addEventListener("DOMContentLoaded", () => {
 			stopGameLoop();
 			const finalWinner = await getWinner2();
 			const finalResult = finalWinner === "left" ? result : result2;
-			FinalWinner = finalResult + " is the Winner!";
+			if (finalResult === "left")
+				FinalWinner = result + " is the Winner!";
+			else
+			 	FinalWinner = result2 + " is the Winner!";
 			switchView("WinnerView");
-			if (finalWinner == getusername()) {
-				fetch("http://localhost:3000/tournament/TournamentWinner", {
+			console.log("Final Winner: ", finalResult);
+			if (finalResult == username) {
+				console.log("Winner is the user, sending Result 1 ", finalResult);
+				fetch("http://localhost:3000/TournamentWinner", {
 					method: "POST",
 					credentials: "include",
 					headers: { 
 						'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
 						"Content-Type": "application/json" 
 					},
-					body: JSON.stringify(1),
+					body: JSON.stringify({ Result: 1 }),
 				})
 			}
 			else {
-				fetch("http://localhost:3000/tournament/TournamentWinner", {
+				fetch("http://localhost:3000/TournamentWinner", {
 					method: "POST",
 					credentials: "include",
 					headers: { 
 						'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
 						"Content-Type": "application/json" 
 					},
-					body: JSON.stringify(0),
+					body: JSON.stringify({ Result: 0}),
 				})
 			}
 
@@ -149,10 +155,30 @@ document.addEventListener("DOMContentLoaded", () => {
 		Winner.innerText = FinalWinner;
 	ExportErrorList = ErrorList!;
 	ExportUpdateList = updatePlayersList;
+
 });
+
+async function getusername(): Promise<string> {
+  const response = await fetch("http://localhost:3000/PlayerUsername", {
+    method: "GET",
+    credentials: "include",
+    headers: { 
+      'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+      "Content-Type": "application/json" 
+    },
+  });
+  const data = await response.json();
+  return data.username;
+}
 
 export function resetPlayer() {
 		players = [];
 		ExportUpdateList();
 		ExportErrorList.innerText = "";
+}
+
+export async function addPlayerbase() {
+    const username = await getusername();
+    players.push(username);
+	ExportUpdateList();
 }

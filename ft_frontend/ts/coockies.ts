@@ -162,6 +162,7 @@ function setupNavigationListeners(): void {
    document.getElementById("backToDashboardFromTournament")?.addEventListener('click', () =>{
     switchView("dashboardView");
     loadProfile();
+    resetPlayer();
   })
   document.getElementById("backToDashboardFromWinner")?.addEventListener('click', () =>{
     switchView("dashboardView");
