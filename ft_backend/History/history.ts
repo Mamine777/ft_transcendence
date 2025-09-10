@@ -14,6 +14,12 @@ export interface PongHistory {
   scored: number;
 }
 
+export interface TournamentHistory {
+  user_id: number;
+  wins: number;
+  loses: number;
+}
+
 export interface RowHistory {
   user_id: number;
   played: number;
@@ -102,7 +108,7 @@ export function HistoryRoutes(server: FastifyInstance) {
 
 	})
 
-	server.post("/PongUpdate", async (request, reply) => {
+	server.post("/TournamentWinner", async (request, reply) => {
 
 		const cookies = request.cookies;
 		const user = request.session.user;
@@ -110,22 +116,67 @@ export function HistoryRoutes(server: FastifyInstance) {
 		if (!user)
 			return reply.status(400).send({ success: false, error: "User disconnected" });
 
-		const { NewPlayed, NewWin, NewScored } = request.body as {
-		NewPlayed: number;
-		NewWin: number;
-		NewScored: number;
+		const { Result } = request.body as {
+			Result: number;
 		};
 
-		console.log("Cookies : ", cookies);
-		console.log("User : ", user);
-		console.log("User : ", user?.email);
+		if (Result === undefined || typeof Result !== "number" || Result > 1 || Result < 0) {
+			return reply.status(400).send({ success: false, error: "Result must be 0 or 1" });
+		}
 
-		const stmt_update = db.prepare(`UPDATE PongHistory SET played = ?, wins = ?, scored = ? WHERE user_id = ?`);
-		stmt_update.run(NewPlayed, NewWin, NewScored, user.id);
+		try {
+			let sender_id = db.prepare(`
+				SELECT user_id, wins, loses
+				FROM TournamentHistory
+				WHERE user_id = ?
+			`).get(user.id) as TournamentHistory | undefined;
+	
+			if (!sender_id) {
+				sender_id = {
+					user_id: user.id,
+					wins: 0,
+					loses: 0
+				}
+					db.prepare(`
+					INSERT INTO TournamentHistory (user_id, wins, loses)
+					VALUES (?, ?, ?)
+				`).run(user.id, 0, 0);
+			}
+			if (Result === 1) {
+				 db.prepare(`
+					UPDATE TournamentHistory
+					SET wins = wins + 1
+					WHERE user_id = ?
+				`).run(user.id);
+			}
+			else {
+				db.prepare(`
+					UPDATE TournamentHistory
+					SET loses = loses + 1
+					WHERE user_id = ?
+				`).run(user.id);
+			}
+	
+			return reply.status(200).send({
+				success: true,
+				message: "History updated",
+			});
+		} catch (err) {
+			request.log?.error?.(err);
+			return reply.status(500).send({ success: false, error: "Database error" });
+		}
+	})
+
+	server.get("/PlayerUsername", async (request, reply) => {
+		const cookies = request.cookies;
+		const user = request.session.user;
+		
+		if (!user)
+			return reply.status(400).send({ success: false, error: "User disconnected" });
 
 		return reply.status(200).send({
-		success: true,
-		message: "History updated",
+			success: true,
+			username: user.username
 		});
 	})
 

@@ -28,6 +28,12 @@ db.exec(`
   scored INTEGER
   );
 
+CREATE TABLE IF NOT EXISTS TournamentHistory (
+  user_id INTEGER NOT NULL,
+  wins INTEGER,
+  loses INTEGER
+  );
+
   CREATE TABLE IF NOT EXISTS RowHistory (
   user_id INTEGER NOT NULL,
   played INTEGER,
