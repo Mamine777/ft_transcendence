@@ -167,6 +167,41 @@ export function HistoryRoutes(server: FastifyInstance) {
 		}
 	})
 
+	server.get("/TournamentHistory", async (request, reply) => {
+
+		const user = request.session.user
+		if (!user) {
+			return reply.status(400).send({ success: false, error: "User disconnected" });
+		}
+
+		try {
+			const row = db.prepare(`
+				SELECT user_id, wins, loses
+				FROM TournamentHistory
+				WHERE user_id = ?
+			`).get(user.id) as { user_id: number; wins: number; loses: number } | undefined;
+
+			if (!row) {
+				return reply.status(200).send({
+					success: true,
+					user_id: user.id,
+					wins: 0,
+					loses: 0
+				});
+			}
+
+			return reply.status(200).send({
+				success: true,
+				user_id: row.user_id,
+				wins: row.wins ?? 0,
+				loses: row.loses ?? 0
+			});
+			} catch (err) {
+				request.log?.error?.(err);
+				return reply.status(500).send({ success: false, error: "Database error" });
+			}
+		});
+
 	server.get("/PlayerUsername", async (request, reply) => {
 		const cookies = request.cookies;
 		const user = request.session.user;
