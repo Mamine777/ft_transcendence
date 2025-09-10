@@ -209,10 +209,18 @@ export function HistoryRoutes(server: FastifyInstance) {
 		if (!user)
 			return reply.status(400).send({ success: false, error: "User disconnected" });
 
-		return reply.status(200).send({
-			success: true,
-			username: user.username
-		});
+		try {
+			const row = db.prepare('SELECT username FROM users WHERE id = ?').get(user.id) as { username: string };
+			const username = row.username;
+			return reply.status(200).send({
+				success: true,
+				username: username
+			});
+		} catch (err) {
+			request.log?.error?.(err);
+			return reply.status(500).send({ success: false, error: "Database error" });
+		}
+	
 	})
 
 	server.get("/RowHistory", async (request, reply) => {
