@@ -9,7 +9,7 @@ import {
   leftScore,
   rightScore,
 } from "./game";
-import { resetGame, showWinner } from "./score";
+import { resetGame, showWinner, getWinner2 } from "./score";
 import { initConnect4 } from "./puissance4";
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -52,7 +52,7 @@ window.addEventListener("DOMContentLoaded", () => {
 });
   switchGameView("pong");
 
-startBtn.addEventListener("click", () => {
+startBtn.addEventListener("click", async () => {
   const selectedMode = modeSelector.value === "BOT" ? "BOT" : "PVP";
   const playerLeftName = "gauche";
   const playerRightName = "droit ";
@@ -60,7 +60,9 @@ startBtn.addEventListener("click", () => {
   resetGame();
   initGame(canvasGame, ctxGame, selectedMode);
   startGameLoop((winner: "left" | "right" | "") => handleWinnerGame(winner, playerLeftName, playerRightName));
-    fetch("http://localhost:3000/History/PongHistory", {
+	const winner = await getWinner2(); 
+  console.log("Score sent to server ", leftScore, rightScore, getMode(), Date.toLocaleString());
+  fetch("http://localhost:3000/History/PongHistory", {
       method: "POST",
       credentials: "include",
       headers: { 
