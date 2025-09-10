@@ -29,10 +29,10 @@ db.exec(`
 
   CREATE TABLE IF NOT EXISTS PongHistory (
 	user_id INTEGER NOT NULL,
-	scoreLeft TEXT,
-	scoreRight TEXT,
+	scoreLeft INTEGER,
+	scoreRight INTEGER,
 	mode TEXT,
-	date TEXT
+	playedAt TEXT
   );
 
   CREATE TABLE IF NOT EXISTS RowHistory (

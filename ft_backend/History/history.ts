@@ -236,10 +236,13 @@ export function HistoryRoutes(server: FastifyInstance) {
 			mode: string;
 			date: string;
 		};
+		if (scoreleft === null || scoreleft === undefined) {
+			return reply.status(400).send({ success: false, error: "Missing scoreleft" });
+		}
 
 		try {
 			db.prepare(`
-				INSERT INTO PongHistory (user_id, scoreLeft, scoreRight, mode, date)
+				INSERT INTO PongHistory (user_id, scoreLeft, scoreRight, mode, playedAt)
 				VALUES (?, ?, ?, ?, ?)
 			`).run(user.id, scoreleft, scoreright, mode, date);
 	
@@ -248,10 +251,8 @@ export function HistoryRoutes(server: FastifyInstance) {
 				message: "History updated",
 			});
 		} catch (error) {
-			return reply.status(500).send({
-				success: true,
-				message: "Database error",
-			});
+			request.log?.error?.(error);
+    		return reply.status(500).send({ success: false, message: "Database error" });
 		}
 	})
 
@@ -263,14 +264,14 @@ export function HistoryRoutes(server: FastifyInstance) {
 			return reply.status(400).send({ success: false, error: "User disconnected" });
 
 		const getUserAllStmt = db.prepare(`SELECT * FROM PongHistory WHERE user_id = ?`);
-		const userAll = getUserAllStmt.get(user.id);
+		const matches = getUserAllStmt.all(user.id);
 
-		if (!userAll) {
+		if (!matches) {
 			return reply.status(404).send({ success: false, error: "No matches played yet" });
 		}
 		return reply.status(200).send({
 			success: true,
-			user: userAll
+			matches
 		});
 	})
 
