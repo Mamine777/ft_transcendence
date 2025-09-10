@@ -237,15 +237,22 @@ export function HistoryRoutes(server: FastifyInstance) {
 			date: string;
 		};
 
-		db.prepare(`
-			INSERT INTO PongHistory (user_id, scoreLeft, scoreRight, mode, date)
-			VALUES (?, ?, ?, ?, ?)
-		`).run(user.id, scoreleft, scoreright, mode, date);
-
-		return reply.status(200).send({
-			success: true,
-			message: "History updated",
-		});
+		try {
+			db.prepare(`
+				INSERT INTO PongHistory (user_id, scoreLeft, scoreRight, mode, date)
+				VALUES (?, ?, ?, ?, ?)
+			`).run(user.id, scoreleft, scoreright, mode, date);
+	
+			return reply.status(200).send({
+				success: true,
+				message: "History updated",
+			});
+		} catch (error) {
+			return reply.status(500).send({
+				success: true,
+				message: "Database error",
+			});
+		}
 	})
 
 	server.get("/History/Pong", async (request, reply) => {
