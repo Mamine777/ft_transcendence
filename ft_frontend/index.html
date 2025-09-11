@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🏓 ft_transcendence</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🏓 ft_transcendence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
@@ -628,19 +628,19 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="grid grid-cols-2 gap-4 mb-6">
             <div class="stats-card rounded-lg p-4">
-              <div class="text-2xl font-bold text-green-400" id="profileWins">0</div>
+              <div class="text-2xl font-bold text-green-400" id="profileWins"></div>
               <div class="text-sm text-gray-400">Wins</div>
             </div>
             <div class="stats-card rounded-lg p-4">
-              <div class="text-2xl font-bold text-red-400" id="profileLosses">0</div>
+              <div class="text-2xl font-bold text-red-400" id="profileLosses"></div>
               <div class="text-sm text-gray-400">Losses</div>
             </div>
-            <div class="stats-card rounded-lg p-4">
-              <div class="text-lg font-bold text-yellow-400" id="profileRank">Bronze</div>
-              <div class="text-sm text-gray-400">Rank</div>
-            </div>
+          </div>
+          <div id="pongHistoryCard" class="stats-card rounded-lg p-4">
+            <h3 style="margin-bottom:8px;">Historique Pong</h3>
+            <div id="pongHistoryDetails" style="margin-top:8px; max-height: 220px; overflow-y: auto;"></div>
           </div>
 
           <button id="logoutBtnProfile" class="gaming-button-secondary w-full py-3 rounded-lg font-bold">
@@ -945,6 +945,7 @@
   <script type="module" src="ts/friends.ts"></script>
   <script type="module" src="ts/games/main.ts"></script>
   <script type="module" src="ts/tournament.ts"></script>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </body>
 
 </html>

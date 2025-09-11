@@ -9,6 +9,7 @@ import {
   leftScore,
   rightScore,
 } from "./game";
+export let Botin = false;
 import { resetGame, showWinner, getWinner2 } from "./score";
 import { initConnect4 } from "./puissance4";
 
@@ -54,6 +55,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
 startBtn.addEventListener("click", async () => {
   const selectedMode = modeSelector.value === "BOT" ? "BOT" : "PVP";
+  if (selectedMode === "BOT")
+    Botin = true;
+  else
+    Botin = false;
   const playerLeftName = "gauche";
   const playerRightName = "droit ";
   startBtn.classList.add("hidden");
@@ -61,7 +66,6 @@ startBtn.addEventListener("click", async () => {
   initGame(canvasGame, ctxGame, selectedMode);
   startGameLoop((winner: "left" | "right" | "") => handleWinnerGame(winner, playerLeftName, playerRightName));
 	const winner = await getWinner2(); 
-  console.log("Score sent to server ", leftScore, rightScore, getMode(), Date().toLocaleString());
   fetch("http://localhost:3000/History/PongHistory", {
       method: "POST",
       credentials: "include",

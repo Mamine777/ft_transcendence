@@ -2,7 +2,7 @@ import { switchView } from './login';
 import { addPlayerbase, ExportUpdateList } from './tournament';
 
 // Ensure the DOM is fully loaded before attaching event listeners
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   // Event listener for "Sign Up" button
   const goToSignup = document.getElementById("goToSignup");
   if (goToSignup) {
@@ -157,8 +157,18 @@ document.addEventListener("DOMContentLoaded", () => {
       // Update Pong stats
       const pong = historyData.pong;
       if (pong) {
-        const wins = pong.wins;
-        const losses = pong.played - pong.wins;
+        const tournamentRes = await fetch("http://localhost:3000/TournamentHistory", {
+          method: "GET",
+          credentials: "include",
+          headers: { 
+						'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+						"Content-Type": "application/json" 
+					},
+        });
+        const tournamentData = await tournamentRes.json();
+        console.log("Tournament Data: ", tournamentData);
+        const wins = tournamentData.wins;
+        const losses = tournamentData.loses;
 
         document.getElementById("profileWins")!.textContent = wins.toString();
         document.getElementById("profileLosses")!.textContent = losses.toString();
@@ -230,5 +240,42 @@ document.addEventListener("DOMContentLoaded", () => {
         switchView("loginView");
       }
     });
+  }
+
+  const pongHistory = document.getElementById("pongHistoryCard");
+  if (pongHistory) {
+    const PongRes = await fetch("http://localhost:3000/History/Pong", {
+      method: "GET",
+      credentials: "include",
+      headers: { 
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        "Content-Type": "application/json"
+      }
+    });
+    const PongData = await PongRes.json();
+    const details = document.getElementById("pongHistoryDetails")!;
+    if (PongData.success && PongData.matches.length > 0) {
+    details.innerHTML = `
+      <table style="width:100%;color:white;">
+        <tr>
+          <th>Date</th>
+          <th>Mode</th>
+          <th>Score gauche</th>
+          <th>Score droite</th>
+        </tr>
+        ${PongData.matches.map((match: any) => `
+          <tr>
+            <td>${match.playedAt || match.date || "?"}</td>
+            <td>${match.mode}</td>
+            <td>${match.scoreLeft}</td>
+            <td>${match.scoreRight}</td>
+          </tr>
+        `).join('')}
+      </table>
+    `;
+  }
+  else {
+    details.innerHTML = "<p>Aucun match trouvé.</p>";
+  }
   }
 });

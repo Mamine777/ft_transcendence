@@ -1,6 +1,6 @@
 import { checkScore, getWinner } from "./score";
 import { updateBotAI, setDifficulty } from "./ai";
-import { getMode } from "./main";
+import { getMode, Botin } from "./main";
 
 type Winner2 = "left" | "right";
 let listeners: ((winner: Winner2) => void)[] = [];
@@ -50,7 +50,8 @@ export function initGame(
   ballSpeedY = 2;
 
   document.addEventListener("keydown", (e) => {
-    keysPressed[e.key] = true;
+    if (Botin === false)
+      keysPressed[e.key] = true;
 
     if (e.key === "1") setDifficulty("EASY");
     if (e.key === "2") setDifficulty("MEDIUM");
@@ -58,7 +59,8 @@ export function initGame(
   });
 
   document.addEventListener("keyup", (e) => {
-    keysPressed[e.key] = false;
+    if (Botin === false)
+      keysPressed[e.key] = false;
   });
 }
 

@@ -91,9 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			else
 			 	FinalWinner = result2 + " is the Winner!";
 			switchView("WinnerView");
-			console.log("Final Winner: ", finalResult);
 			if (finalResult == username) {
-				console.log("Winner is the user, sending Result 1 ", finalResult);
 				fetch("http://localhost:3000/TournamentWinner", {
 					method: "POST",
 					credentials: "include",
