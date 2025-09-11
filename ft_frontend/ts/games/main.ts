@@ -61,7 +61,7 @@ startBtn.addEventListener("click", async () => {
   initGame(canvasGame, ctxGame, selectedMode);
   startGameLoop((winner: "left" | "right" | "") => handleWinnerGame(winner, playerLeftName, playerRightName));
 	const winner = await getWinner2(); 
-  console.log("Score sent to server ", leftScore, rightScore, getMode(), Date.toLocaleString());
+  console.log("Score sent to server ", leftScore, rightScore, getMode(), Date().toLocaleString());
   fetch("http://localhost:3000/History/PongHistory", {
       method: "POST",
       credentials: "include",
@@ -73,11 +73,10 @@ startBtn.addEventListener("click", async () => {
       scoreleft: leftScore,
       scoreright: rightScore,
       mode: getMode(),
-      date: Date.toLocaleString()
+      date: Date().toLocaleString()
      })
   })
 });
-
 starttournamentBtn.addEventListener("click", () => {
   const selectedMode = "PVP";
   const playerLeftName = "gauche";
