@@ -1,6 +1,8 @@
 import { switchView } from './login';
 import { addPlayerbase, ExportUpdateList } from './tournament';
 
+export let exportPongHistory: () => Promise<void>;
+
 // Ensure the DOM is fully loaded before attaching event listeners
 document.addEventListener("DOMContentLoaded", async () => {
   // Event listener for "Sign Up" button
@@ -38,7 +40,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (TournamentBtn)
       TournamentBtn.addEventListener("click", () =>{
         switchView("TournamentView");
-        addPlayerbase();
         ExportUpdateList();
       })
   const FriendsBtn = document.getElementById("FriendsBtn");
@@ -112,8 +113,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   //fill the profile with info
   const profileBtn = document.getElementById("profileBtn");
-  if (profileBtn) {
-    profileBtn.addEventListener('click', async () => {
+    profileBtn?.addEventListener('click', async () => {
       try {
         const jwt = localStorage.getItem('jwt');
         const headers: HeadersInit = { "Content-Type": "application/json" };
@@ -166,24 +166,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 					},
         });
         const tournamentData = await tournamentRes.json();
-        console.log("Tournament Data: ", tournamentData);
         const wins = tournamentData.wins;
         const losses = tournamentData.loses;
 
         document.getElementById("profileWins")!.textContent = wins.toString();
         document.getElementById("profileLosses")!.textContent = losses.toString();
-      }
-
-      const row = historyData.row;
-      if (row) {
-        const totalWins = row.YellowWins + row.RedWins;
-
-        let rank = "Bronze";
-        if (totalWins > 20) rank = "Silver";
-        if (totalWins > 50) rank = "Gold";
-        if (totalWins > 100) rank = "Platinum";
-
-        document.getElementById("profileRank")!.textContent = rank;
       }
 
       // Finally show the profile view
@@ -193,7 +180,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Error loading profile:", err);
     }
     });
-  }
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {
     logoutBtn.addEventListener('click', async () => {
@@ -244,38 +230,43 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const pongHistory = document.getElementById("pongHistoryCard");
   if (pongHistory) {
-    const PongRes = await fetch("http://localhost:3000/History/Pong", {
-      method: "GET",
-      credentials: "include",
-      headers: { 
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-        "Content-Type": "application/json"
-      }
-    });
-    const PongData = await PongRes.json();
-    const details = document.getElementById("pongHistoryDetails")!;
-    if (PongData.success && PongData.matches.length > 0) {
-    details.innerHTML = `
-      <table style="width:100%;color:white;">
-        <tr>
-          <th>Date</th>
-          <th>Mode</th>
-          <th>Score gauche</th>
-          <th>Score droite</th>
-        </tr>
-        ${PongData.matches.map((match: any) => `
+    HistoryPong();
+  }
+    async function HistoryPong() { 
+      const PongRes = await fetch("http://localhost:3000/History/Pong", {
+        method: "GET",
+        credentials: "include",
+        headers: { 
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          "Content-Type": "application/json"
+        }
+      });
+      const PongData = await PongRes.json();
+      const details = document.getElementById("pongHistoryDetails")!;
+      if (PongData.success && PongData.matches.length > 0) {
+      details.innerHTML = `
+        <table style="width:100%;color:white;">
           <tr>
-            <td>${match.playedAt || match.date || "?"}</td>
-            <td>${match.mode}</td>
-            <td>${match.scoreLeft}</td>
-            <td>${match.scoreRight}</td>
+            <th>Date</th>
+            <th>Mode</th>
+            <th>Score gauche</th>
+            <th>Score droite</th>
           </tr>
-        `).join('')}
-      </table>
-    `;
+          ${PongData.matches.map((match: any) => `
+            <tr>
+              <td>${match.playedAt || match.date || "?"}</td>
+              <td>${match.mode}</td>
+              <td>${match.scoreLeft}</td>
+              <td>${match.scoreRight}</td>
+            </tr>
+          `).join('')}
+        </table>
+      `;
+    }
+    else {
+      details.innerHTML = "<p>Aucun match trouvé.</p>";
+    }
   }
-  else {
-    details.innerHTML = "<p>Aucun match trouvé.</p>";
-  }
-  }
+
+  exportPongHistory = HistoryPong;
 });

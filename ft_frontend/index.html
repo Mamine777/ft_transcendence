@@ -705,7 +705,7 @@
         </div>   
         <div class="grid grid-cols-1 gap-6 w-full max-w-md mx-auto">
           <input type="text" id="PlayerUsername" class="gaming-input w-full px-4 py-2 rounded-lg" placeholder="Enter username">
-          <button id="ADDplayerBtn" class="gaming-button py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
+          <button id="ADDplayerBtn" type="button" class="gaming-button py-6 rounded-xl font-bold text-xl tracking-wide hover:scale-105 transition-all">
             🎮 ADD Player
           </button>
           <ul id="playersList" class="text-center mt-4"></ul>
@@ -776,9 +776,17 @@
             <option value="BOT">BOT</option>
             <option value="PVP">PVP</option>
           </select>
-          <button id="start"
+          <button id="EASYstart"
             class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
-            Start
+            EASY
+          </button>
+          <button id="MEDIUMstart"
+            class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
+            MEDIUM
+          </button>
+            <button id="HARDstart"
+            class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
+            HARD
           </button>
           <button id="refresh" class="px-4 py-2 bg-green-600 rounded hover:bg-green-700 transition">
             Refresh 🔄

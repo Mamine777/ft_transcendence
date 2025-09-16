@@ -1,17 +1,26 @@
 import { views } from "./coockies"
+import { addPlayerbase } from "./tournament";
+import { exportPongHistory } from "./buttons";
 
 export function switchView(viewKey: string): void {
   Object.values(views).forEach((view) => {
     if (view) view.style.display = "none";
   });
 
-  const targetView = views[viewKey];
-  if (targetView) {
-    targetView.style.display = "block";
-    window.location.hash = `#${viewKey}`;
-  } else {                                                                                                                                        
-    console.error(`View "${viewKey}" not found.`);
-  }
+	const targetView = views[viewKey];
+	if (targetView) {
+		targetView.style.display = "block";
+		window.location.hash = `#${viewKey}`;
+	} else {                                                                                                                                        
+		console.error(`View "${viewKey}" not found.`);
+	}
+	if (viewKey === "TournamentView")
+	{
+		addPlayerbase();
+	}
+	if (viewKey === "profileViewDrop") {
+		exportPongHistory();
+	}
 }
 document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById("loginForm")?.addEventListener("submit", async (event) => {

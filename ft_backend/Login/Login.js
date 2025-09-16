@@ -37,7 +37,6 @@ function LoginRoutes(server) {
         };
         try {
             await (0, emailService_1.send2FACode)(email, code);
-            console.log(`2FA code sent to ${email}: ${code}`);
             return reply.status(200).send({ success: false, message: "You have Succefully logged In", switch: true, twoFA: true });
         }
         catch (error) {
@@ -186,7 +185,6 @@ exports.default = (0, fastify_plugin_1.default)(async (fastify) => {
         };
         try {
             await (0, emailService_1.send2FACode)(userInfo.email, code);
-            console.log(`2FA code sent to ${userInfo.email}: ${code}`);
             return reply.redirect('http://localhost:5173/#twoFAView');
         }
         catch (error) {
@@ -228,8 +226,7 @@ exports.default = (0, fastify_plugin_1.default)(async (fastify) => {
             expiresAt: Date.now() + 5 * 60 * 1000
         };
         try {
-            await (0, emailService_1.send2FACode)(userInfo.email, code);
-            console.log(`2FA code sent to ${userInfo.email}: ${code}`);
+            await (0, emailService_1.send2FACode)(userInfo.email, code);;
             return reply.redirect('http://localhost:5173/#twoFAView');
         }
         catch (error) {

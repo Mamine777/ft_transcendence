@@ -1,14 +1,13 @@
-import { runMatch, resetScore, resetBall, stopBall, stopGameLoop } from "./games/game";
-import { getWinner, getWinner2, resetGame } from "./games/score";
+import { resetScore, stopGameLoop } from "./games/game";
+import { getWinner2} from "./games/score";
 import { switchView } from "./login";
 
 let ExportUpdateList: () => void;
 let ExportErrorList: HTMLElement;
+let sizemax = 4;
+let size = 1;
 let players: string[] = [];
-let newPlayer: string = "";
 let FinalWinner: string = "";
-let username: string;
-getusername().then(u => { username = u; });
 export { ExportUpdateList, ExportErrorList };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -40,16 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	}
 
-	function playername(name: string) {
-		let i = 0;
-		while (i <= players.length) {
-			if (players[i] === name)
-				return (false);
-			i++;
-		}
-		return (true);
-	}
-
 	function startTournament() {
 		fetch("http://localhost:3000/tournament/start", {
 			method: "POST",
@@ -64,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			return res.json();
 		})
 		.then(async (data) => {
+			const username = await getusername();
 			const firstmatch = data.data.matches[0];
 			const secondMatch = data.data.matches[1];
 
@@ -122,30 +112,32 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 	addBtn?.addEventListener("click", () => {
 		const username = usernameInput.value.trim();
+		
         if (username) {
 			if (playername(username) === false) {
 				ErrorList!.innerText = "Error: Player already added";
+				usernameInput.value = "";
+			}
+			else if (size >= 4) {
+				ErrorList!.innerText = "Error: Tournament is full";
+				usernameInput.value = "";
 			}
 			else {
 				players.push(username);
 				updatePlayersList();
 				usernameInput.value = "";
 				ErrorList!.innerText = "";
+				size++;
 			}
 		}
-        if (players.length >= 2) {
-            CreateTournamentBtn?.classList.remove("enabled");
-        } else {
-            CreateTournamentBtn?.classList.add("disabled");
-        }
     });
 
     CreateTournamentBtn?.addEventListener("click", () => {
-        if (players.length == 4) {
+        if (size == 4) {
             switchView("TournamentPlayView");
             startTournament();
 		}
-		else {
+		else if (size > 4) {
 			ErrorList!.innerText = "Error: Need 4 players to start the tournament";
 		}
 	});
@@ -173,10 +165,24 @@ export function resetPlayer() {
 		players = [];
 		ExportUpdateList();
 		ExportErrorList.innerText = "";
+		size = 1;
+}
+
+
+function playername(name: string) {
+	let i = 0;
+	while (i <= players.length) {
+		if (players[i] === name)
+			return (false);
+		i++;
+	}
+	return (true);
 }
 
 export async function addPlayerbase() {
     const username = await getusername();
-    players.push(username);
+	if (playername(username) === true) {
+   		players.push(username);
+	}
 	ExportUpdateList();
 }

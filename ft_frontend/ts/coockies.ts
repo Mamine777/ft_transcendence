@@ -1,6 +1,6 @@
 import { initGame } from "./games/game";
 import { switchView } from "./login";
-import { resetPlayer } from "./tournament";
+import { addPlayerbase, resetPlayer } from "./tournament";
 // import { stopGame } from "./games/game";
 export type ViewElement = HTMLElement | null;
 
@@ -74,7 +74,9 @@ export async function loadProfile(): Promise<void> {
     });
     const data = await response.json();
     console.log("handleSessionCheck received:", data);
-
+    if (!data.loggedIn)
+      if (window.location.hash != "#twoFAView" && window.location.hash != "#signupView" && window.location.hash != "#forgotPasswordView" && window.location.hash != "#secretView")
+      window.location.hash = "#loginView";
     if (data.loggedIn) {
       showViewFromHash();
     }

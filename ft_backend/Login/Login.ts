@@ -65,7 +65,7 @@ export function LoginRoutes(server: FastifyInstance) {
     	};
 		try {
             await send2FACode(email, code);
-			console.log(`2FA code sent to ${email}: ${code}`);
+		
             return reply.status(200).send({success: false, message: "You have Succefully logged In", switch: true, twoFA: true });
         } catch (error) {
 			console.error("2FA email error:", error);
@@ -239,7 +239,6 @@ export default fp(async (fastify) => {
 		};
 		try {
             await send2FACode(userInfo.email, code);
-			console.log(`2FA code sent to ${userInfo.email}: ${code}`);
             return reply.redirect('http://localhost:5173/#twoFAView');
         } catch (error) {
 			console.error("2FA email error:", error);
@@ -283,7 +282,6 @@ export default fp(async (fastify) => {
 		};
 		try {
             await send2FACode(userInfo.email, code);
-			console.log(`2FA code sent to ${userInfo.email}: ${code}`);
             return reply.redirect('http://localhost:5173/#twoFAView');
         } catch (error) {
 			console.error("2FA email error:", error);

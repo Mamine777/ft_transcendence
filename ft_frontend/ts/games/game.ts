@@ -50,7 +50,7 @@ export function initGame(
   ballSpeedY = 2;
 
   document.addEventListener("keydown", (e) => {
-    if (Botin === false)
+    // if (Botin === false)
       keysPressed[e.key] = true;
 
     if (e.key === "1") setDifficulty("EASY");
@@ -59,7 +59,7 @@ export function initGame(
   });
 
   document.addEventListener("keyup", (e) => {
-    if (Botin === false)
+    // if (Botin === false)
       keysPressed[e.key] = false;
   });
 }
@@ -70,6 +70,8 @@ export function stopBall() {
 }
 
 export function resetBall() {
+  if (!canvas)
+    return ;
   ballX = canvas.width / 2;
   ballY = canvas.height / 2;
   ballSpeedX = 0;

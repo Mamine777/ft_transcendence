@@ -12,6 +12,7 @@ import {
 export let Botin = false;
 import { resetGame, showWinner, getWinner2 } from "./score";
 import { initConnect4 } from "./puissance4";
+import { setDifficulty } from "./ai";
 
 window.addEventListener("DOMContentLoaded", () => {
   const canvasGame = document.getElementById("canva-game") as HTMLCanvasElement;
@@ -20,7 +21,9 @@ window.addEventListener("DOMContentLoaded", () => {
   const ctxTournament = canvasTournament.getContext("2d")!;
 
   const modeSelector = document.getElementById("mode") as HTMLSelectElement;
-  const startBtn = document.getElementById("start") as HTMLButtonElement;
+  const EASYstartBtn = document.getElementById("EASYstart") as HTMLButtonElement;
+  const MEDIUMstartBtn = document.getElementById("MEDIUMstart") as HTMLButtonElement;
+  const HARDstartBtn = document.getElementById("HARDstart") as HTMLButtonElement;
   const starttournamentBtn = document.getElementById("start-tournament") as HTMLButtonElement;
   const pongMenu = document.getElementById("pong-menu")!;
   const gameChoice = document.getElementById("game-choice") as HTMLSelectElement;
@@ -53,19 +56,23 @@ window.addEventListener("DOMContentLoaded", () => {
 });
   switchGameView("pong");
 
-startBtn.addEventListener("click", async () => {
+async function startGame() {
   const selectedMode = modeSelector.value === "BOT" ? "BOT" : "PVP";
-  if (selectedMode === "BOT")
+  if (selectedMode === "BOT") {
     Botin = true;
+  }
   else
     Botin = false;
   const playerLeftName = "gauche";
   const playerRightName = "droit ";
-  startBtn.classList.add("hidden");
+  EASYstartBtn.classList.add("hidden");
+  MEDIUMstartBtn.classList.add("hidden");
+  HARDstartBtn.classList.add("hidden");
   resetGame();
   initGame(canvasGame, ctxGame, selectedMode);
   startGameLoop((winner: "left" | "right" | "") => handleWinnerGame(winner, playerLeftName, playerRightName));
-	const winner = await getWinner2(); 
+	const winner = await getWinner2();
+  stopGameLoop();
   fetch("http://localhost:3000/History/PongHistory", {
       method: "POST",
       credentials: "include",
@@ -80,12 +87,24 @@ startBtn.addEventListener("click", async () => {
       date: Date().toLocaleString()
      })
   })
+}
+
+EASYstartBtn.addEventListener("click", async () => {
+  setDifficulty("EASY");
+  await startGame();
+});
+MEDIUMstartBtn.addEventListener("click", async () => {
+  setDifficulty("MEDIUM");
+  await startGame();
+});
+HARDstartBtn.addEventListener("click", async () => {
+  setDifficulty("HARD");
+  await startGame();
 });
 starttournamentBtn.addEventListener("click", () => {
   const selectedMode = "PVP";
   const playerLeftName = "gauche";
   const playerRightName = "droit";
-  startBtn.classList.add("hidden");
   resetGame();
   initGame(canvasTournament, ctxTournament, selectedMode);
   runMatch(playerLeftName, playerRightName).then(() => {
@@ -98,7 +117,9 @@ function handleWinnerGame(winner: "left" | "right" | "", playerleft: string, pla
   if (winner !== "") {
     const winnerName = winner === "left" ? playerleft : playerright;
     stopBall();
-    startBtn.classList.remove("hidden");
+    EASYstartBtn.classList.remove("hidden");
+    MEDIUMstartBtn.classList.remove("hidden");
+    HARDstartBtn.classList.remove("hidden");
     showWinner(ctxGame, canvasGame, winnerName);
   }
 }
@@ -107,7 +128,7 @@ function handleWinnerTournament(winner: "left" | "right" | "", playerleft: strin
   if (winner !== "") {
     const winnerName = winner === "left" ? playerleft : playerright;
     stopBall();
-    startBtn.classList.remove("hidden");
+    starttournamentBtn.classList.remove("hidden");
     showWinner(ctxTournament, canvasTournament, winnerName);
   }
 }
@@ -122,7 +143,9 @@ function handleWinnerTournament(winner: "left" | "right" | "", playerleft: strin
     stopGameLoop();
     resetScore();
     resetBall();
-    startBtn.classList.remove("hidden");
+    EASYstartBtn.classList.remove("hidden");
+    MEDIUMstartBtn.classList.remove("hidden");
+    HARDstartBtn.classList.remove("hidden");
   });
 
 });
