@@ -1,6 +1,8 @@
 import { initGame } from "./games/game";
 import { switchView } from "./login";
 import { addPlayerbase, resetPlayer } from "./tournament";
+import { exportPongHistory } from "./buttons";
+
 // import { stopGame } from "./games/game";
 export type ViewElement = HTMLElement | null;
 
@@ -73,10 +75,12 @@ export async function loadProfile(): Promise<void> {
       credentials: "include"
     });
     const data = await response.json();
-    console.log("handleSessionCheck received:", data);
+    console.log("handleSessionCheck received ici :", data);
     if (!data.loggedIn)
+    {
       if (window.location.hash != "#twoFAView" && window.location.hash != "#signupView" && window.location.hash != "#forgotPasswordView" && window.location.hash != "#secretView")
       window.location.hash = "#loginView";
+    }
     if (data.loggedIn) {
       showViewFromHash();
     }

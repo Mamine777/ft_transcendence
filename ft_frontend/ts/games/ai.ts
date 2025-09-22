@@ -34,10 +34,9 @@ export function updateBotAI(
 }
 
 export function setDifficulty(level: "EASY" | "MEDIUM" | "HARD") {
-  if (level === "EASY") difficulte = 0.3;
-  if (level === "MEDIUM") difficulte = 0.6;
-  if (level === "HARD") difficulte = 0.9;
-  console.log("Bot en mode :", level);
+  if (level === "EASY") difficulte = 1;
+  if (level === "MEDIUM") difficulte = 3;
+  if (level === "HARD") difficulte = 6;
 }
 
 let lastBotDirection: "ArrowUp" | "ArrowDown" | null = null;

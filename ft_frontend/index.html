@@ -4,7 +4,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🏓 ft_transcendence</title>
+    <link rel="icon" href="./favicon/favicon.ico">
+    <title>ft_transcendence</title>
     <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
@@ -638,6 +639,10 @@
               <div class="text-sm text-gray-400">Losses</div>
             </div>
           </div>
+          <button id="refreshProfileBtn"
+            class="gaming-button-secondary w-full py-3 rounded-lg font-bold mb-6">
+            REFRESH STATS
+          </button>
           <div id="pongHistoryCard" class="stats-card rounded-lg p-4">
             <h3 style="margin-bottom:8px;">Historique Pong</h3>
             <div id="pongHistoryDetails" style="margin-top:8px; max-height: 220px; overflow-y: auto;"></div>
@@ -772,10 +777,6 @@
 
         <!-- Menu Pong -->
         <div id="pong-menu" class="mb-6 flex items-center gap-2 justify-center">
-          <select id="mode" class="gaming-input p-2 rounded-lg bg-gray-800 text-white mr-2">
-            <option value="BOT">BOT</option>
-            <option value="PVP">PVP</option>
-          </select>
           <button id="EASYstart"
             class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
             EASY
@@ -788,9 +789,10 @@
             class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
             HARD
           </button>
-          <button id="refresh" class="px-4 py-2 bg-green-600 rounded hover:bg-green-700 transition">
-            Refresh 🔄
-          </button>
+          <boutton id="PVPstart"
+            class="gaming-button px-4 py-2 rounded-lg font-bold text-lg hover:scale-105 transition-all">
+            PVP
+          </boutton>
 
         </div>
 

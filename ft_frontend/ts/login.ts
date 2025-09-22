@@ -18,9 +18,6 @@ export function switchView(viewKey: string): void {
 	{
 		addPlayerbase();
 	}
-	if (viewKey === "profileViewDrop") {
-		exportPongHistory();
-	}
 }
 document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById("loginForm")?.addEventListener("submit", async (event) => {

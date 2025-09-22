@@ -427,8 +427,6 @@ private renderPendingRequests(): void {
 
       const data = await response.json();
 
-      console.log("AddFriend response:", data);
-
       if (data.success) {
         this.showSuccess(`Friend request sent to ${username}`);
         usernameInput.value = '';
@@ -592,7 +590,6 @@ private renderPendingRequests(): void {
 
   private showSuccess(message: string): void {
     // You can implement a toast notification system here
-    console.log("Success:", message);
     alert(message);
   }
 

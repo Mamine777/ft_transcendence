@@ -1,4 +1,4 @@
-import { checkScore, getWinner } from "./score";
+import { checkScore, getWinner, WIN } from "./score";
 import { updateBotAI, setDifficulty } from "./ai";
 import { getMode, Botin } from "./main";
 
@@ -50,7 +50,7 @@ export function initGame(
   ballSpeedY = 2;
 
   document.addEventListener("keydown", (e) => {
-    // if (Botin === false)
+    if (Botin && (e.key === "ArrowUp" || e.key === "ArrowDown")) return;
       keysPressed[e.key] = true;
 
     if (e.key === "1") setDifficulty("EASY");
@@ -59,7 +59,6 @@ export function initGame(
   });
 
   document.addEventListener("keyup", (e) => {
-    // if (Botin === false)
       keysPressed[e.key] = false;
   });
 }
@@ -141,7 +140,8 @@ export function updateFrame(callback: (winner: "left" | "right" | "") => void) {
     ballSpeedX = -ballSpeedX;
 
   if (ballX <= 0) {
-    rightScore++;
+    if (rightScore != WIN)
+      rightScore++;
     const winner = checkScore(leftScore, rightScore);
     if (winner === "") resetBall();
     callback(winner);
@@ -149,7 +149,8 @@ export function updateFrame(callback: (winner: "left" | "right" | "") => void) {
   }
 
   if (ballX >= canvas.width) {
-    leftScore++;
+    if (leftScore != WIN)
+      leftScore++;
     const winner = checkScore(leftScore, rightScore);
     if (winner === "") resetBall();
     callback(winner);

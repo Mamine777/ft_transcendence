@@ -20,7 +20,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const ctxGame = canvasGame.getContext("2d")!;
   const ctxTournament = canvasTournament.getContext("2d")!;
 
-  const modeSelector = document.getElementById("mode") as HTMLSelectElement;
+  let selectedMode: "BOT" | "PVP" = "BOT";
+  const PVPstartBtn = document.getElementById("PVPstart") as HTMLButtonElement;
   const EASYstartBtn = document.getElementById("EASYstart") as HTMLButtonElement;
   const MEDIUMstartBtn = document.getElementById("MEDIUMstart") as HTMLButtonElement;
   const HARDstartBtn = document.getElementById("HARDstart") as HTMLButtonElement;
@@ -30,8 +31,6 @@ window.addEventListener("DOMContentLoaded", () => {
   const instruction = document.getElementById("instruction")!;
   const connect4Container = document.getElementById("connect4-container")!;
   const restartConnect4 = document.getElementById("restart-connect4") as HTMLButtonElement;
-
-  const refreshBtn = document.getElementById("refresh") as HTMLButtonElement;
 
   const pongElements = [canvasGame, pongMenu];
 
@@ -51,23 +50,19 @@ window.addEventListener("DOMContentLoaded", () => {
     const selected = (e.target as HTMLSelectElement).value;
     switchGameView(selected);
   });
-  refreshBtn.addEventListener("click", () => {
-  location.reload();
-});
   switchGameView("pong");
 
 async function startGame() {
-  const selectedMode = modeSelector.value === "BOT" ? "BOT" : "PVP";
   if (selectedMode === "BOT") {
     Botin = true;
   }
-  else
     Botin = false;
   const playerLeftName = "gauche";
   const playerRightName = "droit ";
   EASYstartBtn.classList.add("hidden");
   MEDIUMstartBtn.classList.add("hidden");
   HARDstartBtn.classList.add("hidden");
+  PVPstartBtn.classList.add("hidden");
   resetGame();
   initGame(canvasGame, ctxGame, selectedMode);
   startGameLoop((winner: "left" | "right" | "") => handleWinnerGame(winner, playerLeftName, playerRightName));
@@ -91,14 +86,21 @@ async function startGame() {
 
 EASYstartBtn.addEventListener("click", async () => {
   setDifficulty("EASY");
+  selectedMode = "BOT";
   await startGame();
 });
 MEDIUMstartBtn.addEventListener("click", async () => {
   setDifficulty("MEDIUM");
+  selectedMode = "BOT";
   await startGame();
 });
 HARDstartBtn.addEventListener("click", async () => {
   setDifficulty("HARD");
+  selectedMode = "BOT";
+  await startGame();
+});
+PVPstartBtn.addEventListener("click", async () => {
+  selectedMode = "PVP";
   await startGame();
 });
 starttournamentBtn.addEventListener("click", () => {
@@ -120,6 +122,7 @@ function handleWinnerGame(winner: "left" | "right" | "", playerleft: string, pla
     EASYstartBtn.classList.remove("hidden");
     MEDIUMstartBtn.classList.remove("hidden");
     HARDstartBtn.classList.remove("hidden");
+    PVPstartBtn.classList.remove("hidden");
     showWinner(ctxGame, canvasGame, winnerName);
   }
 }

@@ -173,7 +173,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("profileLosses")!.textContent = losses.toString();
       }
 
-      // Finally show the profile view
       switchView("profileViewDrop");
 
     } catch (err) {
@@ -228,9 +227,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  const pongHistory = document.getElementById("pongHistoryCard");
+  const pongHistory = document.getElementById("refreshProfileBtn");
   if (pongHistory) {
+    pongHistory.addEventListener("click", async () => {
     HistoryPong();
+    });
   }
     async function HistoryPong() { 
       const PongRes = await fetch("http://localhost:3000/History/Pong", {
