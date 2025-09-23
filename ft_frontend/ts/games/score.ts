@@ -1,7 +1,7 @@
 import { leftScore, rightScore, resetScore, resetBall } from "./game";
 
 
-export const WIN = 1;
+export const WIN = 10;
 export let gameOver = false;
 
 export function checkScore(leftScore: number, rightScore: number): "left" | "right" | "" {

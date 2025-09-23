@@ -14,13 +14,15 @@ import { resetGame, showWinner, getWinner2 } from "./score";
 import { initConnect4 } from "./puissance4";
 import { setDifficulty } from "./ai";
 
+let selectedMode: "BOT" | "PVP" = "BOT";
+
+
 window.addEventListener("DOMContentLoaded", () => {
   const canvasGame = document.getElementById("canva-game") as HTMLCanvasElement;
   const canvasTournament = document.getElementById("canva-2") as HTMLCanvasElement;
   const ctxGame = canvasGame.getContext("2d")!;
   const ctxTournament = canvasTournament.getContext("2d")!;
 
-  let selectedMode: "BOT" | "PVP" = "BOT";
   const PVPstartBtn = document.getElementById("PVPstart") as HTMLButtonElement;
   const EASYstartBtn = document.getElementById("EASYstart") as HTMLButtonElement;
   const MEDIUMstartBtn = document.getElementById("MEDIUMstart") as HTMLButtonElement;
@@ -54,8 +56,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
 async function startGame() {
   if (selectedMode === "BOT") {
+    console.log("Botin set to true");
     Botin = true;
   }
+  else
     Botin = false;
   const playerLeftName = "gauche";
   const playerRightName = "droit ";
@@ -85,18 +89,18 @@ async function startGame() {
 }
 
 EASYstartBtn.addEventListener("click", async () => {
-  setDifficulty("EASY");
   selectedMode = "BOT";
+  setDifficulty("EASY");
   await startGame();
 });
 MEDIUMstartBtn.addEventListener("click", async () => {
-  setDifficulty("MEDIUM");
   selectedMode = "BOT";
+  setDifficulty("MEDIUM");
   await startGame();
 });
 HARDstartBtn.addEventListener("click", async () => {
-  setDifficulty("HARD");
   selectedMode = "BOT";
+  setDifficulty("HARD");
   await startGame();
 });
 PVPstartBtn.addEventListener("click", async () => {
@@ -155,5 +159,5 @@ function handleWinnerTournament(winner: "left" | "right" | "", playerleft: strin
 
 export function getMode() {
   const modeSelector = document.getElementById("mode") as HTMLSelectElement;
-  return modeSelector.value === "BOT" ? "BOT" : "PVP";
+  return selectedMode;
 }

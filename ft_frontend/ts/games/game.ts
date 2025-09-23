@@ -59,6 +59,7 @@ export function initGame(
   });
 
   document.addEventListener("keyup", (e) => {
+    if (Botin && (e.key === "ArrowUp" || e.key === "ArrowDown")) return;
       keysPressed[e.key] = false;
   });
 }
