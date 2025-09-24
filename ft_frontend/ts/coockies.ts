@@ -75,7 +75,7 @@ export async function loadProfile(): Promise<void> {
       credentials: "include"
     });
     const data = await response.json();
-    console.log("handleSessionCheck received ici :", data);
+    console.log("handleSessionCheck received :", data);
     if (!data.loggedIn)
     {
       if (window.location.hash != "#twoFAView" && window.location.hash != "#signupView" && window.location.hash != "#forgotPasswordView" && window.location.hash != "#secretView")
