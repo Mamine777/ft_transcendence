@@ -1,0 +1,3 @@
+ft_backend/.env
+ft_backend/node_modules/*
+ft_frontend/node_modules/*

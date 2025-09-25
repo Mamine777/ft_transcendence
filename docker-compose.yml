@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./ft_backend
+    container_name: fastify_backend
+    ports:
+      - "3000:3000"
+    networks:
+      - app-net
+    working_dir: /app
+
+  frontend:
+    build:
+      context: ./ft_frontend
+    container_name: vite_frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - app-net
+    working_dir: /app
+    environment:
+      - VITE_API_URL=http://localhost:3000
+
+networks:
+  app-net:
+    driver: bridge
+
