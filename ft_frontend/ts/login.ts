@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		const password = document.getElementById("password") as HTMLInputElement;
 		const message = document.getElementById("loginMessage") as HTMLTextAreaElement;
 		try {
-			const response = await fetch("http://localhost:3000/login-check", {
+			const response = await fetch("https://localhost:3000/login-check", {
 				method: "POST",
 				headers: {
 				  "Content-Type": "application/json",
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 
 		try {
-		  const response = await fetch("http://localhost:3000/verify-2fa", {
+		  const response = await fetch("https://localhost:3000/verify-2fa", {
 			method: "POST",
 			credentials: "include",
 			headers: { "Content-Type": "application/json",
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		const newpassword = document.getElementById("newPassword") as HTMLInputElement;
 
 		try {
-			const response = await fetch("http://localhost:3000/check-forgot", {
+			const response = await fetch("https://localhost:3000/check-forgot", {
 				method: "POST",
 				credentials: "include",
 				headers: { "Content-Type": "application/json"},
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	try {
-		const response = await fetch("http://localhost:3000/check-signup", {
+		const response = await fetch("https://localhost:3000/check-signup", {
 		method: "POST",
 		credentials: "include",
 		headers: { "Content-Type": "application/json" },

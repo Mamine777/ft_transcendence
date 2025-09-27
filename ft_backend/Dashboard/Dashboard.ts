@@ -139,7 +139,7 @@ server.get('/user', (request, response) => {
       username: (user as { username?: string }).username ?? null,
       email: (user as { email?: string }).email ?? null,
       avatar: avatarE
-        ? `http://localhost:3000${avatarE}`
+        ? `https://localhost:3000${avatarE}`
         : "https://api.dicebear.com/7.x/pixel-art/svg?seed=User"
     });
   } catch (error) {

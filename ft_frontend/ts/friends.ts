@@ -93,7 +93,7 @@ class FriendsManager {
   // Step 4: Fetch friends and pending requests from server
   public async fetchFriends(): Promise<void> {
     try {
-      const response = await fetch("http://localhost:3000/GetFriends", {
+      const response = await fetch("https://localhost:3000/GetFriends", {
         method: "GET",
         headers: this.getHeaders(),
         credentials: "include",
@@ -418,7 +418,7 @@ private renderPendingRequests(): void {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/AddFriend", {
+      const response = await fetch("https://localhost:3000/AddFriend", {
         method: "POST",
         headers: this.getHeaders(),
         credentials: "include",
@@ -444,7 +444,7 @@ private renderPendingRequests(): void {
 
   public async acceptRequest(username: string): Promise<void> {
     try {
-      const response = await fetch("http://localhost:3000/AcceptRequest", {
+      const response = await fetch("https://localhost:3000/AcceptRequest", {
         method: "POST",
         headers: this.getHeaders(),
         credentials: "include",
@@ -470,7 +470,7 @@ private renderPendingRequests(): void {
     if (!confirm(`Decline friend request from ${username}?`)) return;
 
     try {
-      const response = await fetch("http://localhost:3000/RemoveFriend", {
+      const response = await fetch("https://localhost:3000/RemoveFriend", {
         method: "POST",
         headers: this.getHeaders(),
         credentials: "include",
@@ -496,7 +496,7 @@ private renderPendingRequests(): void {
     if (!confirm(`Remove ${username} from your friends?`)) return;
 
     try {
-      const response = await fetch("http://localhost:3000/RemoveFriend", {
+      const response = await fetch("https://localhost:3000/RemoveFriend", {
         method: "POST",
         headers: this.getHeaders(),
         credentials: "include",
@@ -523,7 +523,7 @@ private renderPendingRequests(): void {
     if (!confirm(`Cancel friend request to ${username}?`)) return;
 
     try {
-      const response = await fetch("http://localhost:3000/RemoveFriend", {
+      const response = await fetch("https://localhost:3000/RemoveFriend", {
         method: "POST",
         headers: this.getHeaders(),
         credentials: "include",

@@ -161,7 +161,7 @@ exports.default = (0, fastify_plugin_1.default)(async (fastify) => {
             auth: FORTYTWO_CONFIGURATION
         },
         startRedirectPath: '/auth/42',
-        callbackUri: 'http://localhost:3000/auth/42/callback'
+        callbackUri: 'https://localhost:3000/auth/42/callback'
     });
     fastify.get('/auth/42/callback', async (request, reply) => {
         const token = await fastify.fortytwoOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
@@ -203,7 +203,7 @@ exports.default = (0, fastify_plugin_1.default)(async (fastify) => {
             auth: oauth2_1.default.GOOGLE_CONFIGURATION
         },
         startRedirectPath: '/auth/google',
-        callbackUri: 'http://localhost:3000/auth/google/callback'
+        callbackUri: 'https://localhost:3000/auth/google/callback'
     });
     fastify.get('/auth/google/callback', async (request, reply) => {
         const token = await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
