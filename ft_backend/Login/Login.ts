@@ -239,7 +239,7 @@ export default fp(async (fastify) => {
 		};
 		try {
             await send2FACode(userInfo.email, code);
-            return reply.redirect('http://localhost:5173/#twoFAView');
+            return reply.redirect('https://localhost:5173/#twoFAView');
         } catch (error) {
 			console.error("2FA email error:", error);
             return reply.status(500).send({ success: false, message: "Failed to send 2FA code" });
@@ -282,7 +282,7 @@ export default fp(async (fastify) => {
 		};
 		try {
             await send2FACode(userInfo.email, code);
-            return reply.redirect('http://localhost:5173/#twoFAView');
+            return reply.redirect('https://localhost:5173/#twoFAView');
         } catch (error) {
 			console.error("2FA email error:", error);
             return reply.status(500).send({ success: false, message: "Failed to send 2FA code" });
