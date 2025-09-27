@@ -28,7 +28,7 @@ export interface RowHistory {
 }
 
 export function History4RowRoutes(server: FastifyInstance) {
-	server.post("/History/RowHistory", async (request, reply) => {
+	server.post("/History/UpdateRow", async (request, reply) => {
 		const cookies = request.cookies;
 		const user = request.session.user;
 
@@ -78,14 +78,14 @@ export function History4RowRoutes(server: FastifyInstance) {
 		}
 	})
 
-	server.get("/History/Row", async (request, reply) => {
+	server.get("/History/RowHistory", async (request, reply) => {
 		const cookies = request.cookies;
 		const user = request.session.user;
 
 		if (!user)
 			return reply.status(400).send({ success: false, error: "User disconnected" });
 
-		const getUserAllStmt = db.prepare(`SELECT * FROM PongHistory WHERE user_id = ?`);
+		const getUserAllStmt = db.prepare(`SELECT * FROM RowHistory WHERE user_id = ?`);
 		const matches = getUserAllStmt.all(user.id);
 
 		if (!matches) {
