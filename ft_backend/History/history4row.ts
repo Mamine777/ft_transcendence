@@ -52,7 +52,7 @@ export function History4RowRoutes(server: FastifyInstance) {
 		try {
 			db.prepare(`
 				INSERT INTO RowHistory (user_id, color, playedAt)
-				VALUES (?, ?, ?, ?)
+				VALUES (?, ?, ?)
 			`).run(user.id, color, date);
 	
 			return reply.status(200).send({

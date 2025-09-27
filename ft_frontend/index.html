@@ -639,10 +639,16 @@
               <div class="text-sm text-gray-400">Losses</div>
             </div>
           </div>
+          <div class="grid grid-cols-2 gap-4 mb-6">
           <button id="refreshProfileBtn"
             class="gaming-button-secondary w-full py-3 rounded-lg font-bold mb-6">
             REFRESH STATS
           </button>
+          <select id="selectmode" class="gaming-input w-full p-3 rounded-lg mb-6">
+            <option value="PongProfile">Pong </option>
+            <option value="Puissance4Profile">puissance 4</option>
+          </select>
+          </div>
           <div id="pongHistoryCard" class="stats-card rounded-lg p-4">
             <h3 style="margin-bottom:8px;">Historique Pong</h3>
             <div id="pongHistoryDetails" style="margin-top:8px; max-height: 220px; overflow-y: auto;"></div>
