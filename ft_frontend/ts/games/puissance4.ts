@@ -1,6 +1,4 @@
 export function initConnect4(): void {
-  console.log("initConnect4 ok ✅");
-
   const rows = 6;
   const columns = 7;
   const board: string[][] = [];
@@ -29,8 +27,9 @@ export function initConnect4(): void {
         "w-14 h-14 rounded-full bg-gray-300 border-2 border-gray-600 hover:scale-105 transition-transform cursor-pointer";
 
       tile.addEventListener("click", () => {
-        if (gameOver) return;
-
+        if (gameOver) {
+          return;
+        }
         let rowToFill = currColumns[colIndex];
         if (rowToFill < 0) return;
 
@@ -58,6 +57,18 @@ export function initConnect4(): void {
       winnerText.textContent =
         board[r][c] === "R" ? "🔴 Red Wins!" : "🟡 Yellow Wins!";
       gameOver = true;
+       fetch("http://localhost:3000/History/UpdateRow", {
+            method: "POST",
+            credentials: "include",
+            headers: { 
+              'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+              "Content-Type": "application/json" 
+            },
+          body: JSON.stringify({ 
+            color : board[r][c] === "R" ? "red" : "yellow",
+            date: Date().toLocaleString()
+           })
+        })
     };
 
     // horizontal
