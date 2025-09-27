@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				btn.addEventListener('click', (e) => {
 					const index = parseInt((btn as HTMLButtonElement).dataset.idx || "0");
 					players.splice(index, 1);
+					size--;
 					updatePlayersList();
 				});
 			});
@@ -112,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 	addBtn?.addEventListener("click", () => {
 		const username = usernameInput.value.trim();
-		
         if (username) {
 			if (playername(username) === false) {
 				ErrorList!.innerText = "Error: Player already added";
@@ -132,13 +132,22 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
     });
 
-    CreateTournamentBtn?.addEventListener("click", () => {
-        if (size == 4) {
-            switchView("TournamentPlayView");
-            startTournament();
+    CreateTournamentBtn?.addEventListener("click", async () => {
+        const user = await getusername();
+		if (size == 4) {
+			if (playername(user) === true) {
+				ErrorList!.innerText = "Error: You are not in the tournament";
+			}
+			else {
+				switchView("TournamentPlayView");
+				startTournament();
+			}
 		}
-		else if (size > 4) {
-			ErrorList!.innerText = "Error: Need 4 players to start the tournament";
+		else if (size != 4) {
+			if (playername(user) === true) {
+				ErrorList!.innerText = "Error: You are not in the tournament"; }
+			else 
+				ErrorList!.innerText = "Error: Need 4 players to start the tournament";
 		}
 	});
 	if (Winner)
