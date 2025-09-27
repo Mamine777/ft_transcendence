@@ -35,12 +35,11 @@ export function History4RowRoutes(server: FastifyInstance) {
 		if (!user)
 			return reply.status(400).send({ success: false, error: "User disconnected" });
 
-		const { color, win, date } = request.body as {
+		const { color, date } = request.body as {
 			color: string;
-			win: number;
 			date: string;
 		};
-    if (color === null || win > 2 || win < 0) {
+    if (color === null) {
       return reply.status(400).send({ success: false, error: "Invalid data" });
     }
 
@@ -50,23 +49,11 @@ export function History4RowRoutes(server: FastifyInstance) {
       }
     }
 
-    let result;
-    
-    if (win === 1) {
-      result = "win";
-    }
-    else if (win === 2) {
-      result = "draw";
-    }
-    else {
-      result = "lose";
-    }
-
 		try {
 			db.prepare(`
-				INSERT INTO RowHistory (user_id, color, win, playedAt)
-				VALUES (?, ?, ?, ?, ?)
-			`).run(user.id, color, result, date);
+				INSERT INTO RowHistory (user_id, color, playedAt)
+				VALUES (?, ?, ?, ?)
+			`).run(user.id, color, date);
 	
 			return reply.status(200).send({
 				success: true,

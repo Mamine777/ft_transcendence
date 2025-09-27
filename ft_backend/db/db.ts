@@ -38,7 +38,6 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS RowHistory (
 	user_id INTEGER NOT NULL,
 	color INTEGER,
-	win INTEGER,
 	playedAt INTEGER
   )
 `);
