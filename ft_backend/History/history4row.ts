@@ -35,6 +35,12 @@ export function History4RowRoutes(server: FastifyInstance) {
 		if (!user)
 			return reply.status(400).send({ success: false, error: "User disconnected" });
 
+		try {
+			await request.jwtVerify();
+		} catch (err) {
+			console.log("❌ Unauthorized: JWT verification failed");
+			return reply.code(401).send({ success: false, message: "Unauthorized" });
+		}
 		const { color, date } = request.body as {
 			color: string;
 			date: string;
@@ -72,6 +78,12 @@ export function History4RowRoutes(server: FastifyInstance) {
 		if (!user)
 			return reply.status(400).send({ success: false, error: "User disconnected" });
 
+		try {
+			await request.jwtVerify();
+		} catch (err) {
+			console.log("❌ Unauthorized: JWT verification failed");
+			return reply.code(401).send({ success: false, message: "Unauthorized" });
+		}
 		const getUserAllStmt = db.prepare(`SELECT * FROM RowHistory WHERE user_id = ?`);
 		const matches = getUserAllStmt.all(user.id);
 

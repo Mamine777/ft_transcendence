@@ -78,7 +78,6 @@ class FriendsManager {
     });
   }
 
-  // Step 3: API helper for authentication headers
   private getHeaders(): { [key: string]: string } {
     const headers: { [key: string]: string } = {
       "Content-Type": "application/json",
@@ -90,7 +89,6 @@ class FriendsManager {
     return headers;
   }
 
-  // Step 4: Fetch friends and pending requests from server
   public async fetchFriends(): Promise<void> {
     try {
       const response = await fetch("http://localhost:3000/GetFriends", {
@@ -102,7 +100,6 @@ class FriendsManager {
       const data = await response.json();
       
       if (data.success) {
-        // Transform server data to our interface
         this.friends = (data.friends || []).map((username: string, idx: number) => ({
           id: idx + 1,
           username,

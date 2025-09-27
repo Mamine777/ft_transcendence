@@ -132,7 +132,10 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
         const response = await fetch("http://localhost:3000/user", {
           method: "GET",
           credentials: "include",
-          headers
+          headers: { 
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          "Content-Type": "application/json" 
+          },
         });
         const data = await response.json();
         if (data.loggedIn) {
@@ -154,7 +157,10 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
         const historyRes = await fetch("http://localhost:3000/AllHistory", {
         method: "GET",
         credentials: "include",
-        headers
+        headers: { 
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        "Content-Type": "application/json" 
+        },
       });
 
       const historyData = await historyRes.json();
@@ -200,11 +206,14 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
         await fetch("http://localhost:3000/logout", {
           method: "POST",
           credentials: "include",
-          headers,
+          headers: { 
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          "Content-Type": "application/json" 
+          },
           body: JSON.stringify({}) 
         });
       } catch (error) {
-        console.error("Error fetching /logout:", error);
+        console.error("Error ing /logout:", error);
       } finally {
         localStorage.removeItem('jwt');
         switchView("loginView");
@@ -224,7 +233,10 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
         await fetch("http://localhost:3000/logout", {
           method: "POST",
           credentials: "include",
-          headers, 
+          headers: { 
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          "Content-Type": "application/json" 
+          },
            body: JSON.stringify({}) 
         });
       } catch (error) {
@@ -249,7 +261,7 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
           method: "GET",
           credentials: "include",
           headers: { 
-            'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+            // 'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
             "Content-Type": "application/json"
           }
         });
