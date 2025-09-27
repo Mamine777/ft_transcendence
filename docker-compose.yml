@@ -19,7 +19,7 @@ services:
       - app-net
     working_dir: /app
     environment:
-      - VITE_API_URL=http://localhost:3000
+      - VITE_API_URL=https://localhost:3000
 
 networks:
   app-net:

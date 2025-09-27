@@ -41,7 +41,7 @@ export async function loadProfile(): Promise<void> {
   const avatar = document.getElementById("profileAvatar") as HTMLImageElement;
 
   try {
-    const response = await fetch("http://localhost:3000/user", {
+    const response = await fetch("https://localhost:3000/user", {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('jwt')}`
       },
@@ -70,7 +70,7 @@ export async function loadProfile(): Promise<void> {
     if (jwt) {
       headers['Authorization'] = `Bearer ${jwt}`;
     }
-    const response = await fetch("http://localhost:3000/me", {
+    const response = await fetch("https://localhost:3000/me", {
       headers,
       credentials: "include"
     });

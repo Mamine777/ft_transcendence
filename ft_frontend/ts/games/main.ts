@@ -72,7 +72,7 @@ async function startGame() {
   startGameLoop((winner: "left" | "right" | "") => handleWinnerGame(winner, playerLeftName, playerRightName));
 	const winner = await getWinner2();
   stopGameLoop();
-  fetch("http://localhost:3000/History/PongHistory", {
+  fetch("https://localhost:3000/History/PongHistory", {
       method: "POST",
       credentials: "include",
       headers: { 

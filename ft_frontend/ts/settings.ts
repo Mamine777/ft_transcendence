@@ -19,7 +19,7 @@ document.getElementById("settingsForm")?.addEventListener("submit", async (event
 
   try {
     await loadProfile();
-    const response = await fetch("http://localhost:3000/check-settings", {
+    const response = await fetch("https://localhost:3000/check-settings", {
       method: "POST",
       headers,
       credentials: "include",
@@ -95,7 +95,7 @@ document.getElementById("avatarUpload")?.addEventListener("change", async (event
   }
 
   try {
-    const response = await fetch("http://localhost:3000/uploadFile", {
+    const response = await fetch("https://localhost:3000/uploadFile", {
       method: "POST",
       headers,
       credentials: "include",
