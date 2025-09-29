@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	function startTournament() {
-		fetch("http://localhost:3000/tournament/start", {
+		fetch("https://localhost:3000/tournament/start", {
 			method: "POST",
 			credentials: "include",
 			headers: { 
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			 	FinalWinner = result2 + " is the Winner!";
 			switchView("WinnerView");
 			if (finalResult == username) {
-				fetch("http://localhost:3000/TournamentWinner", {
+				fetch("https://localhost:3000/TournamentWinner", {
 					method: "POST",
 					credentials: "include",
 					headers: { 
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				})
 			}
 			else {
-				fetch("http://localhost:3000/TournamentWinner", {
+				fetch("https://localhost:3000/TournamentWinner", {
 					method: "POST",
 					credentials: "include",
 					headers: { 
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function getusername(): Promise<string> {
-  const response = await fetch("http://localhost:3000/PlayerUsername", {
+  const response = await fetch("https://localhost:3000/PlayerUsername", {
     method: "GET",
     credentials: "include",
     headers: { 

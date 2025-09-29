@@ -129,7 +129,7 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
         if (jwt) {
           headers["Authorization"] = `Bearer ${jwt}`;
         }
-        const response = await fetch("http://localhost:3000/user", {
+        const response = await fetch("https://localhost:3000/user", {
           method: "GET",
           credentials: "include",
           headers: { 
@@ -154,7 +154,7 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
           }
           switchView("profileViewDrop");
         }
-        const historyRes = await fetch("http://localhost:3000/AllHistory", {
+        const historyRes = await fetch("https://localhost:3000/AllHistory", {
         method: "GET",
         credentials: "include",
         headers: { 
@@ -172,7 +172,7 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
       // Update Pong stats
       const pong = historyData.pong;
       if (pong) {
-        const tournamentRes = await fetch("http://localhost:3000/TournamentHistory", {
+        const tournamentRes = await fetch("https://localhost:3000/TournamentHistory", {
           method: "GET",
           credentials: "include",
           headers: { 
@@ -203,7 +203,7 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
         if (jwt) {
           headers["Authorization"] = `Bearer ${jwt}`;
         }
-        await fetch("http://localhost:3000/logout", {
+        await fetch("https://localhost:3000/logout", {
           method: "POST",
           credentials: "include",
           headers: { 
@@ -230,7 +230,7 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
         if (jwt) {
           headers["Authorization"] = `Bearer ${jwt}`;
         }
-        await fetch("http://localhost:3000/logout", {
+        await fetch("https://localhost:3000/logout", {
           method: "POST",
           credentials: "include",
           headers: { 

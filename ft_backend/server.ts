@@ -6,7 +6,7 @@
 /*   By: najeuneh <najeuneh@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/09/27 16:45:55 by najeuneh         ###   ########.fr       */
+/*   Updated: 2025/09/29 16:24:01 by najeuneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,16 @@ import fastifyCors from '@fastify/cors';
 import { HistoryRoutes } from "./History/history";
 import { History4RowRoutes } from "./History/history4row";
 import { tournaments } from "./tournament/tournament";
+import fs from "fs";
 
 
-const server = fastify();
+const server = fastify({
+  https: {
+    key: fs.readFileSync(path.join(__dirname, "localhost-key.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "localhost.pem")),
+  },
+  logger: true,
+});
 
 server.register(fastifyCookie);
 
@@ -75,7 +82,7 @@ server.register(fastifyStatic, {
 });
 
 server.register(fastifyCors, {
-	origin: ["http://localhost:5173"],
+	origin: ["https://localhost:5173"],
 	credentials: true,
 });
 
