@@ -30,6 +30,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Event listener for "Back to Login" button in the Forgot Password view
+const cancelbtn = document.getElementById("cancelTwoFABtn");
+  if (cancelbtn) {
+    cancelbtn.addEventListener("click", () => {
+      switchView("loginView");
+    });
+  }
+
   const backToLogin = document.getElementById("backtoLogin");
   if (backToLogin) {
     backToLogin.addEventListener("click", () => {
