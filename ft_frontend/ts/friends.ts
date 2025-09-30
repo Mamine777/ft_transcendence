@@ -231,10 +231,6 @@ class FriendsManager {
         </div>
       </div>
       <div class="flex gap-2">
-        <button class="gaming-button-secondary px-3 py-1 text-sm rounded hover:bg-gray-600" 
-                onclick="friendsManager.viewProfile('${friend.username}')" title="View Profile">
-          👤
-        </button>
         <button class="gaming-button-danger px-3 py-1 text-sm rounded hover:bg-red-600" 
                 onclick="friendsManager.removeFriend('${friend.username}')" title="Remove Friend">
           ❌

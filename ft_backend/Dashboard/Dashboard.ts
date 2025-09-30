@@ -132,12 +132,16 @@ server.get('/user', (request, response) => {
 
     const user = request.session.user;
     const dbUser = db.prepare('SELECT avatar FROM users WHERE id = ?').get(user.id) as { avatar?: string } | undefined;
+    const dbusername = db.prepare('SELECT username FROM users WHERE id = ?').get(user.id) as { username?: string } | undefined;
+    const dbEmail = db.prepare('SELECT email FROM users WHERE id = ?').get(user.id) as { email?: string } | undefined;
+    const username = dbusername?.username ?? null;
+    const email = dbEmail?.email ?? null;
     const avatarE = dbUser?.avatar ?? null;
 
     return response.send({
       loggedIn: true,
-      username: (user as { username?: string }).username ?? null,
-      email: (user as { email?: string }).email ?? null,
+      username: username,
+      email: email,
       avatar: avatarE
         ? `https://localhost:3000${avatarE}`
         : "https://api.dicebear.com/7.x/pixel-art/svg?seed=User"
