@@ -78,10 +78,11 @@ document.addEventListener("DOMContentLoaded", () => {
 			const finalWinner = await getWinner2();
 			const finalResult = finalWinner === "left" ? result : result2;
 			if (finalResult === "left")
-				FinalWinner = result + " is the Winner!";
+				FinalWinner = result;
 			else
-			 	FinalWinner = result2 + " is the Winner!";
+			 	FinalWinner = result2;
 			switchView("WinnerView");
+			Winner.innerText = finalResult + " is the winner!";
 			if (finalResult == username) {
 				fetch("https://localhost:3000/TournamentWinner", {
 					method: "POST",

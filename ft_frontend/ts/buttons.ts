@@ -67,7 +67,6 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
   if (backFrom2FA) {
     backFrom2FA.addEventListener("click", () => {
       switchView("loginView");
-      console.log("test");
     });
   }
 
@@ -150,7 +149,6 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
         if (data.loggedIn) {
           const profileUsernameElem = document.getElementById("profileUsername");
           if (profileUsernameElem) {
-            console.log("==> data.username", data.username);
             profileUsernameElem.textContent = data.username;
           }
           const profileEmailEl = document.getElementById("profileEmail");
@@ -247,7 +245,6 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
   const pongHistory = document.getElementById("refreshProfileBtn");
   if (pongHistory) {
     pongHistory.addEventListener("click", async () => {
-      console.log("==> pongHistory");
       HistoryPong();
     });
   }
@@ -262,7 +259,6 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
             "Content-Type": "application/json"
           }
         });
-        console.log("==> RowRes");
         const RowData = await RowRes.json();
         const details = document.getElementById("pongHistoryDetails")!;
         if (RowData.success && RowData.matches.length > 0) {

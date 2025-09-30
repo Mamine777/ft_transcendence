@@ -13,17 +13,14 @@ export function twoStepVerificationRoutes(server: FastifyInstance) {
     const pending2FA = request.session.pending2FA;
     
     if (!pending2FA) {
-      console.log("3")
       return reply.status(400).send({ success: false, message: 'No 2FA code pending.' });
     }
     if (Date.now() > pending2FA.expiresAt) {
-      console.log("2")
       delete request.session.pending2FA;
       return reply.status(400).send({ success: false, message: 'Code expired.' });
     }
 
     if (pending2FA.code !== code2fa) {
-      console.log("1")
       return reply.status(400).send({ success: false, message: 'Invalid code.' });
     }
 
@@ -36,7 +33,6 @@ export function twoStepVerificationRoutes(server: FastifyInstance) {
     const sql_stmt_user = db.prepare('SELECT * FROM users WHERE email = ?');
     const user = sql_stmt_user.get(pending2FA.email) as User | undefined;
     if (!user) {
-      console.log("4")
       return reply.status(400).send({ success: false, message: "User not found!" });
     }
     // @ts-ignore: Extend session user to include username

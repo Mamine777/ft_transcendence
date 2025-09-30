@@ -111,6 +111,7 @@ starttournamentBtn.addEventListener("click", () => {
   const playerLeftName = "gauche";
   const playerRightName = "droit";
   resetGame();
+  starttournamentBtn.classList.add("hidden");
   initGame(canvasTournament, ctxTournament, selectedMode);
   runMatch(playerLeftName, playerRightName).then(() => {
     startGameLoop((winner: "left" | "right" | "") => handleWinnerTournament(winner, playerLeftName, playerRightName));

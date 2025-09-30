@@ -4,7 +4,7 @@
 npx tsc -w &
 
 # Lancer le serveur Vite
-npm run dev -- --host &
+npm run dev &
 
 # Attendre que les deux s'exécutent
 wait
