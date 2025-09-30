@@ -3,9 +3,7 @@ import { addPlayerbase, ExportUpdateList } from './tournament';
 
 export let exportPongHistory: () => Promise<void>;
 
-// Ensure the DOM is fully loaded before attaching event listeners
 document.addEventListener("DOMContentLoaded", async () => {
-  // Event listener for "Sign Up" button
   const goToSignup = document.getElementById("goToSignup");
   if (goToSignup) {
     goToSignup.addEventListener("click", () => {
@@ -13,7 +11,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Event listener for "Log In" button in the Sign Up view
   const goToLogin = document.getElementById("goToLogin");
   if (goToLogin) {
     goToLogin.addEventListener("click", () => {
@@ -21,7 +18,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Event listener for "Reset Password" button
   const goToForgotPassword = document.getElementById("goToForgotPassword");
   if (goToForgotPassword) {
     goToForgotPassword.addEventListener("click", () => {
@@ -59,7 +55,7 @@ const cancelbtn = document.getElementById("cancelTwoFABtn");
       GameBtn.addEventListener("click", () =>{
         switchView("GameView");
       })
-  // Event listener for "Continue to Login" button in the Secret Phrase view
+
   const continueToLogin = document.getElementById("continueToLogin");
   if (continueToLogin) {
     continueToLogin.addEventListener("click", () => {
@@ -67,6 +63,14 @@ const cancelbtn = document.getElementById("cancelTwoFABtn");
     });
   }
   
+const backFrom2FA = document.getElementById("cancelTwoFABtn");
+  if (backFrom2FA) {
+    backFrom2FA.addEventListener("click", () => {
+      switchView("loginView");
+      console.log("test");
+    });
+  }
+
   const showRemoveFriendBtn = document.getElementById("showRemoveFriendBtn");
   if (showRemoveFriendBtn)
   {
@@ -74,7 +78,7 @@ const cancelbtn = document.getElementById("cancelTwoFABtn");
       switchView("removeFriendView");
     })
   }
-  // Event listener for "Logout" button in the Dashboard view
+
   const logoutBtnDropdown = document.getElementById("logoutBtnDropdown");
   if (logoutBtnDropdown) {
     logoutBtnDropdown.addEventListener("click", () => {
@@ -118,7 +122,14 @@ const cancelbtn = document.getElementById("cancelTwoFABtn");
       switchView("settingsView");
     })
   }
-  //fill the profile with info
+  const selectMode = document.getElementById("selectmode") as HTMLSelectElement;
+  if (selectMode)
+  {
+    selectMode.addEventListener('change', () => {
+      const selected = selectMode.value;
+      HistoryPong();
+    });
+  }
   const profileBtn = document.getElementById("profileBtn");
     profileBtn?.addEventListener('click', async () => {
       try {
@@ -130,12 +141,16 @@ const cancelbtn = document.getElementById("cancelTwoFABtn");
         const response = await fetch("https://localhost:3000/user", {
           method: "GET",
           credentials: "include",
-          headers
+          headers: { 
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          "Content-Type": "application/json" 
+          },
         });
         const data = await response.json();
         if (data.loggedIn) {
           const profileUsernameElem = document.getElementById("profileUsername");
           if (profileUsernameElem) {
+            console.log("==> data.username", data.username);
             profileUsernameElem.textContent = data.username;
           }
           const profileEmailEl = document.getElementById("profileEmail");
@@ -149,20 +164,9 @@ const cancelbtn = document.getElementById("cancelTwoFABtn");
           }
           switchView("profileViewDrop");
         }
-        const historyRes = await fetch("https://localhost:3000/AllHistory", {
-        method: "GET",
-        credentials: "include",
-        headers
-      });
-
-      const historyData = await historyRes.json();
-      if (!historyData.success) {
-        console.error("Could not load game history:", historyData.error);
-        return;
-      }
 
       // Update Pong stats
-      const pong = historyData.pong;
+      const pong = document.getElementById("profileWins");
       if (pong) {
         const tournamentRes = await fetch("https://localhost:3000/TournamentHistory", {
           method: "GET",
@@ -198,11 +202,14 @@ const cancelbtn = document.getElementById("cancelTwoFABtn");
         await fetch("https://localhost:3000/logout", {
           method: "POST",
           credentials: "include",
-          headers,
+          headers: { 
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          "Content-Type": "application/json" 
+          },
           body: JSON.stringify({}) 
         });
       } catch (error) {
-        console.error("Error fetching /logout:", error);
+        console.error("Error ing /logout:", error);
       } finally {
         localStorage.removeItem('jwt');
         switchView("loginView");
@@ -222,7 +229,10 @@ const cancelbtn = document.getElementById("cancelTwoFABtn");
         await fetch("https://localhost:3000/logout", {
           method: "POST",
           credentials: "include",
-          headers, 
+          headers: { 
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          "Content-Type": "application/json" 
+          },
            body: JSON.stringify({}) 
         });
       } catch (error) {
@@ -237,44 +247,81 @@ const cancelbtn = document.getElementById("cancelTwoFABtn");
   const pongHistory = document.getElementById("refreshProfileBtn");
   if (pongHistory) {
     pongHistory.addEventListener("click", async () => {
-    HistoryPong();
+      console.log("==> pongHistory");
+      HistoryPong();
     });
   }
     async function HistoryPong() { 
-      const PongRes = await fetch("https://localhost:3000/History/Pong", {
-        method: "GET",
-        credentials: "include",
-        headers: { 
-          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-          "Content-Type": "application/json"
-        }
-      });
-      const PongData = await PongRes.json();
-      const details = document.getElementById("pongHistoryDetails")!;
-      if (PongData.success && PongData.matches.length > 0) {
-      details.innerHTML = `
-        <table style="width:100%;color:white;">
-          <tr>
-            <th>Date</th>
-            <th>Mode</th>
-            <th>Score gauche</th>
-            <th>Score droite</th>
-          </tr>
-          ${PongData.matches.map((match: any) => `
+      if ((document.getElementById("selectmode") as HTMLSelectElement).value === "Puissance4Profile")
+      { 
+        const RowRes = await fetch("https://localhost:3000/History/RowHistory", {
+          method: "GET",
+          credentials: "include",
+          headers: { 
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+            "Content-Type": "application/json"
+          }
+        });
+        console.log("==> RowRes");
+        const RowData = await RowRes.json();
+        const details = document.getElementById("pongHistoryDetails")!;
+        if (RowData.success && RowData.matches.length > 0) {
+          details.innerHTML = `
+          <table style="width:100%;color:white;">
             <tr>
-              <td>${match.playedAt || match.date || "?"}</td>
-              <td>${match.mode}</td>
-              <td>${match.scoreLeft}</td>
-              <td>${match.scoreRight}</td>
+              <th>Date</th>
+              <th>Color</th>
             </tr>
-          `).join('')}
-        </table>
-      `;
+            ${RowData.matches.map((match: any) => `
+              <tr>
+                <td>${match.playedAt || match.date || "?"}</td>
+                <td>${match.color}</td>
+              </tr>
+            `).join('')}
+          </table>
+        `;
+      }
+      else {
+              details.innerHTML = "<p>Aucun match trouvé.</p>";
+        }
     }
-    else {
-      details.innerHTML = "<p>Aucun match trouvé.</p>";
+      else 
+      {
+        const PongRes = await fetch("https://localhost:3000/History/Pong", {
+          method: "GET",
+          credentials: "include",
+          headers: { 
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+            "Content-Type": "application/json"
+          }
+        });
+        const PongData = await PongRes.json();
+        const details = document.getElementById("pongHistoryDetails")!;
+        if (PongData.success && PongData.matches.length > 0) {
+        details.innerHTML = `
+          <table style="width:100%;color:white;">
+            <tr>
+              <th>Date</th>
+              <th>Mode</th>
+              <th>Score gauche</th>
+              <th>Score droite</th>
+            </tr>
+            ${PongData.matches.map((match: any) => `
+              <tr>
+                <td>${match.playedAt || match.date || "?"}</td>
+                <td>${match.mode}</td>
+                <td>${match.scoreLeft}</td>
+                <td>${match.scoreRight}</td>
+              </tr>
+            `).join('')}
+          </table>
+        `;
+      }
+      else {
+          details.innerHTML = "<p>Aucun match trouvé.</p>";
+        }
+      }
     }
-  }
 
   exportPongHistory = HistoryPong;
 });

@@ -56,7 +56,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
 async function startGame() {
   if (selectedMode === "BOT") {
-    console.log("Botin set to true");
     Botin = true;
   }
   else

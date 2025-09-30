@@ -3,35 +3,29 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mokariou <mokariou@student.42.fr>          +#+  +:+       +#+         #
+#    By: armitite <armitite@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/09 13:02:57 by mokariou          #+#    #+#              #
-#    Updated: 2025/06/09 13:03:41 by mokariou         ###   ########.fr        #
+#    Updated: 2025/09/27 19:25:53 by armitite         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+include ft_backend/.env
 
-ENTRY=ft_backend/server.ts
+start:
+	docker compose up -d
 
-NODE=node
-NPM=npm
-TSNODE=npx ts-node
+build:
+	docker compose build
 
+reset:
+	docker compose down
+	docker compose build
+	docker compose up -d
 
-all: install run
+down:
+	docker compose down
 
-install:
-	$(NPM) install
-
-run:
-	$(TSNODE) $(ENTRY)
-
-clean:
-	rm -rf dist
-
-reinstall:
-	rm -rf node_modules package-lock.json
-	$(NPM) install
-
-# Phony targets
-.PHONY: all install run clean reinstall
+resetdb:
+	rm -rf ft_backend/db/database.db
+	touch ft_backend/db/database.db

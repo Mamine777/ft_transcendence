@@ -21,7 +21,10 @@ document.getElementById("settingsForm")?.addEventListener("submit", async (event
     await loadProfile();
     const response = await fetch("https://localhost:3000/check-settings", {
       method: "POST",
-      headers,
+      			headers: { 
+			'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+			"Content-Type": "application/json" 
+			},
       credentials: "include",
       body: JSON.stringify({
         newUsername: NewUsername.value,
@@ -97,7 +100,10 @@ document.getElementById("avatarUpload")?.addEventListener("change", async (event
   try {
     const response = await fetch("https://localhost:3000/uploadFile", {
       method: "POST",
-      headers,
+     	headers: { 
+			'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+			"Content-Type": "application/json" 
+			},
       credentials: "include",
       body: formData,
     });

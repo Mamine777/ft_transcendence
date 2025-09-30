@@ -28,9 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
 		try {
 			const response = await fetch("https://localhost:3000/login-check", {
 				method: "POST",
-				headers: {
-				  "Content-Type": "application/json",
-				},
+			headers: { 
+			'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+			"Content-Type": "application/json" 
+			},
 				credentials: "include",
 				body: JSON.stringify({ email: email.value, password: password.value })
 			  });
@@ -58,7 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		  const response = await fetch("https://localhost:3000/verify-2fa", {
 			method: "POST",
 			credentials: "include",
-			headers: { "Content-Type": "application/json",
+			headers: { 
+				'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+				"Content-Type": "application/json" 
 			},
 			body: JSON.stringify({ code2fa })
 		  });
@@ -90,7 +93,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			const response = await fetch("https://localhost:3000/check-forgot", {
 				method: "POST",
 				credentials: "include",
-				headers: { "Content-Type": "application/json"},
+				headers: { 
+				'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+				"Content-Type": "application/json" 
+				},
 				body: JSON.stringify({ 
 					email: email.value, 
 					secretKey: secretKey.value, 
@@ -127,7 +133,10 @@ document.addEventListener("DOMContentLoaded", () => {
 		const response = await fetch("https://localhost:3000/check-signup", {
 		method: "POST",
 		credentials: "include",
-		headers: { "Content-Type": "application/json" },
+		headers: { 
+			'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+			"Content-Type": "application/json" 
+			},
 		body: JSON.stringify({
 			signupEmail: email.value,
 			signupPassword: password.value,

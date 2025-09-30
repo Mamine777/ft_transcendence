@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.ts                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mokariou <mokariou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: najeuneh <najeuneh@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:50:57 by mokariou          #+#    #+#             */
-/*   Updated: 2025/09/27 14:12:58 by mokariou         ###   ########.fr       */
+/*   Updated: 2025/09/29 16:24:01 by najeuneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ import fastifyMultipart from '@fastify/multipart';
 import fastifyJwt from '@fastify/jwt';
 import fastifyCors from '@fastify/cors';
 import { HistoryRoutes } from "./History/history";
+import { History4RowRoutes } from "./History/history4row";
 import { tournaments } from "./tournament/tournament";
 import fs from "fs";
 
@@ -88,6 +89,7 @@ server.register(fastifyCors, {
 server.register(fastifyFormbody);
 server.register(loginPlugin);
 HistoryRoutes(server);
+History4RowRoutes(server);
 FriendsRoutes(server);
 LoginRoutes(server);
 DashboardRoutes(server);

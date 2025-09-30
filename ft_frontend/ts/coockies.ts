@@ -71,7 +71,10 @@ export async function loadProfile(): Promise<void> {
       headers['Authorization'] = `Bearer ${jwt}`;
     }
     const response = await fetch("https://localhost:3000/me", {
-      headers,
+      headers: { 
+			'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+			"Content-Type": "application/json" 
+			},
       credentials: "include"
     });
     const data = await response.json();
