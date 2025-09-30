@@ -47,4 +47,14 @@ export function twoStepVerificationRoutes(server: FastifyInstance) {
 
     return reply.send({ success: true, token ,message: '2FA verified successfully.' });
   });
+  server.post("/cancel2fa", async (req, reply) => {
+    try {
+      await req.jwtVerify();
+      delete req.session.pending2FA;
+      if (req.session.pending2FA) return reply.status(500).send({ success: false, message: "Canceling 2fa failed" });
+      return reply.send({ success: true, message: "canceled the 2fa" });
+    } catch (error) {
+      return reply.status(500).send({ success: false, message: "Logout failed" });
+    }
+  });
 }
