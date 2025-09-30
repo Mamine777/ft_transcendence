@@ -69,10 +69,11 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
       fetch("https://localhost:3000/cancel2fa", {
         method: "POST",
         credentials: "include",
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-          "Content-Type": "application/json"
+        headers: { 
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        "Content-Type": "application/json" 
         },
+        body: JSON.stringify({})
       })
       switchView("loginView");
     });
