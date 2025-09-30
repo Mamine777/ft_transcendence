@@ -66,6 +66,14 @@ const cancelbtn = document.getElementById("cancelTwoFABtn");
 const backFrom2FA = document.getElementById("cancelTwoFABtn");
   if (backFrom2FA) {
     backFrom2FA.addEventListener("click", () => {
+      fetch("https://localhost:3000/cancel2fa", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          "Content-Type": "application/json"
+        },
+      })
       switchView("loginView");
     });
   }
