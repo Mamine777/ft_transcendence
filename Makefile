@@ -6,13 +6,16 @@
 #    By: armitite <armitite@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/09 13:02:57 by mokariou          #+#    #+#              #
-#    Updated: 2025/09/27 19:25:53 by armitite         ###   ########.fr        #
+#    Updated: 2025/09/30 18:37:02 by armitite         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 include ft_backend/.env
 
 start:
+	docker compose up --build -d
+
+up:
 	docker compose up -d
 
 build:
