@@ -45,6 +45,6 @@ showWinner(
   ctx.fillStyle = "white";
   ctx.font = "48px Arial";
   ctx.textAlign = "center";
-  const text = `${winner} gagne !`;
+  const text = `${winner} a gagné !`;
   ctx.fillText(text, canvas.width / 2, canvas.height / 2);
 }

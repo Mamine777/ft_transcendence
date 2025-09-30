@@ -61,7 +61,7 @@ async function startGame() {
   else
     Botin = false;
   const playerLeftName = "gauche";
-  const playerRightName = "droit ";
+  const playerRightName = "droite";
   EASYstartBtn.classList.add("hidden");
   MEDIUMstartBtn.classList.add("hidden");
   HARDstartBtn.classList.add("hidden");
@@ -109,7 +109,7 @@ PVPstartBtn.addEventListener("click", async () => {
 starttournamentBtn.addEventListener("click", () => {
   selectedMode = "PVP";
   const playerLeftName = "gauche";
-  const playerRightName = "droit";
+  const playerRightName = "droite";
   resetGame();
   starttournamentBtn.classList.add("hidden");
   initGame(canvasTournament, ctxTournament, selectedMode);

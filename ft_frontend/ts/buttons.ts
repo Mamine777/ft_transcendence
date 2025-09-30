@@ -158,7 +158,6 @@ const backFrom2FA = document.getElementById("cancelTwoFABtn");
         if (data.loggedIn) {
           const profileUsernameElem = document.getElementById("profileUsername");
           if (profileUsernameElem) {
-            console.log(data.username);
             profileUsernameElem.textContent = data.username;
           }
           const profileEmailEl = document.getElementById("profileEmail");

@@ -7,7 +7,6 @@ document.getElementById("settingsForm")?.addEventListener("submit", async (event
   const Newpassword = document.getElementById("newPasswordSettings") as HTMLInputElement;
   const Newmessage = document.getElementById("settingsMessage") as HTMLElement;
   const NewUsername = document.getElementById("newUsername") as HTMLInputElement;
-
   const headers: HeadersInit = {
     "Content-Type": "application/json",
   };
@@ -87,29 +86,26 @@ document.getElementById("avatarUpload")?.addEventListener("change", async (event
   const file = input.files?.[0];
   if (!file) return;
 
-  console.log(`==> file`);
   const formData = new FormData();
   formData.append("file", file);
-
   const jwt = localStorage.getItem("jwt");
   const headers: HeadersInit = {};
   if (jwt) {
     headers["Authorization"] = `Bearer ${jwt}`;
   }
-
+  
   try {
     const response = await fetch("https://localhost:3000/uploadFile", {
       method: "POST",
-     	headers: { 
-			'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-			"Content-Type": "application/json" 
+      headers: { 
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
 			},
       credentials: "include",
       body: formData,
     });
-
+    
     const data = await response.json();
-
+    
     if (data.success && data.avatar) {
       const preview = document.getElementById("customAvatarPreview") as HTMLImageElement;
       if (preview) {
